@@ -1,0 +1,82 @@
+{
+	// Place your snippets for dart here. Each snippet is defined under a snippet name and has a prefix, body and 
+	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
+	// same ids are connected.
+	"Insert a BaseCubitState": {
+			"prefix": "base cubit state (BaseCubitState API ONLY)",
+			"body": [
+					"import 'package:du_mobile/app/bloc/link/cubit/base_cubit_state.dart';",
+					"import 'package:du_mobile/utils/enums/state_enum.dart';",
+
+					"class $1 extends BaseCubitState<$2> {",
+					"const $1._({",
+					"    super.status = CubitStatus.initial,",
+					"    super.result,",
+					"    super.message = '',",
+					"});",
+					"const $1.initial()",
+					"    : this._(",
+					"        status: CubitStatus.initial,",
+					"        );",
+					"const $1.loading()",
+					"    : this._(",
+					"        status: CubitStatus.loading,",
+					"        );",
+
+					"const $1.success({required $2 result})",
+					"    : this._(status: CubitStatus.success, result: result);",
+
+					"const $1.failure({message = ''})",
+					"    : this._(status: CubitStatus.failure, message: message);",
+
+					"@override",
+					"List<Object> get props => [status, result ?? '', message];",
+					"}",
+
+			],
+			"description": "👻 API ONLY Cubit State"
+	},
+	"Insert a MVVM Screen": {
+		"prefix": "mvvm(Flutter MVVM Screen)",
+		"body": [
+			"class ${1:\\$1} extends StatelessWidget {",
+			"  const ${1:\\$1}({Key? key}) : super(key: key);",
+			"",
+			"  @override",
+			"  Widget build(BuildContext context) {",
+			"    return MVVM(",
+			"      view: () => ${1:\\$1}View(),",
+			"      viewModel: ${1:\\$1}ViewModel(),",
+			"    );",
+			"  }",
+			"}",
+			"",
+			"class ${1:\\$1}View extends StatelessView<${1:\\$1}ViewModel> {",
+			"  const ${1:\\$1}View({Key? key}) : super(key: key);",
+			"",
+			"  @override",
+			"  Widget render(context, viewModel) {",
+			"    return Container();",
+			"  }",
+			"}",
+			"",
+			"class ${1:\\$1}ViewModel extends ViewModel {",
+			"",
+			"  final String title = '${1:\\$1}';",
+			"",
+			"  @override",
+			"  void init() {",
+			"    super.init();",
+			"    // TODO: implement initState,",
+			"  }",
+			"",
+			"  @override",
+			"  void dispose() {",
+			"    super.dispose();",
+			"  }",
+			"}"
+		],
+		"description": "Insert a MVVM Screen(사용자정의)"
+	},
+}
