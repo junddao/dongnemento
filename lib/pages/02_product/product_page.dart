@@ -1,6 +1,8 @@
 import 'package:base_project/global/component/du_app_bar.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
+import 'package:base_project/global/style/du_colors.dart';
+import 'package:base_project/pages/02_product/components/cell_product.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -38,45 +40,44 @@ class _ProductPageViewState extends State<ProductPageView> {
     return DUAppBar(
       automaticallyImplyLeading: false,
       centerTitle: false,
-      title: Text('상품'),
+      title: const Text('상품'),
     );
   }
 
   Widget _body() {
-    return Center(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
         child: Column(
-      children: [
-        DUButton(
-          width: SizeConfig.screenWidth - 40,
-          text: 'tabpage 가기 (go)',
-          press: () {
-            context.go(
-              '/loginPage',
-            );
-          },
+          children: [
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return CellProduct(
+                  id: index,
+                  title: '텐퍼센트',
+                  description: 'good description',
+                  press: () {
+                    onProduct(index);
+                  },
+                );
+              },
+              separatorBuilder: ((context, index) => const Divider(
+                    color: DUColors.grey1,
+                  )),
+              itemCount: 10,
+            ),
+          ],
         ),
-        const SizedBox(height: 8),
-        DUButton(
-          width: SizeConfig.screenWidth - 40,
-          type: ButtonType.transparent,
-          text: 'tabpage 가기 (replace)',
-          press: () {
-            context.go(
-              '/tabPage',
-            );
-          },
-        ),
-        const SizedBox(height: 8),
-        DUButton(
-          width: SizeConfig.screenWidth - 40,
-          text: 'tabpage 가기 (push)',
-          press: () {
-            context.push(
-              '/tabPage',
-            );
-          },
-        ),
-      ],
-    ));
+      ),
+    );
+  }
+
+  void onProduct(int id) {
+    print(id);
+    context.go(
+      '/product/details/$id',
+    );
   }
 }

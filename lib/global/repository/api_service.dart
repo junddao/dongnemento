@@ -133,38 +133,37 @@ class ApiService {
   }
 
   Future<String?> _getAuthorizationToken() async {
-    SignIn? result = await SecureStorage.instance.readToken();
-    logger.d(result?.expiresIn);
-    logger.d(result?.token);
-    return result?.token;
+    String? token = await SecureStorage.instance.readToken();
+
+    return token;
   }
 
-  Future<void> getRefreshToken() async {
-    var jwt = await SecureStorage.instance.readToken();
-    final variables = {
-      "input": {
-        "refreshToken": jwt?.refreshToken,
-      },
-    };
+  // Future<void> getRefreshToken() async {
+  //   var jwt = await SecureStorage.instance.readToken();
+  //   final variables = {
+  //     "input": {
+  //       "refreshToken": jwt?.refreshToken,
+  //     },
+  //   };
 
-    String key = "refreshSign";
+  //   String key = "refreshSign";
 
-    // GQLOperation query = refreshSign_syntax;
-    // QueryResult result = await _client(Env.apiAuthUrl, jwt?.token).mutate(query.toMutationOption(
-    //   variables: variables,
-    // ));
-    // if (result.hasException) {
-    //   Singleton().mode = AuthStatus.unknown;
-    //   Bloc bloc = ModeChangeBloc();
-    //   bloc.add(ModeChangeRequested());
-    // } else {
-    //   var data = result.data![key];
+  //   // GQLOperation query = refreshSign_syntax;
+  //   // QueryResult result = await _client(Env.apiAuthUrl, jwt?.token).mutate(query.toMutationOption(
+  //   //   variables: variables,
+  //   // ));
+  //   // if (result.hasException) {
+  //   //   Singleton().mode = AuthStatus.unknown;
+  //   //   Bloc bloc = ModeChangeBloc();
+  //   //   bloc.add(ModeChangeRequested());
+  //   // } else {
+  //   //   var data = result.data![key];
 
-    //   final SignInResult reFresh = SignInResult.fromMap(data!);
+  //   //   final SignInResult reFresh = SignInResult.fromMap(data!);
 
-    //   LocalRepository().writeJWT(reFresh);
-    // }
-  }
+  //   //   LocalRepository().writeJWT(reFresh);
+  //   // }
+  // }
 }
 
 class DioException implements Exception {

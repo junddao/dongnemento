@@ -60,9 +60,7 @@ class _MyAppState extends State<MyApp> {
           GoRouter router = context.read<AppRouter>().router;
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
-            routeInformationProvider: router.routeInformationProvider,
-            routeInformationParser: router.routeInformationParser,
-            routerDelegate: router.routerDelegate,
+            routerConfig: router,
             title: 'Base Project',
             theme: lightTheme(),
 

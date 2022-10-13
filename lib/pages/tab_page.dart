@@ -1,9 +1,4 @@
-import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_colors.dart';
-import 'package:base_project/pages/00_home/home_page.dart';
-import 'package:base_project/pages/01_chat/chat_page.dart';
-import 'package:base_project/pages/02_product/product_page.dart';
-import 'package:base_project/pages/03_more/more_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -71,9 +66,9 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
         ),
         child: _navigationBar(),
       ),
-      floatingActionButton: Container(
+      floatingActionButton: SizedBox(
         height: 60,
-        width: double.infinity,
+        width: 60,
         child: InkWell(
           onTap: () {},
           child: const CircleAvatar(
@@ -83,7 +78,7 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
     );
   }
 

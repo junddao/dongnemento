@@ -5,15 +5,30 @@ import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/pages/00_home/home_page.dart';
 import 'package:base_project/pages/01_chat/chat_detail_page.dart';
 import 'package:base_project/pages/01_chat/chat_page.dart';
+import 'package:base_project/pages/02_product/product_detail_page.dart';
 import 'package:base_project/pages/02_product/product_page.dart';
 import 'package:base_project/pages/03_more/more_page.dart';
 import 'package:base_project/pages/common/error_page.dart';
 import 'package:base_project/pages/login/login_page.dart';
+import 'package:base_project/pages/login/page_email_sign_up.dart';
 import 'package:base_project/pages/root_page.dart';
 import 'package:base_project/pages/tab_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+class Routes {
+  // 1 depth
+  static const root = '/';
+  static const home = '/home';
+  static const login = '/login';
+  static const chat = '/chat';
+  static const product = '/product';
+  static const more = '/more';
+
+  // 2 depth
+  static const signUp = 'sign_up';
+}
 
 class AppRouter extends Bloc {
   late final AuthenticationBloc authBloc;
@@ -23,6 +38,9 @@ class AppRouter extends Bloc {
   AppRouter(this.authBloc) : super(null);
 
   AuthenticationState? prevAuthState;
+  // final ValueKey<String> _scaffoldKey = const ValueKey<String>('App scaffold');
+  final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+  final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
 
   late final _goRouter = GoRouter(
     redirect: (context, state) async {
@@ -32,10 +50,10 @@ class AppRouter extends Bloc {
       prevAuthState = authBloc.state;
       if (authBloc.state is AuthenticationAuthenticated) {
         logger.d('Authenticated');
-        return '/home';
+        return Routes.home;
       } else if (authBloc.state is AuthenticationUnAuthenticated) {
         logger.d('UnAuthenticated');
-        return '/loginPage';
+        return Routes.login;
       } else if (authBloc.state is AuthenticationUnknown) {
         logger.d('AuthenticationUnknown');
       } else {
@@ -44,10 +62,11 @@ class AppRouter extends Bloc {
 
       return null;
     },
+    navigatorKey: _rootNavigatorKey,
     refreshListenable: GoRouterRefreshStream(authBloc.stream),
     routes: <RouteBase>[
       GoRoute(
-        path: '/',
+        path: Routes.root,
         pageBuilder: (context, state) {
           return MaterialPage(
             key: state.pageKey,
@@ -56,6 +75,7 @@ class AppRouter extends Bloc {
         },
       ),
       ShellRoute(
+        navigatorKey: _shellNavigatorKey,
         pageBuilder: (context, state, child) {
           return MaterialPage(
             key: state.pageKey,
@@ -64,13 +84,13 @@ class AppRouter extends Bloc {
         },
         routes: [
           GoRoute(
-            path: '/home',
+            path: Routes.home,
             pageBuilder: (context, state) {
               return const MaterialPage(child: HomePage());
             },
           ),
           GoRoute(
-            path: '/chat',
+            path: Routes.chat,
             pageBuilder: (context, state) {
               return const MaterialPage(child: ChatPage());
             },
@@ -86,13 +106,24 @@ class AppRouter extends Bloc {
             ],
           ),
           GoRoute(
-            path: '/product',
+            path: Routes.product,
             pageBuilder: (context, state) {
               return const MaterialPage(child: ProductPage());
             },
+            routes: [
+              GoRoute(
+                parentNavigatorKey: _rootNavigatorKey,
+                path: 'details/:id',
+                pageBuilder: (BuildContext context, GoRouterState state) {
+                  return MaterialPage(
+                    child: ProductDetailPage(id: state.params['id']!),
+                  );
+                },
+              ),
+            ],
           ),
           GoRoute(
-            path: '/more',
+            path: Routes.more,
             pageBuilder: (context, state) {
               return const MaterialPage(child: MorePage());
             },
@@ -100,14 +131,24 @@ class AppRouter extends Bloc {
         ],
       ),
       GoRoute(
-        path: '/loginPage',
+        path: Routes.login,
         pageBuilder: (context, state) {
           return MaterialPage(
             key: state.pageKey,
             child: const LoginPage(),
           );
         },
-        routes: [],
+        routes: [
+          GoRoute(
+            path: Routes.signUp,
+            pageBuilder: (context, state) {
+              return MaterialPage(
+                key: state.pageKey,
+                child: const PageEmailSignUp(),
+              );
+            },
+          ),
+        ],
       ),
     ],
     errorPageBuilder: (context, state) {

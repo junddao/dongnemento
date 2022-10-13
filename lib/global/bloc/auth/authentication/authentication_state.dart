@@ -6,7 +6,7 @@ abstract class AuthenticationState extends Equatable {
     this.me,
   });
   final AuthenticationStatusType? status;
-  final MeResult? me;
+  final ModelUser? me;
 
   @override
   List<Object> get props => [status ?? AuthenticationStatusType.unknown, me!];
@@ -26,7 +26,7 @@ class AuthenticationLoading extends AuthenticationState {
 
 class AuthenticationAuthenticated extends AuthenticationState {
   const AuthenticationAuthenticated({
-    required MeResult? me,
+    required ModelUser? me,
   }) : super(status: AuthenticationStatusType.authenticated, me: me);
 
   @override

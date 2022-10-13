@@ -1,4 +1,5 @@
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/component/du_app_bar.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
 import 'package:base_project/global/component/du_two_button_dialog.dart';
 import 'package:base_project/global/model/account/response/me_result.dart';
@@ -22,7 +23,7 @@ class MorePage extends StatefulWidget {
 class _MorePageState extends State<MorePage> {
   @override
   Widget build(BuildContext context) {
-    return MorePageView();
+    return const MorePageView();
   }
 }
 
@@ -36,14 +37,11 @@ class MorePageView extends StatefulWidget {
 class _MorePageViewState extends State<MorePageView> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _textNameController = TextEditingController();
-  late Me me;
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      me = await SecureStorage.instance.readMe();
-    });
+    Future.microtask(() async {});
   }
 
   @override
@@ -61,7 +59,7 @@ class _MorePageViewState extends State<MorePageView> {
   }
 
   _appBar() {
-    return AppBar(
+    return DUAppBar(
       title: const Text('마이'),
       centerTitle: false,
       automaticallyImplyLeading: false,
@@ -111,7 +109,7 @@ class _MorePageViewState extends State<MorePageView> {
       },
       child: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
           child: Form(
@@ -119,14 +117,14 @@ class _MorePageViewState extends State<MorePageView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   children: [
                     InkWell(
                       onTap: () async {},
                       child: getProfileImage(),
                     ),
-                    SizedBox(width: 18),
+                    const SizedBox(width: 18),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -134,26 +132,27 @@ class _MorePageViewState extends State<MorePageView> {
                           text: TextSpan(
                             children: [
                               TextSpan(text: '안녕하세요\n', style: DUTextStyle.size18.grey1),
-                              TextSpan(text: '홍길동', style: DUTextStyle.size18),
+                              TextSpan(text: '홍길동', style: DUTextStyle.size18.black),
                               TextSpan(text: '님!', style: DUTextStyle.size18.grey1),
                             ],
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
-                        SizedBox(height: 20),
-                        Text(me.email),
+                        const SizedBox(height: 20),
+                        Text(AuthenticationBloc.singletonMe?.email ?? ''),
                       ],
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
-                Text('이름 수정하기', style: DUTextStyle.size18),
+                const SizedBox(height: 40),
+                Text('이름 수정하기', style: DUTextStyle.size14M),
+                const SizedBox(height: 4),
                 DUTextFormField(
                   controller: _textNameController,
-                  decoration: const InputDecoration(
-                    hintText: "변경하실 성명을 입력해주세요",
-                    errorText: "성명을 입력해주세요",
-                  ),
+
+                  hintText: "변경하실 성명을 입력해주세요",
+                  // errorText: "성명을 입력해주세요",
+
                   onEditingComplete: () => node.nextFocus(),
                   validator: (value) {
                     if (value!.length > 10) {
@@ -177,7 +176,7 @@ class _MorePageViewState extends State<MorePageView> {
   }
 
   Widget getProfileImage() {
-    return Container(
+    return SizedBox(
       height: 80,
       width: 80,
       child: Stack(
@@ -222,15 +221,4 @@ class _MorePageViewState extends State<MorePageView> {
   void _logout() async {
     context.read<AuthenticationBloc>().add(AuthenticationSignOut());
   }
-
-  // Widget _body() {
-  //   return Center(
-  //     child: TextButton(
-  //       onPressed: () {
-  //         context.read<AuthenticationBloc>().add(AuthenticationSignOut());
-  //       },
-  //       child: Text('로그아웃'),
-  //     ),
-  //   );
-  // }
 }

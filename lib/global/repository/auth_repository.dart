@@ -2,14 +2,15 @@ import 'package:base_project/env.dart';
 import 'package:base_project/global/model/auth/request/sign_in_input.dart';
 import 'package:base_project/global/model/auth/response/sign_in_result.dart';
 import 'package:base_project/global/model/auth/response/sign_out_result.dart';
-import 'package:base_project/global/operation/auth/mutation/refresh_sign.dart';
-import 'package:base_project/global/operation/auth/mutation/sign_in.dart';
-import 'package:base_project/global/operation/auth/mutation/sign_out.dart';
-import 'package:base_project/global/repository/common/exception_handler.dart';
-import 'package:base_project/global/repository/common/repo_interface.dart';
-import 'package:base_project/global/repository/gql_service.dart';
+import 'package:base_project/global/model/common/api_response.dart';
+import 'package:base_project/global/model/common/model_response_common.dart';
+import 'package:base_project/global/model/user/model_request_get_token.dart';
+import 'package:base_project/global/model/user/model_request_sign_in.dart';
+import 'package:base_project/global/model/user/model_response_me.dart';
+import 'package:base_project/global/model/user/model_response_sign_in.dart';
+import 'package:base_project/global/model/user/model_user.dart';
+import 'package:base_project/global/repository/api_service.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
 class AuthRepository {
   static final AuthRepository instance = AuthRepository._internal();
@@ -21,32 +22,110 @@ class AuthRepository {
 
   String apiUrl = Env.apiAuthUrl;
 
-  Future<DataOrFailure<SignInResult>> signIn(SignInInput signInInput) async {
-    final variables = {
-      "input": signInInput.toMap()..removeWhere((key, value) => value == null),
-    };
-
+  Future<ApiResponse<ModelSignIn>> signIn(String email, String password) async {
+    late ModelResponseSignIn modelResponseSignIn;
     try {
-      QueryResult result = await GQLService().mutation(apiUrl, signInSyntax, variables: variables, useToken: false);
-      if (DUExceptionHandler().shouldHandleException(result)) {
-        var failure = DUExceptionHandler().handleException(result.exception);
-        return DataOrFailure.withFailure(failure);
+      ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn(email: email, password: password);
+      const String url = '/signin';
+      Map<String, dynamic> response = await ApiService().post(url, modelRequestSignIn.toMap(), useToken: false);
+      modelResponseSignIn = ModelResponseSignIn.fromMap(response);
+      if (modelResponseSignIn.success == true) {
+        ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
+        await SecureStorage.instance.writeToken(modelSignIn.accessToken);
+        return ApiResponse.completed(modelSignIn);
+      } else {
+        return ApiResponse.error(modelResponseSignIn.error);
       }
-      SignInResult signInResult = SignInResult.fromMap(result.data!);
-      return DataOrFailure.withData(signInResult);
     } catch (e) {
-      throw Exception('Api Call Error in Repository');
+      return ApiResponse.error(e.toString());
     }
   }
 
-  Future<DataOrFailure<SignOutResult>> signOut() async {
-    QueryResult result = await GQLService().mutation(apiUrl, signOutSyntax);
-    if (DUExceptionHandler().shouldHandleException(result)) {
-      var failure = DUExceptionHandler().handleException(result.exception);
-      return DataOrFailure.withFailure(failure);
+  Future<ApiResponse<String>> kakaoSignIn(Map<String, dynamic> user) async {
+    late ModelResponseCommon modelResponseCommon;
+    try {
+      const String url = '/kakao';
+      Map<String, dynamic> response = await ApiService().post(url, user, useToken: false);
+      modelResponseCommon = ModelResponseCommon.fromMap(response);
+      if (modelResponseCommon.success == true) {
+        final customTokenResponse = response['data'].first;
+        return ApiResponse.completed(customTokenResponse['fbCustomToken']);
+      } else {
+        return ApiResponse.error(modelResponseCommon.error);
+      }
+    } catch (e) {
+      return ApiResponse.error(e.toString());
     }
-    SignOutResult signOutResult = SignOutResult.fromMap(result.data!);
+  }
 
-    return DataOrFailure.withData(signOutResult);
+  Future<ApiResponse<ModelResponseSignIn>> getToken(String email) async {
+    late ModelResponseSignIn modelResponseSignIn;
+
+    try {
+      ModelRequestGetToken modelRequestGetToken = ModelRequestGetToken(email: email);
+      const String url = '/get/token';
+      Map<String, dynamic> response = await ApiService().post(url, modelRequestGetToken.toMap(), useToken: false);
+      modelResponseSignIn = ModelResponseSignIn.fromMap(response);
+      if (modelResponseSignIn.success == true) {
+        ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
+        await SecureStorage.instance.writeToken(modelSignIn.accessToken);
+        return ApiResponse.completed(modelResponseSignIn);
+      } else {
+        return ApiResponse.error(modelResponseSignIn.error);
+      }
+    } catch (e) {
+      return ApiResponse.error(e.toString());
+    }
+  }
+
+  Future<ApiResponse<String>> appleSignIn(Map<String, dynamic> user) async {
+    late ModelResponseCommon modelResponseCommon;
+    try {
+      const String url = '/apple';
+
+      Map<String, dynamic> response = await ApiService().post(url, user, useToken: false);
+      modelResponseCommon = ModelResponseCommon.fromMap(response);
+      if (modelResponseCommon.success == true) {
+        final customTokenResponse = response['data'].first;
+        return ApiResponse.completed(customTokenResponse['fbCustomToken']);
+      } else {
+        return ApiResponse.error(modelResponseCommon.error);
+      }
+    } catch (e) {
+      return ApiResponse.error(e.toString());
+    }
+  }
+
+  Future<ApiResponse<ModelUser>> getMe() async {
+    late ModelResponseMe modelResponseMe;
+    try {
+      const String path = '/me';
+      Map<String, dynamic> response = await ApiService().get(path);
+      modelResponseMe = ModelResponseMe.fromMap(response);
+      if (modelResponseMe.success == true) {
+        ModelUser modelUser = modelResponseMe.data!.first;
+        return ApiResponse.completed(modelUser);
+      } else {
+        throw Exception(modelResponseMe.error);
+      }
+    } catch (e) {
+      return ApiResponse.error(e.toString());
+    }
+  }
+
+  Future<ApiResponse<bool>> signUp(Map<String, dynamic> map) async {
+    late ModelResponseCommon modelResponseCommon;
+    try {
+      const String url = '/user/signup';
+      Map<String, dynamic> response = await ApiService().post(url, map, useToken: false);
+      modelResponseCommon = ModelResponseCommon.fromMap(response);
+      if (modelResponseCommon.success == true) {
+        return ApiResponse.completed(true);
+      } else {
+        return ApiResponse.error(modelResponseCommon.error);
+      }
+    } catch (e) {
+      return ApiResponse.error(e.toString());
+    }
   }
 }

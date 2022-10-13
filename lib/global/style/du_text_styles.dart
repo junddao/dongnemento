@@ -6,8 +6,8 @@ class DUTextStyle {
   DUTextStyle._();
 
   // fontFamail
-  static final String? _fontFamily = Platform.isIOS ? ".AppleSystemUIFont" : null;
-  static final List<String>? _fontFamilyFallback = Platform.isIOS ? ["Apple SD Gothic Neo"] : null;
+  static final String? _fontFamily = Platform.isIOS ? "NotoSansKR" : null;
+  static final List<String>? _fontFamilyFallback = Platform.isIOS ? ["NotoSansKR"] : null;
 
   // Regular(Weight:w400)
 

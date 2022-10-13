@@ -1,11 +1,9 @@
 import 'package:base_project/global/enum/authentication_status_type.dart';
-import 'package:base_project/global/model/account/response/me_result.dart';
-import 'package:base_project/global/model/auth/request/sign_in_input.dart';
-import 'package:base_project/global/model/auth/response/sign_in_result.dart';
-import 'package:base_project/global/model/auth/response/sign_out_result.dart';
-import 'package:base_project/global/repository/accounts_repository.dart';
+import 'package:base_project/global/enum/social_type.dart';
+import 'package:base_project/global/model/common/api_response.dart';
+import 'package:base_project/global/model/user/model_response_sign_in.dart';
+import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/repository/auth_repository.dart';
-import 'package:base_project/global/repository/common/repo_interface.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +12,7 @@ part 'authentication_event.dart';
 part 'authentication_state.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  Me? singletonMe;
+  static ModelUser? singletonMe;
   AuthenticationBloc() : super(const AuthenticationInitial()) {
     on<AuthenticationStatusChanged>(
       (event, emit) async {
@@ -48,13 +46,16 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         emit(const AuthenticationUnAuthenticated());
         break;
       case AuthenticationStatusType.authenticated:
-        DataOrFailure<MeResult> meResult = await _getMe();
-        if (meResult.isFailed) {
-          emit(const AuthenticationUnAuthenticated());
-          break;
+        ApiResponse<ModelUser> responseModelUser = await AuthRepository.instance.getMe();
+        if (responseModelUser.status == ResponseStatus.error) {
+          emit(
+            AuthenticationError(errorMessage: responseModelUser.message ?? 'get me error'),
+          );
         }
+        ModelUser? me = responseModelUser.data!;
+        SecureStorage.instance.writeMe(me);
+        emit(AuthenticationAuthenticated(me: me));
 
-        emit(AuthenticationAuthenticated(me: meResult.data));
         break;
       default:
         emit(const AuthenticationUnknown());
@@ -70,27 +71,38 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         const AuthenticationLoading(),
       );
 
-      //signIn
-      SignInInput input = event.input;
-      DataOrFailure<SignInResult> signInResult = await AuthRepository.instance.signIn(input);
+      late ApiResponse<ModelSignIn> responseModelSignIn;
 
-      if (signInResult.isFailed) {
-        emit(
-          AuthenticationError(errorMessage: signInResult.failure.msg),
-        );
+      //signIn
+      switch (event.socialType) {
+        case SocialType.email:
+          responseModelSignIn = await emailLogin(event.email ?? '', event.password ?? '');
+          break;
+        // case SocialType.kakao:
+        //   result = await kakaoLogin();
+        //   break;
+        // case SocialType.apple:
+        //   result = await appleLogin();
+        //   break;
+        default:
       }
 
-      await SecureStorage.instance.writeToken(signInResult.data!.signIn);
+      if (responseModelSignIn.status == ResponseStatus.error) {
+        emit(
+          AuthenticationError(errorMessage: responseModelSignIn.message ?? 'sign in error'),
+        );
+      }
 
       //get me
-      DataOrFailure<MeResult> meResult = await _getMe();
-      if (meResult.isFailed) {
+      ApiResponse<ModelUser> responseModelUser = await AuthRepository.instance.getMe();
+      if (responseModelUser.status == ResponseStatus.error) {
         emit(
-          AuthenticationError(errorMessage: meResult.failure.msg),
+          AuthenticationError(errorMessage: responseModelUser.message ?? 'get me error'),
         );
       }
-
-      emit(AuthenticationAuthenticated(me: meResult.data));
+      ModelUser? me = responseModelUser.data!;
+      SecureStorage.instance.writeMe(me);
+      emit(AuthenticationAuthenticated(me: me));
     } catch (e) {
       AuthenticationError(errorMessage: e.toString());
     }
@@ -103,13 +115,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try {
       emit(const AuthenticationLoading());
 
-      DataOrFailure<SignOutResult> signOutResult = await AuthRepository.instance.signOut();
+      // DataOrFailure<SignOutResult> signOutResult = await AuthRepository.instance.signOut();
 
-      if (signOutResult.isFailed) {
-        emit(
-          AuthenticationError(errorMessage: signOutResult.failure.msg),
-        );
-      }
+      // if (signOutResult.isFailed) {
+      //   emit(
+      //     AuthenticationError(errorMessage: signOutResult.failure.msg),
+      //   );
+      // }
 
       await SecureStorage.instance.removeAll();
 
@@ -119,12 +131,31 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
   }
 
-  Future<DataOrFailure<MeResult>> _getMe() async {
-    DataOrFailure<MeResult> meResult = await AccountRepository.instance.me();
-    if (meResult.isSuccess) {
-      await SecureStorage.instance.writeMe(meResult.data!.me);
-      singletonMe = meResult.data!.me;
-    }
-    return meResult;
+  Future<ApiResponse<ModelSignIn>> emailLogin(String email, String password) async {
+    late ApiResponse<ModelSignIn> result;
+
+    result = await AuthRepository.instance.signIn(email, password);
+
+    return result;
   }
+
+  // Future<ModelResponseSignIn> kakaoLogin() async {
+  //  late ModelResponseSignIn result;
+  //   try {
+  //     result = await AuthRepository.instance.signIn(email, password);
+  //   } catch (e) {
+  //     result = ModelResponseSignIn(success: false, error: e.toString());
+  //   }
+  //   return result;
+  // }
+  // Future<ModelResponseSignIn> appleLogin() async {
+  //  late ModelResponseSignIn result;
+  //   try {
+  //     result = await AuthRepository.instance.signIn(email, password);
+  //   } catch (e) {
+  //     result = ModelResponseSignIn(success: false, error: e.toString());
+  //   }
+  //   return result;
+  // }
+
 }

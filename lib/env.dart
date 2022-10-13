@@ -6,27 +6,22 @@ enum OpMode {
   product,
 }
 
-const _prodApiBaseUrl = "https://api.dingdongu.com";
+const _prodApiBaseUrl = "http://43.200.119.214";
 const _prodApiAuthUrl = "$_prodApiBaseUrl$_apiAuth";
-const _prodApiAccountUrl = "$_prodApiBaseUrl$_apiAccount";
 
-const _devApiBaseUrl = "https://dev-api.dingdongu.com";
+const _devApiBaseUrl = "http://192.168.1.82:17007";
 const _devApiAuthUrl = "$_devApiBaseUrl$_apiAuth";
-const _devApiAccountUrl = "$_devApiBaseUrl$_apiAccount";
 
-const _apiAuth = "/auth";
-const _apiAccount = "/accounts";
+const _apiAuth = "/user";
 
 class Env {
   static Env? _instance;
 
   static late OpMode _mode;
   static late String _apiAuthUrl;
-  static late String _apiAccountUrl;
 
   /// User API 접속 주소
   static String get apiAuthUrl => _apiAuthUrl;
-  static String get apiAccountUrl => _apiAccountUrl;
 
   //End Point
   static OpMode get opMode => _mode;
@@ -53,16 +48,13 @@ class Env {
     switch (mode) {
       case OpMode.product: //운영 모드
         _apiAuthUrl = _prodApiAuthUrl;
-        _apiAccountUrl = _prodApiAccountUrl;
         break;
       case OpMode.dev: //개발 모드
         _apiAuthUrl = _devApiAuthUrl;
-        _apiAccountUrl = _devApiAccountUrl;
         break;
       case OpMode.unknown:
       default:
         _apiAuthUrl = "";
-        _apiAccountUrl = "";
         break;
     }
   }
