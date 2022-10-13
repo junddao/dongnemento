@@ -148,6 +148,7 @@ class _PageEmailSignUpState extends State<PageEmailSignUp> {
     }
 
     // 1. signUp
+
     // 2. getMe
     bool result = false;
 
