@@ -25,9 +25,11 @@ class AuthRepository {
   Future<ApiResponse<ModelSignIn>> signIn(String email, String password) async {
     late ModelResponseSignIn modelResponseSignIn;
     try {
-      ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn(email: email, password: password);
-      const String url = '/signin';
-      Map<String, dynamic> response = await ApiService().post(url, modelRequestSignIn.toMap(), useToken: false);
+      ModelRequestSignIn modelRequestSignIn =
+          ModelRequestSignIn(email: email, password: password);
+      String url = '$apiUrl/signin';
+      Map<String, dynamic> response = await ApiService()
+          .post(url, modelRequestSignIn.toMap(), useToken: false);
       modelResponseSignIn = ModelResponseSignIn.fromMap(response);
       if (modelResponseSignIn.success == true) {
         ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
@@ -44,8 +46,9 @@ class AuthRepository {
   Future<ApiResponse<String>> kakaoSignIn(Map<String, dynamic> user) async {
     late ModelResponseCommon modelResponseCommon;
     try {
-      const String url = '/kakao';
-      Map<String, dynamic> response = await ApiService().post(url, user, useToken: false);
+      String url = '$apiUrl/kakao';
+      Map<String, dynamic> response =
+          await ApiService().post(url, user, useToken: false);
       modelResponseCommon = ModelResponseCommon.fromMap(response);
       if (modelResponseCommon.success == true) {
         final customTokenResponse = response['data'].first;
@@ -62,9 +65,12 @@ class AuthRepository {
     late ModelResponseSignIn modelResponseSignIn;
 
     try {
-      ModelRequestGetToken modelRequestGetToken = ModelRequestGetToken(email: email);
-      const String url = '/get/token';
-      Map<String, dynamic> response = await ApiService().post(url, modelRequestGetToken.toMap(), useToken: false);
+      ModelRequestGetToken modelRequestGetToken =
+          ModelRequestGetToken(email: email);
+
+      String url = '$apiUrl/get/token';
+      Map<String, dynamic> response = await ApiService()
+          .post(url, modelRequestGetToken.toMap(), useToken: false);
       modelResponseSignIn = ModelResponseSignIn.fromMap(response);
       if (modelResponseSignIn.success == true) {
         ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
@@ -81,9 +87,10 @@ class AuthRepository {
   Future<ApiResponse<String>> appleSignIn(Map<String, dynamic> user) async {
     late ModelResponseCommon modelResponseCommon;
     try {
-      const String url = '/apple';
+      String url = '$apiUrl/apple';
 
-      Map<String, dynamic> response = await ApiService().post(url, user, useToken: false);
+      Map<String, dynamic> response =
+          await ApiService().post(url, user, useToken: false);
       modelResponseCommon = ModelResponseCommon.fromMap(response);
       if (modelResponseCommon.success == true) {
         final customTokenResponse = response['data'].first;
@@ -99,7 +106,7 @@ class AuthRepository {
   Future<ApiResponse<ModelUser>> getMe() async {
     late ModelResponseMe modelResponseMe;
     try {
-      const String path = '/me';
+      String path = '$apiUrl/me';
       Map<String, dynamic> response = await ApiService().get(path);
       modelResponseMe = ModelResponseMe.fromMap(response);
       if (modelResponseMe.success == true) {
@@ -116,8 +123,9 @@ class AuthRepository {
   Future<ApiResponse<bool>> signUp(Map<String, dynamic> map) async {
     late ModelResponseCommon modelResponseCommon;
     try {
-      const String url = '/user/signup';
-      Map<String, dynamic> response = await ApiService().post(url, map, useToken: false);
+      String url = '$apiUrl/signup';
+      Map<String, dynamic> response =
+          await ApiService().post(url, map, useToken: false);
       modelResponseCommon = ModelResponseCommon.fromMap(response);
       if (modelResponseCommon.success == true) {
         return ApiResponse.completed(true);

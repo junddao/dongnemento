@@ -9,7 +9,7 @@ enum OpMode {
 const _prodApiBaseUrl = "http://43.200.119.214";
 const _prodApiAuthUrl = "$_prodApiBaseUrl$_apiAuth";
 
-const _devApiBaseUrl = "http://192.168.1.82:17007";
+const _devApiBaseUrl = "http://localhost:17007";
 const _devApiAuthUrl = "$_devApiBaseUrl$_apiAuth";
 
 const _apiAuth = "/user";

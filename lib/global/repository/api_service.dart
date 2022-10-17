@@ -7,7 +7,6 @@ import 'package:base_project/global/util/simple_logger.dart';
 import 'package:dio/dio.dart';
 
 class ApiService {
-  static String tokenKey = 'baseToken';
   static String appVersion = '';
   final Map<String, String> _headers = {
     'Content-Type': 'application/json',
@@ -23,7 +22,7 @@ class ApiService {
     try {
       if (useToken) {
         final token = await _getAuthorizationToken();
-        _headers[tokenKey] = '$token';
+        _headers['Authorization'] = 'Bearer $token';
         logger.d(token);
       }
 
@@ -54,7 +53,7 @@ class ApiService {
     try {
       if (useToken) {
         final token = await _getAuthorizationToken();
-        _headers[tokenKey] = '$token';
+        _headers['Authorization'] = 'Bearer $token';
         logger.d(token);
       }
 
@@ -84,13 +83,14 @@ class ApiService {
     return response.data;
   }
 
-  Future<dynamic> postMultiPart(String url, List<File> files, Map<String, dynamic> map) async {
+  Future<dynamic> postMultiPart(
+      String url, List<File> files, Map<String, dynamic> map) async {
     final token = await _getAuthorizationToken();
     logger.d(token);
 
     Response response;
     try {
-      _multiPartHeaders['Authorization'] = '$token';
+      _multiPartHeaders['Authorization'] = 'Bearer $token';
       final formData = FormData.fromMap(map);
 
       // formData.fields.add(MapEntry('roomId', roomId));
@@ -229,7 +229,8 @@ class DioException implements Exception {
 }
 
 class FetchDataException extends CustomException {
-  FetchDataException([String? message]) : super(message, "Error During Communication: ");
+  FetchDataException([String? message])
+      : super(message, "Error During Communication: ");
 }
 
 class BadRequestException extends CustomException {

@@ -39,8 +39,10 @@ class AppRouter extends Bloc {
 
   AuthenticationState? prevAuthState;
   // final ValueKey<String> _scaffoldKey = const ValueKey<String>('App scaffold');
-  final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-  final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
+  final GlobalKey<NavigatorState> _rootNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'root');
+  final GlobalKey<NavigatorState> _shellNavigatorKey =
+      GlobalKey<NavigatorState>(debugLabel: 'shell');
 
   late final _goRouter = GoRouter(
     redirect: (context, state) async {
@@ -56,6 +58,9 @@ class AppRouter extends Bloc {
         return Routes.login;
       } else if (authBloc.state is AuthenticationUnknown) {
         logger.d('AuthenticationUnknown');
+      } else if (authBloc.state is AuthenticationError) {
+        logger.d('AuthenticationUnknown');
+        return Routes.login;
       } else {
         logger.d('hahaha');
       }
@@ -152,7 +157,8 @@ class AppRouter extends Bloc {
       ),
     ],
     errorPageBuilder: (context, state) {
-      return MaterialPage(key: state.pageKey, child: ErrorPage(exception: state.error));
+      return MaterialPage(
+          key: state.pageKey, child: ErrorPage(exception: state.error));
     },
     debugLogDiagnostics: true,
   );

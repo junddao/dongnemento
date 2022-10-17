@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
+import 'package:base_project/global/enum/social_type.dart';
 import 'package:base_project/global/model/auth/request/sign_in_input.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
@@ -71,7 +72,9 @@ class _LoginPageViewState extends State<LoginPageView> {
                 Text('동네멘토', style: DUTextStyle.size24B.grey0),
                 _buildEmailLogin(),
                 _buildKakaoLogin(),
-                Platform.isIOS ? const SizedBox(height: 20.0) : const SizedBox.shrink(),
+                Platform.isIOS
+                    ? const SizedBox(height: 20.0)
+                    : const SizedBox.shrink(),
                 Platform.isIOS ? _buildAppleLogin() : const SizedBox.shrink(),
                 const SizedBox(height: 40.0),
               ],
@@ -99,7 +102,10 @@ class _LoginPageViewState extends State<LoginPageView> {
               onChanged: (value) {},
               onEditingComplete: () => node.nextFocus(),
               validator: (val) {
-                return val == null || !RegExp(Validation.emailRegex).hasMatch(val) ? '이메일 형식이 잘못되었습니다.' : null;
+                return val == null ||
+                        !RegExp(Validation.emailRegex).hasMatch(val)
+                    ? '이메일 형식이 잘못되었습니다.'
+                    : null;
               },
             ),
             const SizedBox(height: 8),
@@ -113,7 +119,9 @@ class _LoginPageViewState extends State<LoginPageView> {
 // onLogin();
               },
               validator: (value) {
-                return value == null || value.length > 3 ? null : '비밀번호는 4자리 이상만 가능합니다.';
+                return value == null || value.length > 3
+                    ? null
+                    : '비밀번호는 4자리 이상만 가능합니다.';
               },
             ),
             const SizedBox(height: 48),
@@ -121,7 +129,7 @@ class _LoginPageViewState extends State<LoginPageView> {
               width: SizeConfig.screenWidth - 40,
               text: '로그인',
               press: () {
-                // onLogin();
+                onLogin();
               },
             ),
             DUButton(
@@ -138,6 +146,21 @@ class _LoginPageViewState extends State<LoginPageView> {
         ),
       ),
     );
+  }
+
+  onLogin() {
+    if (_formKey.currentState!.validate() == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('이메일 정보를 다시 확인해주세요.'),
+        ),
+      );
+      return;
+    }
+    context.read<AuthenticationBloc>().add(AuthenticationSignIn(
+        socialType: SocialType.email,
+        email: _tecEmail.text,
+        password: _tecPassword.text));
   }
 
   _buildKakaoLogin() {
@@ -165,9 +188,11 @@ class _LoginPageViewState extends State<LoginPageView> {
         }
 
         if (result == true) {
-          Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('PageTabs', (route) => false);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('로그인 실패')));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('로그인 실패')));
           return;
         }
       },
@@ -206,9 +231,11 @@ class _LoginPageViewState extends State<LoginPageView> {
         bool result = true;
 
         if (result == true) {
-          Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('PageTabs', (route) => false);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('로그인 실패')));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('로그인 실패')));
         }
 
         // result = await context.read<UserProvider>().getMe();
@@ -222,9 +249,11 @@ class _LoginPageViewState extends State<LoginPageView> {
         }
 
         if (result == true) {
-          Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('PageTabs', (route) => false);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('로그인 실패')));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('로그인 실패')));
           return;
         }
       },

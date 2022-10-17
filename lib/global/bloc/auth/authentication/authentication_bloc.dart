@@ -6,12 +6,14 @@ import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/repository/auth_repository.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   static ModelUser? singletonMe;
   AuthenticationBloc() : super(const AuthenticationInitial()) {
     on<AuthenticationStatusChanged>(
@@ -46,10 +48,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         emit(const AuthenticationUnAuthenticated());
         break;
       case AuthenticationStatusType.authenticated:
-        ApiResponse<ModelUser> responseModelUser = await AuthRepository.instance.getMe();
+        ApiResponse<ModelUser> responseModelUser =
+            await AuthRepository.instance.getMe();
         if (responseModelUser.status == ResponseStatus.error) {
           emit(
-            AuthenticationError(errorMessage: responseModelUser.message ?? 'get me error'),
+            AuthenticationError(
+                errorMessage: responseModelUser.message ?? 'get me error'),
           );
         }
         ModelUser? me = responseModelUser.data!;
@@ -76,7 +80,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       //signIn
       switch (event.socialType) {
         case SocialType.email:
-          responseModelSignIn = await emailLogin(event.email ?? '', event.password ?? '');
+          responseModelSignIn =
+              await emailLogin(event.email ?? '', event.password ?? '');
           break;
         // case SocialType.kakao:
         //   result = await kakaoLogin();
@@ -89,15 +94,18 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
       if (responseModelSignIn.status == ResponseStatus.error) {
         emit(
-          AuthenticationError(errorMessage: responseModelSignIn.message ?? 'sign in error'),
+          AuthenticationError(
+              errorMessage: responseModelSignIn.message ?? 'sign in error'),
         );
       }
 
       //get me
-      ApiResponse<ModelUser> responseModelUser = await AuthRepository.instance.getMe();
+      ApiResponse<ModelUser> responseModelUser =
+          await AuthRepository.instance.getMe();
       if (responseModelUser.status == ResponseStatus.error) {
         emit(
-          AuthenticationError(errorMessage: responseModelUser.message ?? 'get me error'),
+          AuthenticationError(
+              errorMessage: responseModelUser.message ?? 'get me error'),
         );
       }
       ModelUser? me = responseModelUser.data!;
@@ -115,14 +123,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try {
       emit(const AuthenticationLoading());
 
-      // DataOrFailure<SignOutResult> signOutResult = await AuthRepository.instance.signOut();
-
-      // if (signOutResult.isFailed) {
-      //   emit(
-      //     AuthenticationError(errorMessage: signOutResult.failure.msg),
-      //   );
-      // }
-
+      ModelUser me = await SecureStorage.instance.readMe();
+      // if(me.social == SocialType.kakao.name) await UserApi.instance.unlink();
+      await FirebaseAuth.instance.signOut();
       await SecureStorage.instance.removeAll();
 
       emit(const AuthenticationUnAuthenticated());
@@ -131,7 +134,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
   }
 
-  Future<ApiResponse<ModelSignIn>> emailLogin(String email, String password) async {
+  Future<ApiResponse<ModelSignIn>> emailLogin(
+      String email, String password) async {
     late ApiResponse<ModelSignIn> result;
 
     result = await AuthRepository.instance.signIn(email, password);

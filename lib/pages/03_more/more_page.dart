@@ -111,7 +111,9 @@ class _MorePageViewState extends State<MorePageView> {
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
+          padding: const EdgeInsets.symmetric(
+              horizontal: kDefaultHorizontalPadding,
+              vertical: kDefaultVerticalPadding),
           child: Form(
             key: _formKey,
             child: Column(
@@ -131,9 +133,13 @@ class _MorePageViewState extends State<MorePageView> {
                         RichText(
                           text: TextSpan(
                             children: [
-                              TextSpan(text: '안녕하세요\n', style: DUTextStyle.size18.grey1),
-                              TextSpan(text: '홍길동', style: DUTextStyle.size18.black),
-                              TextSpan(text: '님!', style: DUTextStyle.size18.grey1),
+                              TextSpan(
+                                  text: '안녕하세요\n',
+                                  style: DUTextStyle.size18.grey1),
+                              TextSpan(
+                                  text: '홍길동', style: DUTextStyle.size18.black),
+                              TextSpan(
+                                  text: '님!', style: DUTextStyle.size18.grey1),
                             ],
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -165,7 +171,11 @@ class _MorePageViewState extends State<MorePageView> {
                   },
                 ),
                 const SizedBox(height: 40),
-                DUButton(text: '수정하기', press: () async {}, type: ButtonType.normal, width: SizeConfig.screenWidth),
+                DUButton(
+                    text: '수정하기',
+                    press: () async {},
+                    type: ButtonType.normal,
+                    width: SizeConfig.screenWidth),
                 const SizedBox(height: 24),
               ],
             ),
@@ -185,7 +195,8 @@ class _MorePageViewState extends State<MorePageView> {
               borderRadius: BorderRadius.circular(300),
               child: CachedNetworkImage(
                 imageUrl: defaultUser,
-                errorWidget: (context, url, error) => Image.network(defaultUser),
+                errorWidget: (context, url, error) =>
+                    Image.network(defaultUser),
                 fit: BoxFit.cover,
                 height: 80,
                 width: 80,

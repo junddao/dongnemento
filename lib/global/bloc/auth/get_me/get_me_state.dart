@@ -1,31 +1,30 @@
-part of 'sign_up_cubit.dart';
+part of 'get_me_cubit.dart';
 
-abstract class SignUpState extends Equatable {
-  const SignUpState();
+abstract class GetMeState extends Equatable {
+  const GetMeState();
 
   @override
   List<Object> get props => [];
 }
 
-class SignUpInitial extends SignUpState {
+class GetMeInitial extends GetMeState {
   @override
   List<Object> get props => [];
 }
 
-class SignUpLoading extends SignUpState {
+class GetMeLoading extends GetMeState {
   @override
   List<Object> get props => [];
 }
 
-class SignUpLoaded extends SignUpState {
+class GetMeLoaded extends GetMeState {
   @override
   List<Object> get props => [];
 }
 
-class SignUpError extends SignUpState {
+class GetMeError extends GetMeState {
   final String errorMessage;
-
-  const SignUpError({
+  const GetMeError({
     this.errorMessage = '',
   }) : super();
   @override
