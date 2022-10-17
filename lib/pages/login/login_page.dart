@@ -116,7 +116,7 @@ class _LoginPageViewState extends State<LoginPageView> {
               isSecure: true,
               onChanged: (value) {},
               onEditingComplete: () {
-// onLogin();
+                onLogin();
               },
               validator: (value) {
                 return value == null || value.length > 3

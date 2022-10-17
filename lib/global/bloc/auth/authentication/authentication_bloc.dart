@@ -122,8 +122,6 @@ class AuthenticationBloc
   ) async {
     try {
       emit(const AuthenticationLoading());
-
-      ModelUser me = await SecureStorage.instance.readMe();
       // if(me.social == SocialType.kakao.name) await UserApi.instance.unlink();
       await FirebaseAuth.instance.signOut();
       await SecureStorage.instance.removeAll();
