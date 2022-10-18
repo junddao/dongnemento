@@ -55,10 +55,12 @@ class AuthenticationBloc
             AuthenticationError(
                 errorMessage: responseModelUser.message ?? 'get me error'),
           );
+        } else {
+          ModelUser me = responseModelUser.data ?? ModelUser();
+          SecureStorage.instance.writeMe(me);
+          singletonMe = me;
+          emit(AuthenticationAuthenticated(me: me));
         }
-        ModelUser? me = responseModelUser.data!;
-        SecureStorage.instance.writeMe(me);
-        emit(AuthenticationAuthenticated(me: me));
 
         break;
       default:
@@ -110,6 +112,7 @@ class AuthenticationBloc
       }
       ModelUser? me = responseModelUser.data!;
       SecureStorage.instance.writeMe(me);
+      singletonMe = me;
       emit(AuthenticationAuthenticated(me: me));
     } catch (e) {
       AuthenticationError(errorMessage: e.toString());
@@ -125,6 +128,7 @@ class AuthenticationBloc
       // if(me.social == SocialType.kakao.name) await UserApi.instance.unlink();
       await FirebaseAuth.instance.signOut();
       await SecureStorage.instance.removeAll();
+      singletonMe = null;
 
       emit(const AuthenticationUnAuthenticated());
     } catch (e) {

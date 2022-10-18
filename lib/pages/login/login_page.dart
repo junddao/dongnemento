@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
+import 'package:base_project/global/component/du_two_button_dialog.dart';
+import 'package:base_project/global/enum/authentication_status_type.dart';
 import 'package:base_project/global/enum/social_type.dart';
 import 'package:base_project/global/model/auth/request/sign_in_input.dart';
 import 'package:base_project/global/style/constants.dart';
@@ -11,6 +13,7 @@ import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:base_project/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -55,31 +58,55 @@ class _LoginPageViewState extends State<LoginPageView> {
       width: SizeConfig.screenWidth,
       child: SafeArea(
         top: true,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
+        child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
+          listener: (context, state) {
+            if (state is AuthenticationError) {
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                DUDialog.showOneButtonDialog(context: context).then((value) {
+                  context.read<AuthenticationBloc>().add(
+                        const AuthenticationStatusChanged(
+                            AuthenticationStatusType.unauthenticated),
+                      );
+                });
+              });
             }
           },
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 100.0),
-                Text('동네멘토', style: DUTextStyle.size24B.grey0),
-                _buildEmailLogin(),
-                _buildKakaoLogin(),
-                Platform.isIOS
-                    ? const SizedBox(height: 20.0)
-                    : const SizedBox.shrink(),
-                Platform.isIOS ? _buildAppleLogin() : const SizedBox.shrink(),
-                const SizedBox(height: 40.0),
-              ],
-            ),
-          ),
+          builder: (context, state) {
+            if (state is AuthenticationLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+              },
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 100.0),
+                    Text('동네멘토', style: DUTextStyle.size24B.grey0),
+                    _buildEmailLogin(),
+                    _buildKakaoLogin(),
+                    Platform.isIOS
+                        ? const SizedBox(height: 20.0)
+                        : const SizedBox.shrink(),
+                    Platform.isIOS
+                        ? _buildAppleLogin()
+                        : const SizedBox.shrink(),
+                    const SizedBox(height: 40.0),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

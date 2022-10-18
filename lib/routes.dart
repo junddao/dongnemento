@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/component/du_two_button_dialog.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/pages/00_home/home_page.dart';
 import 'package:base_project/pages/01_chat/chat_detail_page.dart';
@@ -25,6 +26,7 @@ class Routes {
   static const chat = '/chat';
   static const product = '/product';
   static const more = '/more';
+  static const error = '/error';
 
   // 2 depth
   static const signUp = 'sign_up';
@@ -59,7 +61,8 @@ class AppRouter extends Bloc {
       } else if (authBloc.state is AuthenticationUnknown) {
         logger.d('AuthenticationUnknown');
       } else if (authBloc.state is AuthenticationError) {
-        logger.d('AuthenticationUnknown');
+        logger.d('AuthenticationError');
+
         return Routes.login;
       } else {
         logger.d('hahaha');
@@ -154,6 +157,15 @@ class AppRouter extends Bloc {
             },
           ),
         ],
+      ),
+      GoRoute(
+        path: Routes.error,
+        pageBuilder: (context, state) {
+          return MaterialPage(
+            key: state.pageKey,
+            child: ErrorPage(exception: state.error),
+          );
+        },
       ),
     ],
     errorPageBuilder: (context, state) {
