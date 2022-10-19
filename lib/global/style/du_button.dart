@@ -35,15 +35,15 @@ class ButtonType {
 
   Color? buttonColor() {
     return const <String, Color>{
-      'normal': DUColors.blue03,
+      'normal': DUColors.tomato,
       'normal_blue02': DUColors.blue02,
       'normal_blue04': Colors.transparent,
-      'dark': DUColors.blue04,
+      'dark': DUColors.purple_red,
       'transparent': Colors.transparent,
-      'success': DUColors.blue03,
-      'warning': DUColors.red01,
-      'disabled': DUColors.blue03,
-      'normal_black': DUColors.blue03,
+      'success': DUColors.tomato,
+      'warning': DUColors.tomato,
+      'disabled': DUColors.grey2,
+      'normal_black': DUColors.black,
       'decline': DUColors.decline,
     }[type];
   }
@@ -107,7 +107,8 @@ class DUButton extends StatelessWidget {
           onPressed: press as void Function()?,
           child: Text(
             text,
-            style: DUTextStyle.size12.copyWith(color: textColor, fontSize: fontSize, fontWeight: fontWeight),
+            style: DUTextStyle.size12.copyWith(
+                color: textColor, fontSize: fontSize, fontWeight: fontWeight),
             overflow: TextOverflow.ellipsis,
           ),
         ),

@@ -137,7 +137,9 @@ class _MorePageViewState extends State<MorePageView> {
                                   text: '안녕하세요\n',
                                   style: DUTextStyle.size18.grey1),
                               TextSpan(
-                                  text: '홍길동', style: DUTextStyle.size18.black),
+                                  text: AuthenticationBloc.singletonMe?.name ??
+                                      'known',
+                                  style: DUTextStyle.size18.black),
                               TextSpan(
                                   text: '님!', style: DUTextStyle.size18.grey1),
                             ],

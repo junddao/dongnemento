@@ -7,7 +7,7 @@ import '../style/du_colors.dart';
 import '../style/du_text_styles.dart';
 
 ThemeData lightTheme() {
-  MaterialColor mainColor = createMaterialColor(DUColors.blue5);
+  MaterialColor mainColor = createMaterialColor(DUColors.tomato);
   return ThemeData(
     useMaterial3: false,
     primarySwatch: mainColor, // 메인색상
@@ -150,7 +150,7 @@ ThemeData lightTheme() {
         ),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
-          Radius.circular(2.0),
+          Radius.circular(12.0),
         )),
         elevation: 3,
         focusElevation: 4,
@@ -290,7 +290,8 @@ ThemeData darkTheme() {
           DUColors.background,
           DUColors.white,
         ),
-        foregroundColor: materialStateColor(mainColor, mainColor.withOpacity(0.5)),
+        foregroundColor:
+            materialStateColor(mainColor, mainColor.withOpacity(0.5)),
         side: materialStateBorder(mainColor, mainColor.withOpacity(0.5)),
         overlayColor: materialSolidColor(Colors.black12),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -347,7 +348,8 @@ ThemeData darkTheme() {
     inputDecorationTheme: InputDecorationTheme(
       // 사이즈
       isDense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
 
       // 배경 색상
       filled: true,
@@ -355,9 +357,11 @@ ThemeData darkTheme() {
 
       // 테두리 색상
       enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.transparent), borderRadius: BorderRadius.all(Radius.circular(4))),
+          borderSide: BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.all(Radius.circular(4))),
       disabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.transparent), borderRadius: BorderRadius.all(Radius.circular(4))),
+          borderSide: BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.all(Radius.circular(4))),
       focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.transparent /* mainColor */),
           borderRadius: BorderRadius.all(Radius.circular(4))),
@@ -365,7 +369,8 @@ ThemeData darkTheme() {
           borderSide: BorderSide(color: DUColors.warning, width: 0.7),
           borderRadius: BorderRadius.all(Radius.circular(4))),
       focusedErrorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: DUColors.warning), borderRadius: BorderRadius.all(Radius.circular(4))),
+          borderSide: BorderSide(color: DUColors.warning),
+          borderRadius: BorderRadius.all(Radius.circular(4))),
 
       // 부수적인 글자 크기 & 색상
       labelStyle: DUTextStyle.size14.copyWith(color: DUColors.grey1),
@@ -401,7 +406,9 @@ MaterialColor createMaterialColor(Color color) {
   return MaterialColor(color.value, swatch);
 }
 
-MaterialStateProperty<Color?>? materialStateColor(Color? normal, Color? disabled, {Color? pressed, Color? selected}) =>
+MaterialStateProperty<Color?>? materialStateColor(
+        Color? normal, Color? disabled,
+        {Color? pressed, Color? selected}) =>
     MaterialStateProperty.resolveWith<Color?>(
       (Set<MaterialState> states) {
         if (disabled != null && states.contains(MaterialState.disabled)) {
@@ -417,11 +424,14 @@ MaterialStateProperty<Color?>? materialStateColor(Color? normal, Color? disabled
       },
     );
 
-MaterialStateProperty<Color?>? materialSolidColor(Color? solid) => MaterialStateProperty.all<Color?>(solid);
+MaterialStateProperty<Color?>? materialSolidColor(Color? solid) =>
+    MaterialStateProperty.all<Color?>(solid);
 
-MaterialStateProperty<T> materialAll<T>(T all) => MaterialStateProperty.all<T>(all);
+MaterialStateProperty<T> materialAll<T>(T all) =>
+    MaterialStateProperty.all<T>(all);
 
-MaterialStateProperty<BorderSide?>? materialStateBorder(Color normal, Color? disabled,
+MaterialStateProperty<BorderSide?>? materialStateBorder(
+        Color normal, Color? disabled,
         {Color? pressed, Color? selected, double width = 1.0}) =>
     MaterialStateProperty.resolveWith<BorderSide?>(
       (Set<MaterialState> states) {
@@ -430,7 +440,8 @@ MaterialStateProperty<BorderSide?>? materialStateBorder(Color normal, Color? dis
           borderColor = disabled;
         } else if (pressed != null && states.contains(MaterialState.pressed)) {
           borderColor = pressed;
-        } else if (selected != null && states.contains(MaterialState.selected)) {
+        } else if (selected != null &&
+            states.contains(MaterialState.selected)) {
           borderColor = selected;
         } else {
           borderColor = normal;

@@ -66,19 +66,6 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
         ),
         child: _navigationBar(),
       ),
-      floatingActionButton: SizedBox(
-        height: 60,
-        width: 60,
-        child: InkWell(
-          onTap: () {},
-          child: const CircleAvatar(
-            radius: 30,
-            backgroundColor: DUColors.blue03,
-            child: Icon(Icons.add, size: 36, color: DUColors.white02),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
     );
   }
 
@@ -95,13 +82,12 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.maps_home_work_outlined),
-          label: '홈',
+          label: '지도',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.chat_bubble_outline_outlined),
           label: '채팅',
         ),
-        BottomNavigationBarItem(icon: SizedBox.shrink(), label: ''),
         BottomNavigationBarItem(
           icon: Icon(Icons.production_quantity_limits_outlined),
           label: '상품',
@@ -123,17 +109,17 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
   int _calculateSelectedIndex(BuildContext context) {
     final GoRouter route = GoRouter.of(context);
     final String location = route.location;
-    if (location == '/home') {
+    if (location == '/map') {
       _selectedPage = 0;
     }
     if (location == '/chat') {
       _selectedPage = 1;
     }
     if (location == '/product') {
-      _selectedPage = 3;
+      _selectedPage = 2;
     }
     if (location == '/more') {
-      _selectedPage = 4;
+      _selectedPage = 3;
     }
     return _selectedPage;
   }
@@ -141,15 +127,15 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       case 0:
-        GoRouter.of(context).go('/home');
+        GoRouter.of(context).go('/map');
         break;
       case 1:
         GoRouter.of(context).go('/chat');
         break;
-      case 3:
+      case 2:
         GoRouter.of(context).go('/product');
         break;
-      case 4:
+      case 3:
         GoRouter.of(context).go('/more');
         break;
     }

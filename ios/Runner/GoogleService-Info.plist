@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.baseProject</string>
+	<string>com.jtb.dongnemento</string>
 	<key>PROJECT_ID</key>
 	<string>dongnemento</string>
 	<key>STORAGE_BUCKET</key>
@@ -30,5 +30,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:558531435873:ios:773b7e9fd920a9643e7920</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>The app needs location permission</string>
 </dict>
 </plist>

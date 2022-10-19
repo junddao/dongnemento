@@ -83,7 +83,8 @@ class _HomePageViewState extends State<HomePageView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: kDefaultHorizontalPadding),
               child: EventWidget(openEvent: () {}),
             ),
             const SizedBox(height: 12),

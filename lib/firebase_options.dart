@@ -67,8 +67,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '558531435873',
     projectId: 'dongnemento',
     storageBucket: 'dongnemento.appspot.com',
-    iosClientId: '558531435873-i2q84oifhovsn6omc920ijmttm0kocjr.apps.googleusercontent.com',
-    iosBundleId: 'com.example.baseProject',
+    iosClientId:
+        '558531435873-i2q84oifhovsn6omc920ijmttm0kocjr.apps.googleusercontent.com',
+    iosBundleId: 'com.jtb.dongnemento',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -77,7 +78,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '558531435873',
     projectId: 'dongnemento',
     storageBucket: 'dongnemento.appspot.com',
-    iosClientId: '558531435873-i2q84oifhovsn6omc920ijmttm0kocjr.apps.googleusercontent.com',
-    iosBundleId: 'com.example.baseProject',
+    iosClientId:
+        '558531435873-i2q84oifhovsn6omc920ijmttm0kocjr.apps.googleusercontent.com',
+    iosBundleId: 'com.jtb.dongnemento',
   );
 }

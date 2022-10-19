@@ -4,6 +4,7 @@ import 'package:base_project/global/bloc/auth/authentication/authentication_bloc
 import 'package:base_project/global/component/du_two_button_dialog.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/pages/00_home/home_page.dart';
+import 'package:base_project/pages/00_map/map_page.dart';
 import 'package:base_project/pages/01_chat/chat_detail_page.dart';
 import 'package:base_project/pages/01_chat/chat_page.dart';
 import 'package:base_project/pages/02_product/product_detail_page.dart';
@@ -22,6 +23,7 @@ class Routes {
   // 1 depth
   static const root = '/';
   static const home = '/home';
+  static const map = '/map';
   static const login = '/login';
   static const chat = '/chat';
   static const product = '/product';
@@ -54,7 +56,7 @@ class AppRouter extends Bloc {
       prevAuthState = authBloc.state;
       if (authBloc.state is AuthenticationAuthenticated) {
         logger.d('Authenticated');
-        return Routes.home;
+        return Routes.map;
       } else if (authBloc.state is AuthenticationUnAuthenticated) {
         logger.d('UnAuthenticated');
         return Routes.login;
@@ -95,6 +97,12 @@ class AppRouter extends Bloc {
             path: Routes.home,
             pageBuilder: (context, state) {
               return const MaterialPage(child: HomePage());
+            },
+          ),
+          GoRoute(
+            path: Routes.map,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: MapPage());
             },
           ),
           GoRoute(
