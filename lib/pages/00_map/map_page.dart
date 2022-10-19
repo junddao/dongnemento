@@ -177,8 +177,8 @@ class _MapPageViewState extends State<MapPageView> {
 
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
-      builder: (context) {
+      // isScrollControlled: true,
+      builder: (_) {
         return buildSelectLocationBottomSheet(context);
       },
     ).then((value) {

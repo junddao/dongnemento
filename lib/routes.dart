@@ -96,7 +96,9 @@ class AppRouter extends Bloc {
           GoRoute(
             path: Routes.home,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: HomePage());
+              return const MaterialPage(
+                child: HomePage(),
+              );
             },
           ),
           GoRoute(
