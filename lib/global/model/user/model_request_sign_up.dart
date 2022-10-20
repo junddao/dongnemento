@@ -7,6 +7,9 @@ class ModelRequestSignUp {
   String name;
   String password;
   String? profileImage;
+  double? lat;
+  double? lng;
+  String? address;
   ModelRequestSignUp({
     required this.uid,
     required this.social,
@@ -14,6 +17,9 @@ class ModelRequestSignUp {
     required this.name,
     required this.password,
     this.profileImage,
+    this.lat,
+    this.lng,
+    required this.address,
   });
 
   Map<String, dynamic> toMap() {
@@ -24,6 +30,9 @@ class ModelRequestSignUp {
       'name': name,
       'password': password,
       'profileImage': profileImage,
+      'lat': lat,
+      'lng': lng,
+      'address': address,
     };
   }
 
@@ -34,11 +43,15 @@ class ModelRequestSignUp {
       email: map['email'],
       name: map['name'],
       password: map['password'],
-      profileImage: map['profileImage'] != null ? map['profileImage'] : null,
+      profileImage: map['profileImage'],
+      lat: map['lat']?.toDouble(),
+      lng: map['lng']?.toDouble(),
+      address: map['address'],
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ModelRequestSignUp.fromJson(String source) => ModelRequestSignUp.fromMap(json.decode(source));
+  factory ModelRequestSignUp.fromJson(String source) =>
+      ModelRequestSignUp.fromMap(json.decode(source));
 }

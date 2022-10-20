@@ -1,65 +1,89 @@
 import 'dart:convert';
 
-class KakaoLocalResult {
-  String? id;
-  String? placeName;
-  int? distance;
-  String? placeUrl;
-  String? categoryName;
-  String? addressName;
-  String? roadAddressName;
-  String? phone;
-  String? categoryGroupCode;
-  String? categoryGroupName;
-  double? longitude;
-  double? latitude;
-
-  KakaoLocalResult({
-    this.id,
-    this.placeName,
-    this.distance,
-    this.placeUrl,
-    this.categoryName,
-    this.addressName,
-    this.roadAddressName,
-    this.phone,
-    this.categoryGroupCode,
-    this.categoryGroupName,
-    this.longitude,
-    this.latitude,
+class KakaoLocalResponseData {
+  List<KakaoLocalResult> documents;
+  KakaoLocalResponseData({
+    required this.documents,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
-      'placeName': placeName,
+      'documents': documents.map((x) => x.toMap()).toList(),
+    };
+  }
+
+  factory KakaoLocalResponseData.fromMap(Map<String, dynamic> map) {
+    return KakaoLocalResponseData(
+      documents: List<KakaoLocalResult>.from(
+          map['documents'].map((x) => KakaoLocalResult.fromMap(x))),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory KakaoLocalResponseData.fromJson(String source) =>
+      KakaoLocalResponseData.fromMap(json.decode(source));
+}
+
+class KakaoLocalResult {
+  String address_name;
+  String category_group_code;
+  String category_group_name;
+  String category_name;
+  String distance;
+  String id;
+  String phone;
+  String place_name;
+  String place_url;
+  String road_address_name;
+  String x;
+  String y;
+  KakaoLocalResult({
+    required this.address_name,
+    required this.category_group_code,
+    required this.category_group_name,
+    required this.category_name,
+    required this.distance,
+    required this.id,
+    required this.phone,
+    required this.place_name,
+    required this.place_url,
+    required this.road_address_name,
+    required this.x,
+    required this.y,
+  });
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'address_name': address_name,
+      'category_group_code': category_group_code,
+      'category_group_name': category_group_name,
+      'category_name': category_name,
       'distance': distance,
-      'placeUrl': placeUrl,
-      'categoryName': categoryName,
-      'addressName': addressName,
-      'roadAddressName': roadAddressName,
+      'id': id,
       'phone': phone,
-      'categoryGroupCode': categoryGroupCode,
-      'categoryGroupName': categoryGroupName,
-      'longitude': longitude,
-      'latitude': latitude,
+      'place_name': place_name,
+      'place_url': place_url,
+      'road_address_name': road_address_name,
+      'x': x,
+      'y': y,
     };
   }
 
   factory KakaoLocalResult.fromMap(Map<String, dynamic> map) {
     return KakaoLocalResult(
-      id: map['id'],
-      placeName: map['placeName'],
+      address_name: map['address_name'],
+      category_group_code: map['category_group_code'],
+      category_group_name: map['category_group_name'],
+      category_name: map['category_name'],
       distance: map['distance'],
-      placeUrl: map['placeUrl'],
-      categoryName: map['categoryName'],
-      addressName: map['addressName'],
-      roadAddressName: map['roadAddressName'],
+      id: map['id'],
       phone: map['phone'],
-      categoryGroupCode: map['categoryGroupCode'],
-      categoryGroupName: map['categoryGroupName'],
-      longitude: map['longitude'],
-      latitude: map['latitude'],
+      place_name: map['place_name'],
+      place_url: map['place_url'],
+      road_address_name: map['road_address_name'],
+      x: map['x'],
+      y: map['y'],
     );
   }
 

@@ -1,12 +1,18 @@
+import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/component/du_sized_box.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
 import 'package:base_project/global/component/du_title.dart';
 import 'package:base_project/global/model/etc/kakao_local_result.dart';
+import 'package:base_project/global/model/user/model_user.dart';
+import 'package:base_project/global/repository/api_service.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:go_router/go_router.dart';
 
@@ -45,22 +51,17 @@ class _AddressPageState extends State<AddressPage> {
       isLoading = true;
     });
 
-    List<KakaoLocalResult> items = [];
-    // call API
-    Future.delayed(
-        Duration(
-          seconds: 2,
-        ), () {
-      items.add(KakaoLocalResult(placeName: 'aaa', addressName: 'adf'));
-      items.add(KakaoLocalResult(placeName: 'bbbb', addressName: 'adf'));
-      items.add(KakaoLocalResult(placeName: 'ccc', addressName: 'adf'));
-      items.add(KakaoLocalResult(placeName: 'dddd', addressName: 'adf'));
+    // List<Map<String, dynamic>> items = [];
 
-      setState(() {
-        data.addAll(items);
-        isLoading = false;
-        // hasMore = data.length < appendData.count;
-      });
+    KakaoLocalResponseData results =
+        await ApiService().getKakaoAddress(textController.text);
+
+    for (KakaoLocalResult result in results.documents) {
+      data.add(result);
+    }
+
+    setState(() {
+      isLoading = false;
     });
   }
 
@@ -172,17 +173,28 @@ class _AddressPageState extends State<AddressPage> {
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(item.placeName ?? "",
+                              Text(item.place_name ?? "",
                                   style: DUTextStyle.size14),
                               const SizedBox(height: 4),
                               Text(
-                                item.addressName ?? "",
+                                item.address_name ?? "",
                                 style: DUTextStyle.size12
                                     .copyWith(color: DUColors.grey1),
                               ),
                             ],
                           ),
                           onTap: () {
+                            ModelUser me =
+                                GetIt.I.get<SingletonMeCubit>().me.copyWith(
+                                      address: item.address_name,
+                                      lat: double.parse(item.x),
+                                      lng: double.parse(item.y),
+                                    );
+
+                            context
+                                .read<SingletonMeCubit>()
+                                .updateSingletonMe(me);
+
                             context.pop();
                           },
                         );
@@ -195,7 +207,8 @@ class _AddressPageState extends State<AddressPage> {
 
                       return const SizedBox.shrink();
                     },
-                    separatorBuilder: (_, index) => const Divider(),
+                    separatorBuilder: (_, index) =>
+                        const Divider(color: DUColors.grey3),
                   ),
                 ),
               ),

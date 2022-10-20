@@ -1,4 +1,5 @@
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/component/du_app_bar.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
 import 'package:base_project/global/component/du_two_button_dialog.dart';
@@ -135,7 +136,10 @@ class _MorePageViewState extends State<MorePageView> {
                                   text: '안녕하세요\n',
                                   style: DUTextStyle.size18.grey1),
                               TextSpan(
-                                  text: AuthenticationBloc.singletonMe?.name ??
+                                  text: context
+                                          .watch<SingletonMeCubit>()
+                                          .me
+                                          .name ??
                                       'known',
                                   style: DUTextStyle.size18.black),
                               TextSpan(
@@ -145,7 +149,7 @@ class _MorePageViewState extends State<MorePageView> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 20),
-                        Text(AuthenticationBloc.singletonMe?.email ?? ''),
+                        Text(context.watch<SingletonMeCubit>().me.email ?? ''),
                       ],
                     ),
                   ],

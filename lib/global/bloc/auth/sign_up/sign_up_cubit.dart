@@ -1,3 +1,5 @@
+import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/model/common/api_response.dart';
 import 'package:base_project/global/model/user/model_request_sign_up.dart';
 import 'package:base_project/global/model/user/model_response_sign_in.dart';
@@ -7,6 +9,7 @@ import 'package:base_project/global/util/simple_logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 part 'sign_up_state.dart';
 
@@ -27,6 +30,9 @@ class SignUpCubit extends Cubit<SignUpState> {
         name: name,
         password: password,
         profileImage: '',
+        address: GetIt.I.get<SingletonMeCubit>().me.address ?? '',
+        lat: GetIt.I.get<SingletonMeCubit>().me.lat,
+        lng: GetIt.I.get<SingletonMeCubit>().me.lng,
       );
 
       // 서버에 가입 호출

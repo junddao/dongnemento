@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
+import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/pages/00_home/home_page.dart';
 import 'package:base_project/pages/00_map/map_page.dart';
@@ -56,9 +58,11 @@ class AppRouter extends Bloc {
       }
       prevAuthState = authBloc.state;
       if (authBloc.state is AuthenticationAuthenticated) {
+        context.read<SingletonMeCubit>().updateSingletonMe(authBloc.state.me!);
         logger.d('Authenticated');
         return Routes.map;
       } else if (authBloc.state is AuthenticationUnAuthenticated) {
+        context.read<SingletonMeCubit>().updateSingletonMe(ModelUser());
         logger.d('UnAuthenticated');
         return Routes.login;
       } else if (authBloc.state is AuthenticationUnknown) {

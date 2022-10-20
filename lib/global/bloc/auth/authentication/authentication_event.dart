@@ -34,3 +34,11 @@ class AuthenticationSignOut extends AuthenticationEvent {
   @override
   List<Object> get props => [];
 }
+
+class AuthenticationMeChange extends AuthenticationEvent {
+  final ModelUser me;
+
+  const AuthenticationMeChange({required this.me});
+  @override
+  List<Object> get props => [me];
+}

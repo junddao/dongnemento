@@ -31,19 +31,19 @@ class SecureStorage {
     await _storage.delete(key: _tokenKey);
   }
 
-  Future<ModelUser> readMe() async {
-    String? meInfo = await _storage.read(key: _meKey);
-    return ModelUser.fromJson(meInfo!);
-  }
+  // Future<ModelUser> readMe() async {
+  //   String? meInfo = await _storage.read(key: _meKey);
+  //   return ModelUser.fromJson(meInfo!);
+  // }
 
-  Future<void> writeMe(ModelUser me) async {
-    String meInfo = me.toJson();
-    await _storage.write(key: _meKey, value: meInfo);
-  }
+  // Future<void> writeMe(ModelUser me) async {
+  //   String meInfo = me.toJson();
+  //   await _storage.write(key: _meKey, value: meInfo);
+  // }
 
-  Future<void> removeMe() async {
-    await _storage.delete(key: _meKey);
-  }
+  // Future<void> removeMe() async {
+  //   await _storage.delete(key: _meKey);
+  // }
 
   Future<void> removeAll() async {
     await _storage.deleteAll();

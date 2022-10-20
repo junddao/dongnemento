@@ -14,7 +14,6 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  static ModelUser? singletonMe;
   AuthenticationBloc() : super(const AuthenticationInitial()) {
     on<AuthenticationStatusChanged>(
       (event, emit) async {
@@ -39,11 +38,7 @@ class AuthenticationBloc
   ) async {
     switch (event.status) {
       case AuthenticationStatusType.unauthenticated:
-        if (singletonMe != null) {
-          add(AuthenticationSignOut());
-        } else {
-          await SecureStorage.instance.removeAll();
-        }
+        add(AuthenticationSignOut());
 
         emit(const AuthenticationUnAuthenticated());
         break;
@@ -57,8 +52,8 @@ class AuthenticationBloc
           );
         } else {
           ModelUser me = responseModelUser.data ?? ModelUser();
-          SecureStorage.instance.writeMe(me);
-          singletonMe = me;
+          // SecureStorage.instance.writeMe(me);
+
           emit(AuthenticationAuthenticated(me: me));
         }
 
@@ -111,8 +106,7 @@ class AuthenticationBloc
         );
       }
       ModelUser? me = responseModelUser.data!;
-      SecureStorage.instance.writeMe(me);
-      singletonMe = me;
+      // SecureStorage.instance.writeMe(me);
       emit(AuthenticationAuthenticated(me: me));
     } catch (e) {
       AuthenticationError(errorMessage: e.toString());
@@ -128,7 +122,6 @@ class AuthenticationBloc
       // if(me.social == SocialType.kakao.name) await UserApi.instance.unlink();
       await FirebaseAuth.instance.signOut();
       await SecureStorage.instance.removeAll();
-      singletonMe = null;
 
       emit(const AuthenticationUnAuthenticated());
     } catch (e) {

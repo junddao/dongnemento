@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:base_project/global/model/etc/kakao_local_result.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:dio/dio.dart';
@@ -11,9 +12,38 @@ class ApiService {
     'Content-Type': 'application/json',
   };
 
+  final Map<String, String> _kakaoHeader = {
+    'Content-Type': 'application/json',
+    'Authorization': 'KakaoAK ddf47dd3cff3564342e4770cb40cc057',
+  };
+
   final Map<String, String> _multiPartHeaders = {
     'Content-Type': 'multipart/form-data',
   };
+
+  Future<dynamic> getKakaoAddress(String query, {int? page = 15}) async {
+    Response response;
+    try {
+      response = await Dio()
+          .get(
+              'https://dapi.kakao.com/v2/local/search/keyword.json?query=$query&page=$page',
+              options: Options(
+                headers: _kakaoHeader,
+              ))
+          .timeout(const Duration(seconds: 10));
+
+      logger.d('dio response = ${response.toString()}');
+    } on DioError catch (e) {
+      final errorMessage = DioException.fromDioError(e).toString();
+      throw errorMessage;
+    } on SocketException {
+      logger.d('No network');
+      throw FetchDataException('No Internet connection');
+    } catch (e) {
+      throw CustomException('Unknown Error');
+    }
+    return KakaoLocalResponseData.fromMap(response.data);
+  }
 
   Future<dynamic> get(String url, {bool useToken = true}) async {
     logger.d('Api get : url $url start.');

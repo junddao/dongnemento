@@ -2,7 +2,7 @@ part of 'authentication_bloc.dart';
 
 abstract class AuthenticationState extends Equatable {
   const AuthenticationState({
-    required this.status,
+    this.status,
     this.me,
   });
   final AuthenticationStatusType? status;
@@ -13,13 +13,15 @@ abstract class AuthenticationState extends Equatable {
 }
 
 class AuthenticationInitial extends AuthenticationState {
-  const AuthenticationInitial() : super(status: AuthenticationStatusType.unknown);
+  const AuthenticationInitial()
+      : super(status: AuthenticationStatusType.unknown);
   @override
   List<Object> get props => [];
 }
 
 class AuthenticationLoading extends AuthenticationState {
-  const AuthenticationLoading() : super(status: AuthenticationStatusType.unknown);
+  const AuthenticationLoading()
+      : super(status: AuthenticationStatusType.unknown);
   @override
   List<Object> get props => [];
 }
@@ -34,13 +36,21 @@ class AuthenticationAuthenticated extends AuthenticationState {
 }
 
 class AuthenticationUnAuthenticated extends AuthenticationState {
-  const AuthenticationUnAuthenticated() : super(status: AuthenticationStatusType.unauthenticated);
+  const AuthenticationUnAuthenticated()
+      : super(status: AuthenticationStatusType.unauthenticated);
   @override
   List<Object> get props => [];
 }
 
 class AuthenticationUnknown extends AuthenticationState {
-  const AuthenticationUnknown() : super(status: AuthenticationStatusType.unknown);
+  const AuthenticationUnknown()
+      : super(status: AuthenticationStatusType.unknown);
+  @override
+  List<Object> get props => [];
+}
+
+class AuthenticationMeChanged extends AuthenticationState {
+  const AuthenticationMeChanged() : super();
   @override
   List<Object> get props => [];
 }
