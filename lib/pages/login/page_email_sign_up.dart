@@ -166,9 +166,10 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                         const SizedBox(height: 24),
                         DUButton(
                           width: SizeConfig.screenWidth - 40,
-                          text: "회원가입",
+                          text: "다음",
                           press: () {
-                            _signUp();
+                            context.push('/address');
+                            // _signUp();
                           },
                         ),
                         const SizedBox(height: 8),

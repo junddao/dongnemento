@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:base_project/global/model/auth/response/sign_in_result.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:dio/dio.dart';

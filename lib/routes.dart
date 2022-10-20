@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
-import 'package:base_project/global/component/du_two_button_dialog.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/pages/00_home/home_page.dart';
 import 'package:base_project/pages/00_map/map_page.dart';
@@ -10,6 +9,7 @@ import 'package:base_project/pages/01_chat/chat_page.dart';
 import 'package:base_project/pages/02_product/product_detail_page.dart';
 import 'package:base_project/pages/02_product/product_page.dart';
 import 'package:base_project/pages/03_more/more_page.dart';
+import 'package:base_project/pages/common/address_page.dart';
 import 'package:base_project/pages/common/error_page.dart';
 import 'package:base_project/pages/login/login_page.dart';
 import 'package:base_project/pages/login/page_email_sign_up.dart';
@@ -29,6 +29,7 @@ class Routes {
   static const product = '/product';
   static const more = '/more';
   static const error = '/error';
+  static const address = '/address';
 
   // 2 depth
   static const signUp = 'sign_up';
@@ -104,13 +105,17 @@ class AppRouter extends Bloc {
           GoRoute(
             path: Routes.map,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: MapPage());
+              return const MaterialPage(
+                child: MapPage(),
+              );
             },
           ),
           GoRoute(
             path: Routes.chat,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: ChatPage());
+              return const MaterialPage(
+                child: ChatPage(),
+              );
             },
             routes: [
               GoRoute(
@@ -168,6 +173,13 @@ class AppRouter extends Bloc {
           ),
         ],
       ),
+      GoRoute(
+          path: Routes.address,
+          pageBuilder: (context, state) {
+            return const MaterialPage(
+              child: AddressPage(),
+            );
+          }),
       GoRoute(
         path: Routes.error,
         pageBuilder: (context, state) {

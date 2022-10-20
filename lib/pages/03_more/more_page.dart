@@ -2,8 +2,6 @@ import 'package:base_project/global/bloc/auth/authentication/authentication_bloc
 import 'package:base_project/global/component/du_app_bar.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
 import 'package:base_project/global/component/du_two_button_dialog.dart';
-import 'package:base_project/global/model/account/response/me_result.dart';
-import 'package:base_project/global/service/secure_storage/secure_storage.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_colors.dart';
@@ -153,7 +151,7 @@ class _MorePageViewState extends State<MorePageView> {
                   ],
                 ),
                 const SizedBox(height: 40),
-                Text('이름 수정하기', style: DUTextStyle.size14M),
+                Text('이름 수정하기', style: DUTextStyle.size18B),
                 const SizedBox(height: 4),
                 DUTextFormField(
                   controller: _textNameController,
@@ -171,6 +169,18 @@ class _MorePageViewState extends State<MorePageView> {
                     }
                     return null;
                   },
+                ),
+                const SizedBox(height: 40),
+                Text('주소 변경하기', style: DUTextStyle.size18B),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('akdlsfjaksjdfklasdjf' ?? ''),
+                    DUButton(
+                        text: '변경하기',
+                        press: () {},
+                        type: ButtonType.transparent),
+                  ],
                 ),
                 const SizedBox(height: 40),
                 DUButton(

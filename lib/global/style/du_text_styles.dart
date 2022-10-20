@@ -7,7 +7,8 @@ class DUTextStyle {
 
   // fontFamail
   static final String? _fontFamily = Platform.isIOS ? "NotoSansKR" : null;
-  static final List<String>? _fontFamilyFallback = Platform.isIOS ? ["NotoSansKR"] : null;
+  static final List<String>? _fontFamilyFallback =
+      Platform.isIOS ? ["NotoSansKR"] : null;
 
   // Regular(Weight:w400)
 
@@ -48,6 +49,16 @@ class DUTextStyle {
     fontFamily: _fontFamily,
     fontFamilyFallback: _fontFamilyFallback,
     fontWeight: FontWeight.w400,
+    fontSize: 18,
+  );
+
+  /// Weight : Regular(700)
+  ///
+  /// Size : 16
+  static final size18B = TextStyle(
+    fontFamily: _fontFamily,
+    fontFamilyFallback: _fontFamilyFallback,
+    fontWeight: FontWeight.w700,
     fontSize: 18,
   );
 

@@ -18,6 +18,7 @@ class DUTextFormField extends StatefulWidget {
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputAction? textInputAction;
   final bool autocorrect;
+  final bool autofocus;
   final bool showSecure;
   final bool showClear;
   final TextInputType? keyboardType;
@@ -30,6 +31,7 @@ class DUTextFormField extends StatefulWidget {
     this.title,
     this.hintText,
     this.autocorrect = false,
+    this.autofocus = false,
     this.warningMessage,
     this.validator,
     this.icon,
@@ -58,6 +60,7 @@ class DUTextFormFieldState extends State<DUTextFormField> {
       focusNode: widget.focusNode,
       controller: widget.controller,
       autocorrect: widget.autocorrect,
+      autofocus: widget.autofocus,
       textCapitalization: TextCapitalization.none,
       obscureText: widget.isSecure,
       onChanged: (text) {
