@@ -10,8 +10,8 @@ import 'package:base_project/global/util/extension/extension.dart';
 import 'package:base_project/global/util/range_by_zoom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart' as location;
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -35,8 +35,8 @@ class MapPageView extends StatefulWidget {
 }
 
 class _MapPageViewState extends State<MapPageView> {
-  List<Marker> _markers = [];
-  List<Marker> _temporaryMaker = [];
+  final List<Marker> _markers = [];
+  final List<Marker> _temporaryMaker = [];
   final LatLng _lastLocation =
       const LatLng(37.42796133580664, -122.085749655962);
 
@@ -89,7 +89,9 @@ class _MapPageViewState extends State<MapPageView> {
   Widget _body() {
     return BlocBuilder<LocationCubit, LocationState>(
       builder: (context, state) {
-        if (state is LocationLoaded) {}
+        if (state is LocationLoaded) {
+          print('state loaded');
+        }
         return Stack(
           children: [
             GoogleMap(
@@ -158,25 +160,25 @@ class _MapPageViewState extends State<MapPageView> {
     context.read<LocationCubit>().setLastLocation(position.target);
     // print("move");
     print(position.zoom.toString());
-    range = RangeByZoom.getRangeByZooom(position.zoom);
+    range = RangeByZoom.getRangeByZoom(position.zoom);
   }
 
   _handleTap(LatLng point) {
-    var locationProvider = context.read<LocationCubit>();
     double lat = DataConvert.roundDouble(point.latitude, 6);
     double lng = DataConvert.roundDouble(point.longitude, 6);
     LatLng location = LatLng(lat, lng);
 
     print('handelTap');
-    locationProvider.setPostLocation(location);
+    context.read<LocationCubit>().setPostLocation(location);
 
     // locationProvider.setPost(point);
 
+    // 글을 남길 위치에 임시 마커를 박는다.
     _temporaryMaker.clear();
     addTemporaryMarker(0, location);
 
     showModalBottomSheet(
-      context: context,
+      context: GoRouter.of(context).navigator!.context,
       // isScrollControlled: true,
       builder: (_) {
         return buildSelectLocationBottomSheet(context);

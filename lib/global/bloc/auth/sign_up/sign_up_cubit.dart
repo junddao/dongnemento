@@ -1,13 +1,12 @@
-import 'package:base_project/global/model/account/response/me_result.dart';
 import 'package:base_project/global/model/common/api_response.dart';
 import 'package:base_project/global/model/user/model_request_sign_up.dart';
 import 'package:base_project/global/model/user/model_response_sign_in.dart';
 import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/repository/auth_repository.dart';
 import 'package:base_project/global/util/simple_logger.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'sign_up_state.dart';
 

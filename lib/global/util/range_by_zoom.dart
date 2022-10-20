@@ -1,5 +1,5 @@
 class RangeByZoom {
-  static int getRangeByZooom(double zoom) {
+  static int getRangeByZoom(double zoom) {
     int range = 1500;
 
     if (zoom < 1) {

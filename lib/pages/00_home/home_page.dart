@@ -1,15 +1,9 @@
 import 'package:base_project/global/component/du_nested_scroll_view/du_nested_scroll_view.dart';
 import 'package:base_project/global/style/constants.dart';
-import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
-import 'package:base_project/global/util/extension/extension.dart';
 import 'package:base_project/pages/00_home/components/event_widget.dart';
-import 'package:base_project/pages/00_home/components/home_intro_widget.dart';
 import 'package:base_project/pages/00_home/components/magazine_widget.dart';
-import 'package:base_project/pages/00_home/components/my_delegate.dart';
-import 'package:base_project/global/component/du_nested_scroll_view/du_sliver_persistent_header_delegate.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

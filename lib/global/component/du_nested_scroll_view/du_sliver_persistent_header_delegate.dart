@@ -30,11 +30,14 @@ class DUSliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   double scrollAnimationValue(double shrinkOffset) {
     double maxScrollAllowed = maxExtent - minExtent;
 
-    return ((maxScrollAllowed - shrinkOffset) / maxScrollAllowed).clamp(0, 1).toDouble();
+    return ((maxScrollAllowed - shrinkOffset) / maxScrollAllowed)
+        .clamp(0, 1)
+        .toDouble();
   }
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     width = MediaQuery.of(context).size.width;
     visibleMainHeight = max(maxExtent - shrinkOffset, minExtent);
     animationVal = scrollAnimationValue(shrinkOffset);
@@ -42,7 +45,7 @@ class DUSliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
     return Container(
         height: visibleMainHeight,
         width: MediaQuery.of(context).size.width,
-        color: Color(0xFFFFFFFF),
+        color: const Color(0xFFFFFFFF),
         child: Stack(
           children: <Widget>[
             getMinTop(),
@@ -68,7 +71,7 @@ class DUSliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   Widget getMinTop() {
     return Opacity(
       opacity: 1 - animationVal!,
-      child: Container(height: visibleMainHeight, width: width, child: minChild),
+      child: SizedBox(height: visibleMainHeight, width: width, child: minChild),
     );
   }
 }

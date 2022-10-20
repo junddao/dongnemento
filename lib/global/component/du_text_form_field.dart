@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:base_project/global/style/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -48,46 +46,45 @@ class DUTextFormField extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DUTextFormFieldState createState() => _DUTextFormFieldState();
+  DUTextFormFieldState createState() => DUTextFormFieldState();
 }
 
-class _DUTextFormFieldState extends State<DUTextFormField> {
+class DUTextFormFieldState extends State<DUTextFormField> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Container(
-      // margin: EdgeInsets.symmetric(horizontal: 20),
-      // padding: EdgeInsets.fromLTRB(20, 7, 20, 0),
-      // height: cellHeight,
-      child: TextFormField(
-        focusNode: widget.focusNode,
-        controller: widget.controller,
-        autocorrect: widget.autocorrect,
-        textCapitalization: TextCapitalization.none,
-        obscureText: widget.isSecure,
-        onChanged: (text) {
-          setState(() {});
-          if (widget.onChanged != null) {
-            widget.onChanged!(text);
-          }
-        },
-        validator: widget.warningMessage == null || widget.validator != null ? widget.validator : _validateText,
-        onEditingComplete: widget.onEditingComplete,
-        onFieldSubmitted: widget.onFieldSubmitted,
-        textInputAction: widget.textInputAction,
-        textAlignVertical: TextAlignVertical.center,
-        keyboardType: widget.keyboardType,
-        inputFormatters: widget.inputFormatters,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(vertical: 20.0),
-          isDense: true,
-          labelText: widget.title,
-          hintText: widget.hintText,
-          fillColor: Colors.blue,
-          icon: widget.icon == null ? null : Icon(widget.icon, color: kPrimaryColor),
-          suffixIcon: suffixIcon(),
-        ),
+    return TextFormField(
+      focusNode: widget.focusNode,
+      controller: widget.controller,
+      autocorrect: widget.autocorrect,
+      textCapitalization: TextCapitalization.none,
+      obscureText: widget.isSecure,
+      onChanged: (text) {
+        setState(() {});
+        if (widget.onChanged != null) {
+          widget.onChanged!(text);
+        }
+      },
+      validator: widget.warningMessage == null || widget.validator != null
+          ? widget.validator
+          : _validateText,
+      onEditingComplete: widget.onEditingComplete,
+      onFieldSubmitted: widget.onFieldSubmitted,
+      textInputAction: widget.textInputAction,
+      textAlignVertical: TextAlignVertical.center,
+      keyboardType: widget.keyboardType,
+      inputFormatters: widget.inputFormatters,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(vertical: 20.0),
+        isDense: true,
+        labelText: widget.title,
+        hintText: widget.hintText,
+        fillColor: Colors.blue,
+        icon: widget.icon == null
+            ? null
+            : Icon(widget.icon, color: kPrimaryColor),
+        suffixIcon: suffixIcon(),
       ),
     );
   }
@@ -96,8 +93,8 @@ class _DUTextFormFieldState extends State<DUTextFormField> {
     if (widget.showSecure) {
       return IconButton(
         icon: widget.isSecure
-            ? Icon(Icons.visibility, color: kPrimaryColor)
-            : Icon(Icons.visibility_off, color: kPrimaryColor),
+            ? const Icon(Icons.visibility, color: kPrimaryColor)
+            : const Icon(Icons.visibility_off, color: kPrimaryColor),
         onPressed: () {
           setState(() {
             widget.isSecure = !widget.isSecure;
@@ -106,9 +103,9 @@ class _DUTextFormFieldState extends State<DUTextFormField> {
       );
     }
     if (widget.showClear) {
-      return widget.controller!.text.length > 0
+      return widget.controller!.text.isNotEmpty
           ? IconButton(
-              icon: Icon(Icons.clear_rounded, size: 15),
+              icon: const Icon(Icons.clear_rounded, size: 15),
               onPressed: () {
                 setState(() {
                   widget.controller!.clear();
@@ -120,7 +117,7 @@ class _DUTextFormFieldState extends State<DUTextFormField> {
   }
 
   String? _validateText(String? text) {
-    if (text == null || text.isEmpty || text.trim().length == 0) {
+    if (text == null || text.isEmpty || text.trim().isEmpty) {
       return widget.warningMessage;
     } else {
       return null;

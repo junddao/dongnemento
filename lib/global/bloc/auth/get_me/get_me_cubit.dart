@@ -1,9 +1,8 @@
-import 'package:base_project/global/model/account/response/me_result.dart';
 import 'package:base_project/global/model/common/api_response.dart';
 import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/repository/auth_repository.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
 part 'get_me_state.dart';
