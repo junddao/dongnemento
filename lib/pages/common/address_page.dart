@@ -173,11 +173,10 @@ class _AddressPageState extends State<AddressPage> {
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(item.place_name ?? "",
-                                  style: DUTextStyle.size14),
+                              Text(item.place_name, style: DUTextStyle.size14),
                               const SizedBox(height: 4),
                               Text(
-                                item.address_name ?? "",
+                                item.address_name,
                                 style: DUTextStyle.size12
                                     .copyWith(color: DUColors.grey1),
                               ),

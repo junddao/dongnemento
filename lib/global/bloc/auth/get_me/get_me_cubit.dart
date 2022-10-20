@@ -1,10 +1,8 @@
-import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
 import 'package:base_project/global/model/common/api_response.dart';
 import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/repository/auth_repository.dart';
-import 'package:base_project/global/service/secure_storage/secure_storage.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'get_me_state.dart';
 
@@ -20,6 +18,6 @@ class GetMeCubit extends Cubit<GetMeState> {
       );
     }
 
-    emit(GetMeLoaded());
+    emit(GetMeLoaded(me: response.data!));
   }
 }

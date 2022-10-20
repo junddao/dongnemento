@@ -189,14 +189,15 @@ class AppRouter extends Bloc {
         pageBuilder: (context, state) {
           return MaterialPage(
             key: state.pageKey,
-            child: ErrorPage(exception: state.error),
+            child: ErrorPage(exception: state.error.toString()),
           );
         },
       ),
     ],
     errorPageBuilder: (context, state) {
       return MaterialPage(
-          key: state.pageKey, child: ErrorPage(exception: state.error));
+          key: state.pageKey,
+          child: ErrorPage(exception: state.error.toString()));
     },
     debugLogDiagnostics: true,
   );

@@ -1,16 +1,21 @@
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/bloc/auth/get_me/get_me_cubit.dart';
+import 'package:base_project/global/bloc/auth/update_user/update_user_cubit.dart';
 import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/component/du_app_bar.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
 import 'package:base_project/global/component/du_two_button_dialog.dart';
+import 'package:base_project/global/model/user/model_request_update.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
+import 'package:base_project/pages/common/error_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class MorePage extends StatefulWidget {
   const MorePage({super.key});
@@ -22,7 +27,10 @@ class MorePage extends StatefulWidget {
 class _MorePageState extends State<MorePage> {
   @override
   Widget build(BuildContext context) {
-    return const MorePageView();
+    return BlocProvider(
+      create: (context) => UpdateUserCubit(),
+      child: const MorePageView(),
+    );
   }
 }
 
@@ -40,7 +48,11 @@ class _MorePageViewState extends State<MorePageView> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
@@ -98,6 +110,7 @@ class _MorePageViewState extends State<MorePageView> {
 
   Widget _body() {
     final FocusScopeNode node = FocusScope.of(context);
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -140,7 +153,7 @@ class _MorePageViewState extends State<MorePageView> {
                                           .watch<SingletonMeCubit>()
                                           .me
                                           .name ??
-                                      'known',
+                                      '이름없음',
                                   style: DUTextStyle.size18.black),
                               TextSpan(
                                   text: '님!', style: DUTextStyle.size18.grey1),
@@ -179,17 +192,24 @@ class _MorePageViewState extends State<MorePageView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('akdlsfjaksjdfklasdjf' ?? ''),
+                    Text(context.watch<SingletonMeCubit>().me.address ?? ''),
                     DUButton(
                         text: '변경하기',
-                        press: () {},
+                        press: () {
+                          context.push('/address');
+                        },
                         type: ButtonType.transparent),
                   ],
                 ),
                 const SizedBox(height: 40),
                 DUButton(
                     text: '수정하기',
-                    press: () async {},
+                    press: () async {
+                      Map<String, dynamic> map =
+                          context.read<SingletonMeCubit>().me.toMap();
+
+                      context.read<UpdateUserCubit>().updateUser(map);
+                    },
                     type: ButtonType.normal,
                     width: SizeConfig.screenWidth),
                 const SizedBox(height: 24),

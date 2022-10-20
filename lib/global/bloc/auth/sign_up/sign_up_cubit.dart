@@ -1,4 +1,3 @@
-import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
 import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/model/common/api_response.dart';
 import 'package:base_project/global/model/user/model_request_sign_up.dart';

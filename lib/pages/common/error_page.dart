@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 class ErrorPage extends StatefulWidget {
   const ErrorPage({super.key, required this.exception});
 
-  final Exception? exception;
+  final String? exception;
 
   @override
   State<ErrorPage> createState() => _ErrorPageState();
@@ -27,7 +27,7 @@ class _ErrorPageState extends State<ErrorPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            widget.exception?.toString() ?? 'error',
+            widget.exception ?? 'error',
           ),
           DUButton(
               text: '로그인으로 돌아가기',

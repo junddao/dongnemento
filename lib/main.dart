@@ -1,5 +1,6 @@
 import 'package:base_project/env.dart';
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/bloc/auth/get_me/get_me_cubit.dart';
 import 'package:base_project/global/bloc/map/location/location_cubit.dart';
 import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/theme/theme.dart';
@@ -71,11 +72,14 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => AppRouter(authBloc),
         ),
-        BlocProvider(
-          create: (context) => SingletonMeCubit(),
+        BlocProvider<SingletonMeCubit>(
+          create: (context) => singletonMeCubit,
         ),
         BlocProvider(
           create: (context) => LocationCubit(),
+        ),
+        BlocProvider(
+          create: (context) => GetMeCubit(),
         ),
       ],
       child: Builder(

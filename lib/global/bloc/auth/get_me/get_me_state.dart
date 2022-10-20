@@ -18,8 +18,11 @@ class GetMeLoading extends GetMeState {
 }
 
 class GetMeLoaded extends GetMeState {
+  final ModelUser? me;
+
+  const GetMeLoaded({required this.me});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [me!];
 }
 
 class GetMeError extends GetMeState {

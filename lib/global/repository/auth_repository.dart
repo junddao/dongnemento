@@ -5,6 +5,7 @@ import 'package:base_project/global/model/user/model_request_get_token.dart';
 import 'package:base_project/global/model/user/model_request_sign_in.dart';
 import 'package:base_project/global/model/user/model_response_me.dart';
 import 'package:base_project/global/model/user/model_response_sign_in.dart';
+import 'package:base_project/global/model/user/model_response_update.dart';
 import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/repository/api_service.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
@@ -128,6 +129,23 @@ class AuthRepository {
         return ApiResponse.completed(true);
       } else {
         return ApiResponse.error(modelResponseCommon.error);
+      }
+    } catch (e) {
+      return ApiResponse.error(e.toString());
+    }
+  }
+
+  Future<ApiResponse<ModelUser>> updateUser(Map<String, dynamic> map) async {
+    late ModelResponseUpdate modelResponseUpdate;
+    try {
+      String path = '$apiUrl/update';
+      Map<String, dynamic> response = await ApiService().post(path, map);
+      modelResponseUpdate = ModelResponseUpdate.fromMap(response);
+      if (modelResponseUpdate.success == true) {
+        ModelUser modelUser = modelResponseUpdate.data!.first;
+        return ApiResponse.completed(modelUser);
+      } else {
+        throw Exception(modelResponseUpdate.error);
       }
     } catch (e) {
       return ApiResponse.error(e.toString());

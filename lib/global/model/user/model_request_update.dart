@@ -6,7 +6,9 @@ class ModelRequestUpdate {
   String? name;
   String? introduce;
   String? profileImage;
-
+  double? lat;
+  double? lng;
+  String? address;
   String? social;
   bool? pushEnabled;
   ModelRequestUpdate({
@@ -15,6 +17,9 @@ class ModelRequestUpdate {
     this.name,
     this.introduce,
     this.profileImage,
+    this.lat,
+    this.lng,
+    this.address,
     this.social,
     this.pushEnabled,
   });
@@ -26,6 +31,9 @@ class ModelRequestUpdate {
       'name': name,
       'introduce': introduce,
       'profileImage': profileImage,
+      'lat': lat,
+      'lng': lng,
+      'address': address,
       'social': social,
       'pushEnabled': pushEnabled,
     };
@@ -38,6 +46,9 @@ class ModelRequestUpdate {
       name: map['name'],
       introduce: map['introduce'],
       profileImage: map['profileImage'],
+      lat: map['lat']?.toDouble(),
+      lng: map['lng']?.toDouble(),
+      address: map['address'],
       social: map['social'],
       pushEnabled: map['pushEnabled'],
     );
@@ -45,5 +56,32 @@ class ModelRequestUpdate {
 
   String toJson() => json.encode(toMap());
 
-  factory ModelRequestUpdate.fromJson(String source) => ModelRequestUpdate.fromMap(json.decode(source));
+  factory ModelRequestUpdate.fromJson(String source) =>
+      ModelRequestUpdate.fromMap(json.decode(source));
+
+  ModelRequestUpdate copyWith({
+    String? id,
+    String? email,
+    String? name,
+    String? introduce,
+    String? profileImage,
+    double? lat,
+    double? lng,
+    String? address,
+    String? social,
+    bool? pushEnabled,
+  }) {
+    return ModelRequestUpdate(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      name: name ?? this.name,
+      introduce: introduce ?? this.introduce,
+      profileImage: profileImage ?? this.profileImage,
+      lat: lat ?? this.lat,
+      lng: lng ?? this.lng,
+      address: address ?? this.address,
+      social: social ?? this.social,
+      pushEnabled: pushEnabled ?? this.pushEnabled,
+    );
+  }
 }
