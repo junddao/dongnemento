@@ -176,7 +176,7 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(context
-                                        .read<SingletonMeCubit>()
+                                        .watch<SingletonMeCubit>()
                                         .me
                                         .address ??
                                     '주소를 입력해주세요'),
