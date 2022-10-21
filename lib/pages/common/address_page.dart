@@ -6,6 +6,7 @@ import 'package:base_project/global/component/du_title.dart';
 import 'package:base_project/global/model/etc/kakao_local_result.dart';
 import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/repository/api_service.dart';
+import 'package:base_project/global/repository/map_repository.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
@@ -17,7 +18,9 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 class AddressPage extends StatefulWidget {
-  const AddressPage({super.key});
+  const AddressPage({super.key, required this.setAddress});
+
+  final Function setAddress;
 
   @override
   State<AddressPage> createState() => _AddressPageState();
@@ -53,8 +56,8 @@ class _AddressPageState extends State<AddressPage> {
 
     // List<Map<String, dynamic>> items = [];
 
-    KakaoLocalResponseData results =
-        await ApiService().getKakaoAddress(textController.text);
+    KakaoLocalResponseData results = await MapRepository.instance
+        .getKakaoAddressByKeyword(textController.text);
 
     for (KakaoLocalResult result in results.documents) {
       data.add(result);
@@ -183,16 +186,11 @@ class _AddressPageState extends State<AddressPage> {
                             ],
                           ),
                           onTap: () {
-                            ModelUser me =
-                                GetIt.I.get<SingletonMeCubit>().me.copyWith(
-                                      address: item.address_name,
-                                      lat: double.parse(item.x),
-                                      lng: double.parse(item.y),
-                                    );
-
-                            context
-                                .read<SingletonMeCubit>()
-                                .updateSingletonMe(me);
+                            widget.setAddress(
+                              item.address_name,
+                              double.parse(item.y),
+                              double.parse(item.x),
+                            );
 
                             context.pop();
                           },

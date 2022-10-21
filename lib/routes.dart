@@ -180,8 +180,13 @@ class AppRouter extends Bloc {
       GoRoute(
           path: Routes.address,
           pageBuilder: (context, state) {
-            return const MaterialPage(
-              child: AddressPage(),
+            final Map<String, Function> params =
+                state.extra! as Map<String, Function>;
+            Function setAddress = params['setAddress'] as Function;
+            return MaterialPage(
+              child: AddressPage(
+                setAddress: setAddress,
+              ),
             );
           }),
       GoRoute(

@@ -21,12 +21,35 @@ class ApiService {
     'Content-Type': 'multipart/form-data',
   };
 
-  Future<dynamic> getKakaoAddress(String query, {int? page = 15}) async {
+  Future<dynamic> getKakaoApi(path) async {
+    Response response;
+    try {
+      response = await Dio()
+          .get(path,
+              options: Options(
+                headers: _kakaoHeader,
+              ))
+          .timeout(const Duration(seconds: 10));
+
+      logger.d('dio response = ${response.toString()}');
+    } on DioError catch (e) {
+      final errorMessage = DioException.fromDioError(e).toString();
+      throw errorMessage;
+    } on SocketException {
+      logger.d('No network');
+      throw FetchDataException('No Internet connection');
+    } catch (e) {
+      throw CustomException('Unknown Error');
+    }
+    return response.data;
+  }
+
+  Future<dynamic> getKakaoAddressByLocation(double lng, double lat) async {
     Response response;
     try {
       response = await Dio()
           .get(
-              'https://dapi.kakao.com/v2/local/search/keyword.json?query=$query&page=$page',
+              'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=$lng&y=$lat',
               options: Options(
                 headers: _kakaoHeader,
               ))

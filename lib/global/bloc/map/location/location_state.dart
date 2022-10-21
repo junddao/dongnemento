@@ -1,28 +1,21 @@
 part of 'location_cubit.dart';
 
-abstract class LocationState extends Equatable {
-  const LocationState();
+class LocationState extends Equatable {
+  const LocationState._(
+      {this.modelResponseSetPost, this.status = CubitStatus.initial});
+
+  final ModelResponseSetPost? modelResponseSetPost;
+  final CubitStatus status;
+
+  LocationState.initial()
+      : this._(
+            status: CubitStatus.initial,
+            modelResponseSetPost: ModelResponseSetPost());
+  const LocationState.loading() : this._(status: CubitStatus.loading);
+  const LocationState.loaded({required ModelResponseSetPost? result})
+      : this._(status: CubitStatus.loaded, modelResponseSetPost: result);
+  const LocationState.error() : this._(status: CubitStatus.failure);
 
   @override
   List<Object?> get props => [];
 }
-
-class LocationInitial extends LocationState {}
-
-class LocationLoading extends LocationState {}
-
-class LocationLoaded extends LocationState {
-  final LatLng? lastLocation;
-  final LatLng? myLocation;
-  final LatLng? postLocation;
-
-  const LocationLoaded(
-      {this.lastLocation,
-      this.myLocation = const LatLng(37.2, 127.0),
-      this.postLocation});
-
-  @override
-  List<Object?> get props => [lastLocation, myLocation, postLocation];
-}
-
-class LocationError extends LocationState {}

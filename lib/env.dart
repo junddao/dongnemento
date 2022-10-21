@@ -6,22 +6,27 @@ enum OpMode {
   product,
 }
 
-const _prodApiBaseUrl = "http://43.200.119.214";
-const _prodApiAuthUrl = "$_prodApiBaseUrl$_apiAuth";
+const _prodApiBaseUrl = 'http://43.200.119.214';
+const _prodApiAuthUrl = '$_prodApiBaseUrl$_apiAuth';
+const _prodApiMapUrl = '$_prodApiBaseUrl$_apiMap';
 
-const _devApiBaseUrl = "http://192.168.1.82:17008";
-const _devApiAuthUrl = "$_devApiBaseUrl$_apiAuth";
+const _devApiBaseUrl = 'http://192.168.1.82:17008';
+const _devApiAuthUrl = '$_devApiBaseUrl$_apiAuth';
+const _devApiMapUrl = '$_devApiBaseUrl$_apiMap';
 
-const _apiAuth = "/user";
+const _apiAuth = '/user';
+const _apiMap = '/map';
 
 class Env {
   static Env? _instance;
 
   static late OpMode _mode;
   static late String _apiAuthUrl;
+  static late String _apiMapUrl;
 
   /// User API 접속 주소
   static String get apiAuthUrl => _apiAuthUrl;
+  static String get apiMapUrl => _apiMapUrl;
 
   //End Point
   static OpMode get opMode => _mode;
@@ -48,13 +53,16 @@ class Env {
     switch (mode) {
       case OpMode.product: //운영 모드
         _apiAuthUrl = _prodApiAuthUrl;
+        _apiMapUrl = _prodApiMapUrl;
         break;
       case OpMode.dev: //개발 모드
         _apiAuthUrl = _devApiAuthUrl;
+        _apiMapUrl = _devApiMapUrl;
         break;
       case OpMode.unknown:
       default:
-        _apiAuthUrl = "";
+        _apiAuthUrl = '';
+        _apiMapUrl = '';
         break;
     }
   }

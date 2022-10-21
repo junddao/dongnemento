@@ -45,6 +45,10 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
   final TextEditingController _tecPasswordCheck = TextEditingController();
   final TextEditingController _tecNickname = TextEditingController();
 
+  String _address = '';
+  double? _lat;
+  double? _lng;
+
   @override
   void dispose() {
     _tecEmail.dispose();
@@ -183,7 +187,8 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                                 DUButton(
                                     text: '입력하기',
                                     press: () {
-                                      context.push('/address');
+                                      context.push('/address',
+                                          extra: {'setAddress': setAddress});
                                     },
                                     type: ButtonType.transparent),
                               ],
@@ -229,5 +234,12 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
     await context
         .read<SignUpCubit>()
         .signUp(_tecEmail.text, _tecPassword.text, _tecNickname.text);
+  }
+
+  setAddress(String address, double? lat, double? lng) {
+    _address = address;
+    _lat = lat;
+    _lng = lng;
+    setState(() {});
   }
 }

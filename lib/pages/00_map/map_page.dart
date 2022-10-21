@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:base_project/global/bloc/map/location/location_cubit.dart';
+import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
+import 'package:base_project/global/enum/cubit_status.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_colors.dart';
@@ -37,8 +39,7 @@ class MapPageView extends StatefulWidget {
 class _MapPageViewState extends State<MapPageView> {
   final List<Marker> _markers = [];
   final List<Marker> _temporaryMaker = [];
-  final LatLng _lastLocation =
-      const LatLng(37.42796133580664, -122.085749655962);
+  late final LatLng _lastLocation;
 
   final Completer<GoogleMapController> _controller = Completer();
 
@@ -50,6 +51,9 @@ class _MapPageViewState extends State<MapPageView> {
 
   @override
   void initState() {
+    double lat = context.read<SingletonMeCubit>().me.lat ?? 0;
+    double lng = context.read<SingletonMeCubit>().me.lng ?? 0;
+    _lastLocation = LatLng(lat, lng);
     super.initState();
   }
 
@@ -65,31 +69,25 @@ class _MapPageViewState extends State<MapPageView> {
   }
 
   Widget _floatingActionButton() {
-    return BlocBuilder<LocationCubit, LocationState>(
-      builder: (context, state) {
-        LatLng? myLocation;
-        if (state is LocationLoaded) {
-          myLocation = state.myLocation;
-        }
-
-        return Padding(
-          padding: const EdgeInsets.only(top: 100.0),
-          child: FloatingActionButton(
-            mini: true,
-            child: const Icon(Icons.my_location_outlined),
-            onPressed: () {
-              moveCameraToMyLocation(myLocation);
-            },
-          ),
-        );
-      },
+    double? lat = context.read<SingletonMeCubit>().me.lat;
+    double? lng = context.read<SingletonMeCubit>().me.lng;
+    LatLng myLocation = LatLng(lat ?? 0, lng ?? 0);
+    return Padding(
+      padding: const EdgeInsets.only(top: 100.0),
+      child: FloatingActionButton(
+        mini: true,
+        child: const Icon(Icons.my_location_outlined),
+        onPressed: () {
+          moveCameraToMyLocation(myLocation);
+        },
+      ),
     );
   }
 
   Widget _body() {
     return BlocBuilder<LocationCubit, LocationState>(
       builder: (context, state) {
-        if (state is LocationLoaded) {
+        if (state.status == CubitStatus.loaded) {
           print('state loaded');
         }
         return Stack(
@@ -157,7 +155,7 @@ class _MapPageViewState extends State<MapPageView> {
   // }
 
   void _onCameraMove(CameraPosition position) {
-    context.read<LocationCubit>().setLastLocation(position.target);
+    // context.read<LocationCubit>().setLastLocation(position.target);
     // print("move");
     print(position.zoom.toString());
     range = RangeByZoom.getRangeByZoom(position.zoom);
@@ -186,48 +184,53 @@ class _MapPageViewState extends State<MapPageView> {
     ).then((value) {
       if (value != true) {
         // 취소하면 postLocation 초기화 필요.
-        context.read<LocationCubit>().setPostLocation(null);
+        // context.read<LocationCubit>().setPostLocation(const LatLng(0, 0));
       }
       _temporaryMaker.clear();
     });
   }
 
   Widget buildSelectLocationBottomSheet(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-          color: DUColors.white),
-      child: Padding(
-        padding: const EdgeInsets.all(30.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('adfadsfadsf', style: DUTextStyle.size14M.black),
-            const SizedBox(
-              height: 10,
+    return BlocBuilder<LocationCubit, LocationState>(
+      builder: (context, state) {
+        return Container(
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+              color: DUColors.white),
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(state.modelResponseSetPost?.address ?? '',
+                    style: DUTextStyle.size14M.black),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Divider(),
+                DUButton(
+                  text: '여기에 새글을 쓰겠어요!',
+                  width: SizeConfig.screenWidth,
+                  press: () {
+                    Navigator.of(context)
+                        .popAndPushNamed('PagePostCreate', result: true);
+                  },
+                ),
+                DUButton(
+                  text: '다음에 쓸께요.',
+                  width: SizeConfig.screenWidth,
+                  type: ButtonType.transparent,
+                  press: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
             ),
-            const Divider(),
-            DUButton(
-              text: '여기에 새글을 쓰겠어요!',
-              width: SizeConfig.screenWidth,
-              press: () {
-                Navigator.of(context)
-                    .popAndPushNamed('PagePostCreate', result: true);
-              },
-            ),
-            DUButton(
-              text: '다음에 쓸께요.',
-              width: SizeConfig.screenWidth,
-              type: ButtonType.transparent,
-              press: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
