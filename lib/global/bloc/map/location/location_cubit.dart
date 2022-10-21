@@ -10,7 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 part 'location_state.dart';
 
 class LocationCubit extends Cubit<LocationState> {
-  LocationCubit() : super(LocationState.initial());
+  LocationCubit() : super(LocationInitial());
 
   Future<void> setPostLocation(
     LatLng postLocation,
@@ -20,15 +20,15 @@ class LocationCubit extends Cubit<LocationState> {
       lat: postLocation.latitude,
       lng: postLocation.longitude,
     );
-    emit(const LocationState.loading());
+    emit(LocationLoading());
 
     String address = await getKakaoAddressByLocation(
         postLocation.longitude, postLocation.latitude);
 
-    newPost.copyWith(address: address);
+    ;
 
-    emit(LocationState.loaded(
-      result: newPost,
+    emit(LocationLoaded(
+      modelResponseSetPost: newPost.copyWith(address: address),
       // myLocation:
     ));
   }

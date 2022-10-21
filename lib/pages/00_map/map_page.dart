@@ -87,7 +87,7 @@ class _MapPageViewState extends State<MapPageView> {
   Widget _body() {
     return BlocBuilder<LocationCubit, LocationState>(
       builder: (context, state) {
-        if (state.status == CubitStatus.loaded) {
+        if (state is LocationLoaded) {
           print('state loaded');
         }
         return Stack(
