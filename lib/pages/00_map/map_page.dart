@@ -184,7 +184,7 @@ class _MapPageViewState extends State<MapPageView> {
     ).then((value) {
       if (value != true) {
         // 취소하면 postLocation 초기화 필요.
-        // context.read<LocationCubit>().setPostLocation(const LatLng(0, 0));
+        context.read<LocationCubit>().clearPostLocation();
       }
       _temporaryMaker.clear();
     });
@@ -214,8 +214,9 @@ class _MapPageViewState extends State<MapPageView> {
                   text: '여기에 새글을 쓰겠어요!',
                   width: SizeConfig.screenWidth,
                   press: () {
-                    Navigator.of(context)
-                        .popAndPushNamed('PagePostCreate', result: true);
+                    // context.pop();
+                    Navigator.pop(context);
+                    context.go('/map/post');
                   },
                 ),
                 DUButton(

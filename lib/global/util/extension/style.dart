@@ -9,6 +9,8 @@ extension TextStyleExtension on TextStyle {
   /// rgba(97, 67, 133, 1)
   TextStyle get violet => copyWith(color: DUColors.violet);
 
+  TextStyle get tomato => copyWith(color: DUColors.tomato);
+
   /// 스타일 색상 추가
   ///
   /// #87ABD6

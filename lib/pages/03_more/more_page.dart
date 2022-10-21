@@ -123,7 +123,8 @@ class _MorePageViewState extends State<MorePageView> {
         if (state is UpdateUserLoaded) {
           DUDialog.showOneButtonDialog(
             context: context,
-            title: '저장성공',
+            title: '성공',
+            subTitle: '프로필이 수정되었습니다. 😃',
           );
         }
       },

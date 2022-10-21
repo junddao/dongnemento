@@ -155,6 +155,16 @@ class DUTextStyle {
     fontSize: 16,
   );
 
+  /// Weight : Medium(700)
+  ///
+  /// Size : 16
+  static final size16B = TextStyle(
+    fontFamily: _fontFamily,
+    fontFamilyFallback: _fontFamilyFallback,
+    fontWeight: FontWeight.w700,
+    fontSize: 16,
+  );
+
   /// Weight : Medium(500)
   ///
   /// Size : 14

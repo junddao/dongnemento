@@ -15,6 +15,7 @@ import 'package:base_project/pages/common/address_page.dart';
 import 'package:base_project/pages/common/error_page.dart';
 import 'package:base_project/pages/login/login_page.dart';
 import 'package:base_project/pages/login/page_email_sign_up.dart';
+import 'package:base_project/pages/post/page_post_create.dart';
 import 'package:base_project/pages/root_page.dart';
 import 'package:base_project/pages/tab_page.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class Routes {
 
   // 2 depth
   static const signUp = 'sign_up';
+  static const post = 'post';
 }
 
 class AppRouter extends Bloc {
@@ -113,6 +115,18 @@ class AppRouter extends Bloc {
                 child: MapPage(),
               );
             },
+            routes: [
+              GoRoute(
+                parentNavigatorKey: _rootNavigatorKey,
+                path: Routes.post,
+                pageBuilder: (context, state) {
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: const PagePostCreate(),
+                  );
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: Routes.chat,

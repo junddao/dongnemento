@@ -16,6 +16,7 @@ class LocationCubit extends Cubit<LocationState> {
     LatLng postLocation,
   ) async {
     // emit(LocationLoading());
+
     ModelResponseSetPost newPost = state.modelResponseSetPost!.copyWith(
       lat: postLocation.latitude,
       lng: postLocation.longitude,
@@ -38,5 +39,10 @@ class LocationCubit extends Cubit<LocationState> {
         await MapRepository.instance.getKakaoAddressByLocation(lng, lat);
 
     return modelResponseKakaoLocation.documents.first.address_name;
+  }
+
+  Future<void> clearPostLocation() async {
+    emit(LocationLoading());
+    emit(LocationLoaded(modelResponseSetPost: ModelResponseSetPost()));
   }
 }
