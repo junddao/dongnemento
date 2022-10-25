@@ -60,7 +60,11 @@ class _LoginPageViewState extends State<LoginPageView> {
           listener: (context, state) {
             if (state is AuthenticationError) {
               SchedulerBinding.instance.addPostFrameCallback((_) {
-                DUDialog.showOneButtonDialog(context: context).then((value) {
+                DUDialog.showOneButtonDialog(
+                        context: context,
+                        title: '로그인에 실패했어요',
+                        subTitle: '다시 시도해주세요. 🙂')
+                    .then((value) {
                   context.read<AuthenticationBloc>().add(
                         const AuthenticationStatusChanged(
                             AuthenticationStatusType.unauthenticated),

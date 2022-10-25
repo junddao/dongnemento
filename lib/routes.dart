@@ -119,12 +119,15 @@ class AppRouter extends Bloc {
               GoRoute(
                 parentNavigatorKey: _rootNavigatorKey,
                 path: Routes.post,
-                pageBuilder: (context, state) {
-                  return MaterialPage(
-                    key: state.pageKey,
-                    child: const PagePostCreate(),
-                  );
+                builder: (context, state) {
+                  return const PagePostCreate();
                 },
+                // pageBuilder: (context, state) {
+                //   return MaterialPage(
+                //     key: state.pageKey,
+                //     child: const PagePostCreate(),
+                //   );
+                // },
               ),
             ],
           ),

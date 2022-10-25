@@ -22,4 +22,12 @@ class SingletonMeLoaded extends SingletonMeState {
   List<Object> get props => [singletonMe];
 }
 
-class SingletonMeError extends SingletonMeState {}
+class SingletonMeError extends SingletonMeState {
+  final String errorMessage;
+
+  const SingletonMeError({
+    this.errorMessage = '',
+  }) : super();
+  @override
+  List<Object> get props => [errorMessage];
+}

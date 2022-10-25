@@ -60,11 +60,10 @@ class _MapPageViewState extends State<MapPageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // extendBodyBehindAppBar: true,
+      // extendBody: true,
       floatingActionButton: _floatingActionButton(),
-      body: SafeArea(
-        top: true,
-        child: _body(),
-      ),
+      body: _body(),
     );
   }
 
@@ -167,30 +166,27 @@ class _MapPageViewState extends State<MapPageView> {
     LatLng location = LatLng(lat, lng);
 
     print('handelTap');
-    context.read<LocationCubit>().setPostLocation(location);
 
     // locationProvider.setPost(point);
 
     // 글을 남길 위치에 임시 마커를 박는다.
     _temporaryMaker.clear();
     addTemporaryMarker(0, location);
+    context.read<LocationCubit>().setTemporaryLocation(location);
 
     showModalBottomSheet(
       context: GoRouter.of(context).navigator!.context,
       // isScrollControlled: true,
       builder: (_) {
-        return buildSelectLocationBottomSheet(context);
+        return buildSelectLocationBottomSheet(context, location);
       },
     ).then((value) {
-      if (value != true) {
-        // 취소하면 postLocation 초기화 필요.
-        context.read<LocationCubit>().clearPostLocation();
-      }
-      _temporaryMaker.clear();
+      removeTemporaryMarker();
+      context.read<LocationCubit>().clearTemporaryLocation();
     });
   }
 
-  Widget buildSelectLocationBottomSheet(BuildContext context) {
+  Widget buildSelectLocationBottomSheet(BuildContext context, LatLng location) {
     return BlocBuilder<LocationCubit, LocationState>(
       builder: (context, state) {
         return Container(
@@ -204,7 +200,7 @@ class _MapPageViewState extends State<MapPageView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(state.modelResponseSetPost?.address ?? '',
+                Text(state.temporaryLocation?.address ?? '',
                     style: DUTextStyle.size14M.black),
                 const SizedBox(
                   height: 10,
@@ -215,8 +211,13 @@ class _MapPageViewState extends State<MapPageView> {
                   width: SizeConfig.screenWidth,
                   press: () {
                     // context.pop();
-                    Navigator.pop(context);
-                    context.go('/map/post');
+                    context
+                        .read<LocationCubit>()
+                        .setPostLocation(location)
+                        .then((value) {
+                      Navigator.pop(context, true);
+                      context.go('/map/post');
+                    });
                   },
                 ),
                 DUButton(
@@ -224,7 +225,7 @@ class _MapPageViewState extends State<MapPageView> {
                   width: SizeConfig.screenWidth,
                   type: ButtonType.transparent,
                   press: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(false);
                   },
                 ),
               ],
@@ -243,5 +244,9 @@ class _MapPageViewState extends State<MapPageView> {
       // icon: customIcon!,
     );
     _temporaryMaker.add(marker);
+  }
+
+  void removeTemporaryMarker() {
+    _temporaryMaker.clear();
   }
 }

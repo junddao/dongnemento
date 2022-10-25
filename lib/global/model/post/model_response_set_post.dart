@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-class ModelResponseSetPost {
+class ModelLocation {
   String? address;
   double? lat;
   double? lng;
-  ModelResponseSetPost({
+  ModelLocation({
     this.address,
     this.lat,
     this.lng,
@@ -18,8 +18,8 @@ class ModelResponseSetPost {
     };
   }
 
-  factory ModelResponseSetPost.fromMap(Map<String, dynamic> map) {
-    return ModelResponseSetPost(
+  factory ModelLocation.fromMap(Map<String, dynamic> map) {
+    return ModelLocation(
       address: map['address'],
       lat: map['lat']?.toDouble(),
       lng: map['lng']?.toDouble(),
@@ -28,15 +28,15 @@ class ModelResponseSetPost {
 
   String toJson() => json.encode(toMap());
 
-  factory ModelResponseSetPost.fromJson(String source) =>
-      ModelResponseSetPost.fromMap(json.decode(source));
+  factory ModelLocation.fromJson(String source) =>
+      ModelLocation.fromMap(json.decode(source));
 
-  ModelResponseSetPost copyWith({
+  ModelLocation copyWith({
     String? address,
     double? lat,
     double? lng,
   }) {
-    return ModelResponseSetPost(
+    return ModelLocation(
       address: address ?? this.address,
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,

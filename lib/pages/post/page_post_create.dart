@@ -1,13 +1,19 @@
 import 'dart:io';
 
+import 'package:base_project/global/bloc/map/location/location_cubit.dart';
+import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/component/du_two_button_dialog.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
+import 'package:base_project/pages/common/error_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:images_picker/images_picker.dart';
 
 class PagePostCreate extends StatefulWidget {
   const PagePostCreate({Key? key}) : super(key: key);
@@ -17,14 +23,28 @@ class PagePostCreate extends StatefulWidget {
 }
 
 class _PagePostCreateState extends State<PagePostCreate> {
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _bodyController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _bodyController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  // about image_picker
+  List<XFile?> _imageFileList = [];
+  void _setImageFileListFromFile(List<XFile?> values) {
+    _imageFileList = <XFile?>[...values];
+  }
+
+  dynamic _pickImageError;
+  final ImagePicker _picker = ImagePicker();
+
   LatLng? location;
-  String? address;
+  // String? address;
 
   LatLng? myPostLocation;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -44,7 +64,7 @@ class _PagePostCreateState extends State<PagePostCreate> {
   AppBar _appBar() {
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Text('글쓰기'),
+      title: const Text('글쓰기'),
       centerTitle: true,
       leading: IconButton(
         onPressed: () {
@@ -75,28 +95,38 @@ class _PagePostCreateState extends State<PagePostCreate> {
   }
 
   Widget _body() {
-    return SingleChildScrollView(
-      physics: const ClampingScrollPhysics(),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: kDefaultHorizontalPadding,
-            vertical: kDefaultVerticalPadding),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              // 1. 제목
-              postTitle(),
-              const SizedBox(height: 20),
-              // 2. 내용
-              postContents(),
-              const SizedBox(height: 20),
-              // 3. 위치지정
-              postLocation(),
-              const SizedBox(height: 20),
-              // 4. 이미지
-              postImages(),
-            ],
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: kDefaultHorizontalPadding,
+              vertical: kDefaultVerticalPadding),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                // 1. 제목
+                postTitle(),
+                const SizedBox(height: 20),
+                // 2. 내용
+                postContents(),
+                const SizedBox(height: 20),
+                // 3. 위치지정
+                postLocation(),
+                const SizedBox(height: 20),
+                // 4. 이미지
+                postImages(),
+              ],
+            ),
           ),
         ),
       ),
@@ -176,51 +206,64 @@ class _PagePostCreateState extends State<PagePostCreate> {
   }
 
   postLocation() {
-    String? address = '';
-
-    return Column(children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text('장소', style: DUTextStyle.size16M),
-          const SizedBox(width: 8),
+    return BlocBuilder<LocationCubit, LocationState>(
+      builder: (context, state) {
+        String? address;
+        if (state is LocationError) {
+          return ErrorPage(exception: state.errorMessage);
+        }
+        if (state is LocationLoaded) {
+          address = state.postLocation!.address;
+        }
+        return Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('장소', style: DUTextStyle.size16M),
+              const SizedBox(width: 8),
+              InkWell(
+                onTap: () {
+                  getMyLocation();
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: DUColors.greyish),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text('현재 위치로 선택', style: DUTextStyle.size12.grey0),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           InkWell(
             onTap: () {
-              // getMyLocation();
+              Navigator.of(context).pushNamed('PageSelectLocation');
             },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                border: Border.all(color: DUColors.greyish),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text('현재 위치로 선택', style: DUTextStyle.size12.grey0),
+            child: Row(
+              children: [
+                const Icon(Icons.location_pin, color: DUColors.pinkish_grey),
+                const SizedBox(width: 10),
+                Text(address ?? '위치 선택', style: DUTextStyle.size14.grey0),
+              ],
             ),
           ),
-        ],
-      ),
-      const SizedBox(height: 16),
-      InkWell(
-        onTap: () {
-          Navigator.of(context).pushNamed('PageSelectLocation');
-        },
-        child: Row(
-          children: [
-            const Icon(Icons.location_pin, color: DUColors.pinkish_grey),
-            const SizedBox(width: 10),
-            Text('위치 선택', style: DUTextStyle.size14.grey0)
-          ],
-        ),
-      ),
-      const SizedBox(height: 10),
-    ]);
+          const SizedBox(height: 10),
+        ]);
+      },
+    );
   }
 
-  // getMyLocation() {
-  //   var provider = context.read<LocationProvider>();
-  //   location = provider.setMyPostLocation(provider.myLocation!);
-  //   provider.getAddress(provider.myLocation!);
-  // }
+  getMyLocation() {
+    String address = context.read<SingletonMeCubit>().me.address!;
+    double lng = context.read<SingletonMeCubit>().me.lng!;
+    double lat = context.read<SingletonMeCubit>().me.lat!;
+    LatLng location = LatLng(lat, lng);
+
+    context.read<LocationCubit>().setPostLocation(location);
+  }
 
   postImages() {
     return Column(children: [
@@ -350,10 +393,21 @@ class _PagePostCreateState extends State<PagePostCreate> {
   Widget getAddPhotoBtn() {
     return InkWell(
       onTap: () async {
-        // _selectedAssetList = (await DSImagePicker().cameraAndStay(
-        //     context: context, assets: _selectedAssetList, maxAssetsCount: 5))!;
-        // await getFileList();
-        // setState(() {});
+        List<Media>? res = await ImagesPicker.pick(
+          count: 5,
+          pickType: PickType.image,
+        );
+        // try {
+        //   final List<XFile?> selectedFiles = await _picker.pickMultiImage();
+        //   if (selectedFiles.isNotEmpty) {}
+        //   setState(() {
+        //     _setImageFileListFromFile(selectedFiles);
+        //   });
+        // } catch (e) {
+        //   setState(() {
+        //     _pickImageError = e;
+        //   });
+        // }
       },
       child: Padding(
         padding: const EdgeInsets.only(top: 10.0, right: 10),
@@ -382,68 +436,4 @@ class _PagePostCreateState extends State<PagePostCreate> {
       ),
     );
   }
-
-  // Future<void> updateImageToServer() async {
-  //   if (_images.isNotEmpty) {
-  //     await context
-  //         .read<FileProvider>()
-  //         .uploadImages(_images)
-  //         .then((value) async {
-  //       _imageUrls = value!.images!;
-  //     });
-  //   }
-  // }
-
-  // void onSave() async {
-  //   if (!_formKey.currentState!.validate()) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text("빈칸을 채워주세요."),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-
-  //     return;
-  //   }
-
-  //   location = context.read<LocationProvider>().myPostLocation;
-  //   EasyLoading.show(status: 'loading...', dismissOnTap: true);
-  //   // 이미지 보내기
-  //   try {
-  //     await updateImageToServer().catchError((onError) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: const Text('이미지 업로드에 실패했습니다. 이미지를 다시 선택 후 시도해 주세요.'),
-  //         ),
-  //       );
-  //       throw Exception();
-  //     });
-  //     ModelRequestCreatePin requestCreatePin = ModelRequestCreatePin(
-  //       lat: location!.latitude,
-  //       lng: location!.longitude,
-  //       title: _titleController.text,
-  //       body: _bodyController.text,
-  //       images: _imageUrls,
-  //     );
-
-  //     await context
-  //         .read<LocationProvider>()
-  //         .createPin(requestCreatePin)
-  //         .catchError((onError) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: const Text('생성에 실패하였습니다. 다시 시도해 주세요.'),
-  //         ),
-  //       );
-  //       throw Exception();
-  //     });
-  //     EasyLoading.dismiss();
-  //     Navigator.of(context)
-  //         .pushNamedAndRemoveUntil('PageMap', (route) => false);
-  //   } catch (e) {
-  //     print(e);
-  //   } finally {
-  //     EasyLoading.dismiss();
-  //   }
-  // }
 }

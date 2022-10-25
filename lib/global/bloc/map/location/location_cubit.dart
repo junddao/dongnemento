@@ -17,7 +17,9 @@ class LocationCubit extends Cubit<LocationState> {
   ) async {
     // emit(LocationLoading());
 
-    ModelResponseSetPost newPost = state.modelResponseSetPost!.copyWith(
+    LocationState prevState = state;
+
+    ModelLocation newPost = prevState.postLocation!.copyWith(
       lat: postLocation.latitude,
       lng: postLocation.longitude,
     );
@@ -26,11 +28,31 @@ class LocationCubit extends Cubit<LocationState> {
     String address = await getKakaoAddressByLocation(
         postLocation.longitude, postLocation.latitude);
 
-    ;
+    emit(LocationLoaded(
+      postLocation: newPost.copyWith(address: address),
+      temporaryLocation: prevState.temporaryLocation,
+    ));
+  }
+
+  Future<void> setTemporaryLocation(
+    LatLng temporaryLocation,
+  ) async {
+    // emit(LocationLoading());
+
+    LocationState prevState = state;
+
+    ModelLocation newTemporaryLocation = prevState.temporaryLocation!.copyWith(
+      lat: temporaryLocation.latitude,
+      lng: temporaryLocation.longitude,
+    );
+    emit(LocationLoading());
+
+    String address = await getKakaoAddressByLocation(
+        temporaryLocation.longitude, temporaryLocation.latitude);
 
     emit(LocationLoaded(
-      modelResponseSetPost: newPost.copyWith(address: address),
-      // myLocation:
+      postLocation: prevState.postLocation,
+      temporaryLocation: newTemporaryLocation.copyWith(address: address),
     ));
   }
 
@@ -42,7 +64,20 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<void> clearPostLocation() async {
+    LocationState prevState = state;
     emit(LocationLoading());
-    emit(LocationLoaded(modelResponseSetPost: ModelResponseSetPost()));
+    emit(LocationLoaded(
+      postLocation: ModelLocation(),
+      temporaryLocation: prevState.temporaryLocation,
+    ));
+  }
+
+  Future<void> clearTemporaryLocation() async {
+    LocationState prevState = state;
+    emit(LocationLoading());
+    emit(LocationLoaded(
+      postLocation: prevState.postLocation,
+      temporaryLocation: ModelLocation(),
+    ));
   }
 }
