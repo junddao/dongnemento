@@ -136,14 +136,14 @@ class ApiService {
   }
 
   Future<dynamic> postMultiPart(
-      String url, List<File> files, Map<String, dynamic> map) async {
+      String url, List<File> files, String type) async {
     final token = await _getAuthorizationToken();
     logger.d(token);
 
     Response response;
     try {
       _multiPartHeaders['Authorization'] = 'Bearer $token';
-      final formData = FormData.fromMap(map);
+      var formData = FormData();
 
       // formData.fields.add(MapEntry('roomId', roomId));
       // formData.fields.add(MapEntry('syncKey', generateSyncKey()));

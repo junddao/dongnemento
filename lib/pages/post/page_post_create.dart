@@ -1,8 +1,11 @@
 import 'dart:io';
 
+import 'package:base_project/global/bloc/file/file_cubit.dart';
 import 'package:base_project/global/bloc/map/location/location_cubit.dart';
+import 'package:base_project/global/bloc/map/pin/create_pin_cubit.dart';
 import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/component/du_two_button_dialog.dart';
+import 'package:base_project/global/model/pin/model_request_create_pin.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
@@ -23,23 +26,37 @@ class PagePostCreate extends StatefulWidget {
 }
 
 class _PagePostCreateState extends State<PagePostCreate> {
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => FileCubit(),
+        ),
+        BlocProvider(
+          create: (context) => CreatePinCubit(),
+        ),
+      ],
+      child: const PagePostCreateView(),
+    );
+  }
+}
+
+class PagePostCreateView extends StatefulWidget {
+  const PagePostCreateView({super.key});
+
+  @override
+  State<PagePostCreateView> createState() => _PagePostCreateViewState();
+}
+
+class _PagePostCreateViewState extends State<PagePostCreateView> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  // about image_picker
-  List<XFile?> _imageFileList = [];
-  void _setImageFileListFromFile(List<XFile?> values) {
-    _imageFileList = <XFile?>[...values];
-  }
-
-  dynamic _pickImageError;
-  final ImagePicker _picker = ImagePicker();
+  List<String> imagePaths = [];
 
   LatLng? location;
-  // String? address;
-
-  LatLng? myPostLocation;
 
   @override
   void initState() {
@@ -83,7 +100,7 @@ class _PagePostCreateState extends State<PagePostCreate> {
       actions: [
         TextButton(
           onPressed: () {
-            // onSave();
+            onSave();
           },
           child: Text(
             '등록',
@@ -95,41 +112,76 @@ class _PagePostCreateState extends State<PagePostCreate> {
   }
 
   Widget _body() {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
+    return BlocConsumer<FileCubit, FileState>(
+      listener: ((context, state) {
+        if (state is FileError) {
+          DUDialog.showOneButtonDialog(
+              context: context, title: '에러', subTitle: '사진 업로드에 실패했어요');
         }
+      }),
+      builder: (context, state) {
+        if (state is FileLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        return BlocConsumer<CreatePinCubit, CreatePinState>(
+          listener: (context, state) {
+            if (state is CreatePinLoaded) {
+              context.pop();
+            }
+            if (state is CreatePinError) {
+              DUDialog.showOneButtonDialog(
+                  context: context, title: '에러', subTitle: '핀 생성에 실패했어요');
+            }
+          },
+          builder: (context, state) {
+            if (state is CreatePinLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+              },
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: kDefaultHorizontalPadding,
+                      vertical: kDefaultVerticalPadding),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        // 1. 제목
+                        postTitle(),
+                        const SizedBox(height: 20),
+                        // 2. 내용
+                        postContents(),
+                        const SizedBox(height: 20),
+                        // 3. 위치지정
+                        postLocation(),
+                        const SizedBox(height: 20),
+                        // 4. 이미지
+                        postImages(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
       },
-      child: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultHorizontalPadding,
-              vertical: kDefaultVerticalPadding),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                // 1. 제목
-                postTitle(),
-                const SizedBox(height: 20),
-                // 2. 내용
-                postContents(),
-                const SizedBox(height: 20),
-                // 3. 위치지정
-                postLocation(),
-                const SizedBox(height: 20),
-                // 4. 이미지
-                postImages(),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -280,134 +332,91 @@ class _PagePostCreateState extends State<PagePostCreate> {
         child: Row(
           children: [
             getAddPhotoBtn(),
-            // Expanded(
-            //   child: ListView.builder(
-            //     scrollDirection: Axis.horizontal,
-            //     itemCount: _selectedAssetList.length,
-            //     itemBuilder: (context, index) {
-            //       return getImages(index);
-            //     },
-            //   ),
-            // ),
+            Expanded(
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: imagePaths.length,
+                itemBuilder: (context, index) {
+                  return getImages(index);
+                },
+              ),
+            ),
           ],
         ),
       ),
     ]);
   }
 
-  // Widget getImages(index) {
-  //   return RawMaterialButton(
-  //     onPressed: () async {
-  //       // 클릭했을때 list 에 추가하고, 순서하고
+  Widget getImages(index) {
+    return RawMaterialButton(
+      onPressed: () async {
+        imagePaths.removeAt(index);
+        setState(() {});
+      },
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10, right: 10),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.file(
+                File(imagePaths[index]),
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: _getSelectedPhotoEraseCircle(),
+          )
+        ],
+      ),
+    );
+  }
 
-  //       _selectedAssetList.removeAt(index);
-
-  //       _images.removeAt(index);
-  //       setState(() {});
-  //     },
-  //     child: Stack(
-  //       children: [
-  //         Padding(
-  //           padding: const EdgeInsets.only(top: 10, right: 10),
-  //           child: ClipRRect(
-  //               borderRadius: BorderRadius.circular(10),
-  //               child: Image(
-  //                   width: 60,
-  //                   height: 60,
-  //                   image: AssetEntityImageProvider(_selectedAssetList[index],
-  //                       isOriginal: false))
-  //               // child: CachedNetworkImage(
-  //               //   imageUrl: imageUrls[index],
-  //               //   width: 60,
-  //               //   height: 60,
-  //               //   fit: BoxFit.cover,
-  //               // ),
-  //               ),
-  //         ),
-  //         Positioned(
-  //           right: 0,
-  //           top: 0,
-  //           child: _getSelectedPhotoEraseCircle(),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // Future<void> getFileList() async {
-  //   _images.clear();
-
-  //   for (final AssetEntity asset in _selectedAssetList) {
-  //     // If the entity `isAll`, that's the "Recent" entity you want.
-  //     File? file = await asset.originFile;
-  //     if (file != null) {
-  //       var filePath = file.absolute.path;
-  //       print('original size = ${asset.width} / ${asset.height}');
-  //       if (asset.width > 1080 && asset.height > 1080) {
-  //         final int? shorterSide =
-  //             asset.width < asset.height ? asset.width : asset.height;
-  //         final int resizePercent = (1080.0 / shorterSide! * 100).toInt();
-
-  //         File compressedFile = await FlutterNativeImage.compressImage(filePath,
-  //             quality: 50, percentage: resizePercent);
-
-  //         print('resize Percent = $resizePercent');
-  //         print('compressed File = ${compressedFile.toString()}');
-
-  //         filePath = compressedFile.path;
-  //       }
-  //       try {
-  //         if (filePath.toLowerCase().endsWith(".heic") ||
-  //             filePath.toLowerCase().endsWith(".heif")) {
-  //           String? jpgPath = await HeicToJpg.convert(filePath);
-  //           File file = File(jpgPath!);
-
-  //           _images.add(file);
-  //         } else {
-  //           File file = File(filePath);
-
-  //           _images.add(file);
-  //         }
-  //       } on Exception catch (e) {
-  //         print(e.toString());
-  //       }
-  //     }
-  //   }
-  // }
-
-  // Widget _getSelectedPhotoEraseCircle() {
-  //   return Container(
-  //     height: 20,
-  //     width: 20,
-  //     child: CircleAvatar(
-  //       child: Icon(
-  //         Icons.close,
-  //         size: 16,
-  //         color: Colors.white.withOpacity(0.8),
-  //       ),
-  //       backgroundColor: DUColors.black05.withOpacity(0.8),
-  //     ),
-  //   );
-  // }
+  Widget _getSelectedPhotoEraseCircle() {
+    return SizedBox(
+      height: 20,
+      width: 20,
+      child: CircleAvatar(
+        backgroundColor: DUColors.black05.withOpacity(0.8),
+        child: Icon(
+          Icons.close,
+          size: 16,
+          color: Colors.white.withOpacity(0.8),
+        ),
+      ),
+    );
+  }
 
   Widget getAddPhotoBtn() {
     return InkWell(
       onTap: () async {
-        List<Media>? res = await ImagesPicker.pick(
-          count: 5,
-          pickType: PickType.image,
-        );
-        // try {
-        //   final List<XFile?> selectedFiles = await _picker.pickMultiImage();
-        //   if (selectedFiles.isNotEmpty) {}
-        //   setState(() {
-        //     _setImageFileListFromFile(selectedFiles);
-        //   });
-        // } catch (e) {
-        //   setState(() {
-        //     _pickImageError = e;
-        //   });
-        // }
+        try {
+          List<Media>? res = await ImagesPicker.pick(
+            count: 5,
+            pickType: PickType.image,
+          );
+          if (res == null) {
+            return;
+          }
+          imagePaths = res.map(
+            (e) {
+              return e.path;
+            },
+          ).toList();
+
+          setState(() {});
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('사진을 가져오지 못했습니다. 다시 시도해주세요.'),
+            ),
+          );
+        }
       },
       child: Padding(
         padding: const EdgeInsets.only(top: 10.0, right: 10),
@@ -435,5 +444,45 @@ class _PagePostCreateState extends State<PagePostCreate> {
         ),
       ),
     );
+  }
+
+  Future<void> onSave() async {
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("빈칸을 채워주세요."),
+          backgroundColor: Colors.red,
+        ),
+      );
+
+      return;
+    }
+
+    // List<File> files = imagePaths.map((e) {
+    //   return File(e);
+    // }).toList();
+
+    // await updateImageToServer(files);
+
+    double lat = context.read<LocationCubit>().state.postLocation!.lat!;
+    double lng = context.read<LocationCubit>().state.postLocation!.lng!;
+
+    location = LatLng(lat, lng);
+
+    ModelRequestCreatePin requestCreatePin = ModelRequestCreatePin(
+      lat: location!.latitude,
+      lng: location!.longitude,
+      title: _titleController.text,
+      body: _bodyController.text,
+      images: imagePaths,
+    );
+
+    await context.read<CreatePinCubit>().createPin(requestCreatePin);
+  }
+
+  Future<void> updateImageToServer(List<File> files) async {
+    if (files.isNotEmpty) {
+      context.read<FileCubit>().uploadImages(files);
+    }
   }
 }

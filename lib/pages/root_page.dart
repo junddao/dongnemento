@@ -27,11 +27,13 @@ class _RootPageState extends State<RootPage> {
     SecureStorage.instance.readToken().then((token) {
       if (token != null && token.isNotEmpty) {
         context.read<AuthenticationBloc>().add(
-              const AuthenticationStatusChanged(AuthenticationStatusType.authenticated),
+              const AuthenticationStatusChanged(
+                  status: AuthenticationStatusType.authenticated),
             );
       } else {
         context.read<AuthenticationBloc>().add(
-              const AuthenticationStatusChanged(AuthenticationStatusType.unauthenticated),
+              const AuthenticationStatusChanged(
+                  status: AuthenticationStatusType.unauthenticated),
             );
       }
     });

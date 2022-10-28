@@ -1,6 +1,9 @@
 import 'package:base_project/env.dart';
+import 'package:base_project/global/model/common/api_response.dart';
+import 'package:base_project/global/model/common/model_response_common.dart';
 import 'package:base_project/global/model/etc/kakao_local_result.dart';
 import 'package:base_project/global/model/etc/model_response_kakao_location.dart';
+import 'package:base_project/global/model/pin/model_request_create_pin.dart';
 import 'package:base_project/global/repository/api_service.dart';
 
 class MapRepository {
@@ -12,7 +15,7 @@ class MapRepository {
 
   MapRepository._();
 
-  String apiUrl = Env.apiAuthUrl;
+  String apiUrl = Env.apiPinUrl;
 
   Future<KakaoLocalResponseData> getKakaoAddressByKeyword(String keyword,
       {int? page = 15}) async {
@@ -39,6 +42,23 @@ class MapRepository {
       return modelResponseKakaoLocation;
     } catch (e) {
       throw Exception();
+    }
+  }
+
+  Future<ApiResponse<bool>> createPin(
+      ModelRequestCreatePin requestCreatePin) async {
+    late ModelResponseCommon modelResponseCommon;
+    try {
+      Map<String, dynamic> response =
+          await ApiService().post('$apiUrl/create', requestCreatePin.toMap());
+      modelResponseCommon = ModelResponseCommon.fromMap(response);
+      if (modelResponseCommon.success == true) {
+        return ApiResponse.completed(true);
+      } else {
+        return ApiResponse.error(modelResponseCommon.error);
+      }
+    } catch (e) {
+      return ApiResponse.error(e.toString());
     }
   }
 }

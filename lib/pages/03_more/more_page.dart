@@ -73,6 +73,27 @@ class _MorePageViewState extends State<MorePageView> {
     return Scaffold(
       appBar: _appBar(),
       body: _body(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          BuildContext parentContext = GoRouter.of(context).navigator!.context;
+          showBottomSheet(
+              context: parentContext,
+              builder: (context) {
+                return Container(
+                  height: 200,
+                  width: double.infinity,
+                  color: Colors.yellow,
+                  child: TextButton(
+                    child: Text('pop'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                );
+              });
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
@@ -231,7 +252,6 @@ class _MorePageViewState extends State<MorePageView> {
                     DUButton(
                         text: '수정하기',
                         press: () async {
-                          // 이름, 주소, 좌표 업데이트 (사진 업데이트시 추가 필요)
                           ModelUser updatedMe = context
                               .read<SingletonMeCubit>()
                               .me

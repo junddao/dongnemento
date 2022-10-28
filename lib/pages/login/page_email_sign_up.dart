@@ -2,6 +2,7 @@ import 'package:base_project/global/bloc/auth/authentication/authentication_bloc
 import 'package:base_project/global/bloc/auth/sign_up/sign_up_cubit.dart';
 import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
+import 'package:base_project/global/enum/authentication_status_type.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
@@ -45,7 +46,7 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
   final TextEditingController _tecPasswordCheck = TextEditingController();
   final TextEditingController _tecNickname = TextEditingController();
 
-  String _address = '';
+  String? _address;
   double? _lat;
   double? _lng;
 
@@ -70,7 +71,9 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
     return BlocConsumer<SignUpCubit, SignUpState>(
       listener: (context, state) {
         if (state is SignUpLoaded) {
-          context.go('/home');
+          context.read<AuthenticationBloc>().add(
+              const AuthenticationStatusChanged(
+                  status: AuthenticationStatusType.authenticated));
         }
       },
       builder: (context, state) {
@@ -179,11 +182,7 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(context
-                                        .watch<SingletonMeCubit>()
-                                        .me
-                                        .address ??
-                                    '주소를 입력해주세요'),
+                                Text(_address ?? '주소를 입력해주세요'),
                                 DUButton(
                                     text: '입력하기',
                                     press: () {
@@ -240,6 +239,11 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
     _address = address;
     _lat = lat;
     _lng = lng;
+
+    context.read<SingletonMeCubit>().me.lat = lat;
+    context.read<SingletonMeCubit>().me.lng = lng;
+    context.read<SingletonMeCubit>().me.address = address;
+
     setState(() {});
   }
 }

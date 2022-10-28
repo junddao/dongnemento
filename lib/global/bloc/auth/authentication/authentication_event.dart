@@ -8,7 +8,7 @@ abstract class AuthenticationEvent extends Equatable {
 }
 
 class AuthenticationStatusChanged extends AuthenticationEvent {
-  const AuthenticationStatusChanged(this.status);
+  const AuthenticationStatusChanged({required this.status});
 
   final AuthenticationStatusType status;
 

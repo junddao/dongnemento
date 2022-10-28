@@ -67,7 +67,7 @@ class _LoginPageViewState extends State<LoginPageView> {
                     .then((value) {
                   context.read<AuthenticationBloc>().add(
                         const AuthenticationStatusChanged(
-                            AuthenticationStatusType.unauthenticated),
+                            status: AuthenticationStatusType.unauthenticated),
                       );
                 });
               });
