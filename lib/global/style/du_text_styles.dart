@@ -10,220 +10,339 @@ class DUTextStyle {
   static final List<String>? _fontFamilyFallback =
       Platform.isIOS ? ["NotoSansKR"] : null;
 
-  // Regular(Weight:w400)
-
   /// Weight : Regular(400)
   ///
-  /// Size : 30
-  static final size30 = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
+  /// Size : 8
+  static const size8 = TextStyle(
     fontWeight: FontWeight.w400,
-    fontSize: 30,
+    fontSize: 8,
   );
 
-  /// Weight : Regular(400)
+  /// Weight : Medium(500)
   ///
-  /// Size : 24
-  static final size24 = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.w400,
-    fontSize: 24,
+  /// Size : 8
+  static const size8M = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 8,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 8
+  static const size8B = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 8,
   );
 
   /// Weight : Regular(400)
   ///
   /// Size : 20
-  static final size20 = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
+  static const size20 = TextStyle(
     fontWeight: FontWeight.w400,
+    fontSize: 10,
+  );
+
+  /// Weight : Medium(500)
+  ///
+  /// Size : 20
+  static const size20M = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 20,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 20
+  static const size20B = TextStyle(
+    fontWeight: FontWeight.w700,
     fontSize: 20,
   );
 
   /// Weight : Regular(400)
   ///
+  /// Size : 12
+  static const size12 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
+  );
+
+  /// Weight : Medium(500)
+  ///
+  /// Size : 12
+  static const size12M = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 12,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 12
+  static const size12B = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 12,
+  );
+
+  /// Weight : Regular(400)
+  ///
+  /// Size : 14
+  static const size14 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+  );
+
+  /// Weight : Medium(500)
+  ///
+  /// Size : 14
+  static const size14M = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 14,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 14
+  static const size14B = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 14,
+  );
+
+  /// Weight : Regular(400)
+  ///
   /// Size : 16
-  static final size18 = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
+  static const size16 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 16,
+  );
+
+  /// Weight : Medium(500)
+  ///
+  /// Size : 16
+  static const size16M = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 16,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 16
+  static const size16B = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 16,
+  );
+
+  /// Weight : Regular(400)
+  ///
+  /// Size : 18
+  static const size18 = TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 18,
   );
 
-  /// Weight : Regular(700)
+  /// Weight : Medium(500)
   ///
-  /// Size : 16
-  static final size18B = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
+  /// Size : 18
+  static const size18M = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 18,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 18
+  static const size18B = TextStyle(
     fontWeight: FontWeight.w700,
     fontSize: 18,
   );
 
   /// Weight : Regular(400)
   ///
-  /// Size : 16
-  static final size16 = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.w400,
-    fontSize: 16,
-  );
-
-  /// Weight : Regular(400)
-  ///
-  /// Size : 14
-  static final size14 = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.w400,
-    fontSize: 14,
-  );
-
-  /// Weight : Regular(400)
-  ///
-  /// Size : 12
-  static final size12 = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.w400,
-    fontSize: 12,
-  );
-
-  /// Weight : Regular(400)
-  ///
   /// Size : 10
-  static final size10 = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
+  static const size10 = TextStyle(
     fontWeight: FontWeight.w400,
-    fontSize: 10,
-  );
-
-  /// Weight : Regular(400)
-  ///
-  /// Size : 9.3333333
-  /// 타이틀에는 1.5배 크게 나오므로 14pt * 2 / 3 = 9.3333333
-  static final size9 = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.w400,
-    fontSize: 9.3333333,
-  );
-
-  // Medium(Weight:w500)
-
-  /// Weight : Medium(500)
-  ///
-  /// Size : 30
-  static final size30M = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.w500,
-    fontSize: 30,
-  );
-
-  /// Weight : Medium(500)
-  ///
-  /// Size : 24
-  static final size24M = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.w500,
-    fontSize: 24,
-  );
-
-  /// Weight : Medium(500)
-  ///
-  /// Size : 20
-  static final size20M = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.w500,
     fontSize: 20,
   );
 
   /// Weight : Medium(500)
   ///
-  /// Size : 16
-  static final size16M = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
+  /// Size : 10
+  static const size10M = TextStyle(
     fontWeight: FontWeight.w500,
-    fontSize: 16,
+    fontSize: 10,
   );
 
-  /// Weight : Medium(700)
+  /// Weight : Bold (700)
   ///
-  /// Size : 16
-  static final size16B = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
+  /// Size : 10
+  static const size10B = TextStyle(
     fontWeight: FontWeight.w700,
-    fontSize: 16,
+    fontSize: 20,
+  );
+
+  /// Weight : Regular(400)
+  ///
+  /// Size : 22
+  static const size22 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 22,
   );
 
   /// Weight : Medium(500)
   ///
-  /// Size : 14
-  static final size14M = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
+  /// Size : 22
+  static const size22M = TextStyle(
     fontWeight: FontWeight.w500,
-    fontSize: 14,
+    fontSize: 22,
   );
 
-  /// Weight : Medium(500)
+  /// Weight : Bold (700)
   ///
-  /// Size : 12
-  static final size12M = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.w500,
-    fontSize: 12,
+  /// Size : 22
+  static const size22B = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 22,
   );
 
-  /// Weight : Medium(500)
-  ///
-  /// Size : 10
-  static final size10M = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.w500,
-    fontSize: 10,
-  );
-
-  // Bold
-
-  /// Weight : Bold
-  ///
-  /// Size : 30
-  static final size30B = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.bold,
-    fontSize: 30,
-  );
-
-  /// Weight : Bold
+  /// Weight : Regular(400)
   ///
   /// Size : 24
-  static final size24B = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
-    fontWeight: FontWeight.bold,
+  static const size24 = TextStyle(
+    fontWeight: FontWeight.w400,
     fontSize: 24,
   );
 
-  /// Weight : Bold
+  /// Weight : Medium(500)
   ///
-  /// Size : 20
-  static final size20B = TextStyle(
-    fontFamily: _fontFamily,
-    fontFamilyFallback: _fontFamilyFallback,
+  /// Size : 24
+  static const size24M = TextStyle(
     fontWeight: FontWeight.w500,
-    fontSize: 20,
+    fontSize: 24,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 24
+  static const size24B = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 24,
+  );
+
+  /// Weight : Regular(400)
+  ///
+  /// Size : 26
+  static const size26 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 26,
+  );
+
+  /// Weight : Medium(500)
+  ///
+  /// Size : 26
+  static const size26M = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 26,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 26
+  static const size26B = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 26,
+  );
+
+  /// Weight : Regular(400)
+  ///
+  /// Size : 28
+  static const size28 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 28,
+  );
+
+  /// Weight : Medium(500)
+  ///
+  /// Size : 28
+  static const size28M = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 28,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 28
+  static const size28B = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 28,
+  );
+
+  /// Weight : Regular(400)
+  ///
+  /// Size : 30
+  static const size30 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 30,
+  );
+
+  /// Weight : Medium(500)
+  ///
+  /// Size : 30
+  static const size30M = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 30,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 30
+  static const size30B = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 30,
+  );
+
+  /// Weight : Regular(400)
+  ///
+  /// Size : 32
+  static const size32 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 32,
+  );
+
+  /// Weight : Medium(500)
+  ///
+  /// Size : 32
+  static const size32M = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 32,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 32
+  static const size32B = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 32,
+  );
+
+  /// Weight : Regular(400)
+  ///
+  /// Size : 32
+  static const size40 = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 40,
+  );
+
+  /// Weight : Medium(500)
+  ///
+  /// Size : 32
+  static const size40M = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 40,
+  );
+
+  /// Weight : Bold (700)
+  ///
+  /// Size : 32
+  static const size40B = TextStyle(
+    fontWeight: FontWeight.w700,
+    fontSize: 40,
   );
 }

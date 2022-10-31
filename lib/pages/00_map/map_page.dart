@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 
+import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
 import 'package:base_project/global/bloc/map/location/location_cubit.dart';
 import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/enum/cubit_status.dart';
+import 'package:base_project/global/model/pin/model_request_create_pin.dart';
+import 'package:base_project/global/model/pin/model_request_get_pin.dart';
+import 'package:base_project/global/model/pin/model_response_get_pin.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_colors.dart';
@@ -11,6 +16,7 @@ import 'package:base_project/global/util/date_converter.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:base_project/global/util/range_by_zoom.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -37,9 +43,9 @@ class MapPageView extends StatefulWidget {
 }
 
 class _MapPageViewState extends State<MapPageView> {
-  final List<Marker> _markers = [];
+  List<Marker> _pinMarker = [];
   final List<Marker> _temporaryMaker = [];
-  late final LatLng _lastLocation;
+  late LatLng _lastLocation;
 
   final Completer<GoogleMapController> _controller = Completer();
 
@@ -54,6 +60,13 @@ class _MapPageViewState extends State<MapPageView> {
     double lat = context.read<SingletonMeCubit>().me.lat ?? 0;
     double lng = context.read<SingletonMeCubit>().me.lng ?? 0;
     _lastLocation = LatLng(lat, lng);
+
+    ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+      lat: lat,
+      lng: lng,
+      range: 1000,
+    );
+    context.read<GetPinsCubit>().getPinWithMarkers(modelRequestGetPin);
     super.initState();
   }
 
@@ -85,37 +98,48 @@ class _MapPageViewState extends State<MapPageView> {
 
   Widget _body() {
     return BlocBuilder<LocationCubit, LocationState>(
-      builder: (context, state) {
-        if (state is LocationLoaded) {
+      builder: (context, locationState) {
+        if (locationState is LocationLoaded) {
           print('state loaded');
         }
-        return Stack(
-          children: [
-            GoogleMap(
-              onMapCreated: (controller) async {
-                await _onMapCreated(controller, _lastLocation);
-              },
-              initialCameraPosition: CameraPosition(
-                target: _lastLocation,
-                zoom: 15,
-              ),
+        return BlocBuilder<GetPinsCubit, GetPinsState>(
+          builder: (context, getPinsState) {
+            List<ResponsePin> pins = [];
+            if (getPinsState is GetMarkerLoaded) {
+              _pinMarker = getPinsState.markers;
+              // pins = getPinsState.result.data ?? [];
 
-              markers: <Marker>{..._markers, ..._temporaryMaker},
-              rotateGesturesEnabled: false,
-              myLocationEnabled: false,
-              myLocationButtonEnabled: false,
+              // addPinMarker(pins);
+            }
+            return Stack(
+              children: [
+                GoogleMap(
+                  onMapCreated: (controller) async {
+                    await _onMapCreated(controller, _lastLocation);
+                  },
+                  initialCameraPosition: CameraPosition(
+                    target: _lastLocation,
+                    zoom: 15,
+                  ),
 
-              // padding: const EdgeInsets.only(bottom: 130, right: 0),
-              // mapToolbarEnabled: false,
-              zoomControlsEnabled: false,
-              onCameraMove: _onCameraMove,
-              // onCameraIdle: _onCameraIdle,
+                  markers: <Marker>{..._pinMarker, ..._temporaryMaker},
+                  rotateGesturesEnabled: false,
+                  myLocationEnabled: false,
+                  myLocationButtonEnabled: false,
 
-              onTap: (point) {
-                _handleTap(point);
-              },
-            ),
-          ],
+                  // padding: const EdgeInsets.only(bottom: 130, right: 0),
+                  // mapToolbarEnabled: false,
+                  zoomControlsEnabled: false,
+                  onCameraMove: _onCameraMove,
+                  onCameraIdle: _onCameraIdle,
+
+                  onTap: (point) {
+                    _handleTap(point);
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -123,7 +147,7 @@ class _MapPageViewState extends State<MapPageView> {
 
   Future<void> _onMapCreated(
       GoogleMapController controller, LatLng location) async {
-    _markers.clear();
+    _pinMarker.clear();
     _controller.complete(controller);
   }
 
@@ -158,6 +182,7 @@ class _MapPageViewState extends State<MapPageView> {
     // print("move");
     print(position.zoom.toString());
     range = RangeByZoom.getRangeByZoom(position.zoom);
+    _lastLocation = LatLng(position.target.latitude, position.target.longitude);
   }
 
   _handleTap(LatLng point) {
@@ -184,6 +209,73 @@ class _MapPageViewState extends State<MapPageView> {
       removeTemporaryMarker();
       context.read<LocationCubit>().clearTemporaryLocation();
     });
+  }
+
+  void _onCameraIdle() async {
+    ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+      lat: _lastLocation.latitude,
+      lng: _lastLocation.longitude,
+      range: 1000,
+    );
+    context.read<GetPinsCubit>().getPinWithMarkers(modelRequestGetPin);
+  }
+
+  Future<void> addPinMarker(List<ResponsePin> pins) async {
+    for (var pin in pins) {
+      // customIcon = await createCustomMarkerBitmap(
+      //     element.images, element.pin!.title!);
+
+      customIcon = await createCustomMarkerBitmap(pin.title!);
+      final marker = Marker(
+        markerId: MarkerId(pin.toString()),
+        position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
+        icon: customIcon!,
+      );
+      _pinMarker.add(marker);
+    }
+  }
+
+  Future<BitmapDescriptor> createCustomMarkerBitmap(String title) async {
+    // final Size size = Size(150, 150);
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+
+    final Radius radius = Radius.circular(70);
+
+    final Paint tagPaint = Paint()..color = DUColors.tomato;
+
+    // Add tag text
+    TextPainter textPainter = TextPainter(textDirection: TextDirection.ltr);
+    textPainter.text = TextSpan(
+        text: title.length < 18 ? title : title.substring(0, 16) + '..',
+        style: DUTextStyle.size40B.white);
+
+    textPainter.layout();
+
+    // Add tag circle
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(
+              0.0, 0.0, textPainter.width + 40, textPainter.height + 20),
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius,
+        ),
+        tagPaint);
+
+    textPainter.paint(canvas, Offset(20, 10));
+
+    // Convert canvas to image
+    final ui.Image markerAsImage = await pictureRecorder.endRecording().toImage(
+        textPainter.width.toInt() + 80, textPainter.height.toInt() + 40);
+
+    // Convert image to bytes
+    final ByteData? byteData =
+        await markerAsImage.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List uint8List = byteData!.buffer.asUint8List();
+
+    return BitmapDescriptor.fromBytes(uint8List);
   }
 
   Widget buildSelectLocationBottomSheet(BuildContext context, LatLng location) {
