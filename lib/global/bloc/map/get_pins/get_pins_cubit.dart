@@ -86,8 +86,6 @@ class GetPinsCubit extends Cubit<GetPinsState> {
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
 
-    final Radius radius = Radius.circular(70);
-
     final Paint tagPaint = Paint()..color = DUColors.tomato;
 
     // Add tag text
@@ -99,64 +97,83 @@ class GetPinsCubit extends Cubit<GetPinsState> {
     textPainter.layout();
 
     // add shape
-    Size size = Size(textPainter.width + 40, textPainter.height + 40);
-    final bubbleSize = Size(size.width, size.height * 0.8);
-    final tailSize = Size(20, size.height - bubbleSize.height);
-    final fillet = bubbleSize.width * 0.1;
-    final tailStartPoint = Point(size.width * 0.4, bubbleSize.height);
+    Size size = Size(textPainter.width + 40, textPainter.height + 20);
+    final bubbleSize = Size(size.width, size.height);
+    final tailSize = Size(20, bubbleSize.height);
+
+    const radius = 20.0;
+    final tailStartPoint = Point(size.width * 0.5 - 10, bubbleSize.height);
     //bubble body
     final bubblePath = Path()
-      ..moveTo(0, fillet)
+      ..moveTo(0, radius)
       // 왼쪽 위에서 왼쪽 아래 라인
-      ..lineTo(0, bubbleSize.height - fillet)
-      ..quadraticBezierTo(0, bubbleSize.height, fillet, bubbleSize.height)
+      ..lineTo(0, bubbleSize.height - radius)
+      ..arcToPoint(
+        Offset(radius, bubbleSize.height),
+        radius: const Radius.circular(radius),
+        clockwise: false,
+      )
       // 왼쪽 아래에서 오른쪽 아래 라인
-      ..lineTo(bubbleSize.width - fillet, bubbleSize.height)
-      ..quadraticBezierTo(bubbleSize.width, bubbleSize.height, bubbleSize.width,
-          bubbleSize.height - fillet)
+      ..lineTo(bubbleSize.width - radius, bubbleSize.height)
+      ..arcToPoint(
+        Offset(bubbleSize.width, bubbleSize.height - radius),
+        radius: const Radius.circular(radius),
+        clockwise: false,
+      )
+
       // 오른쪽 아래에서 오른쪽 위 라인
-      ..lineTo(bubbleSize.width, fillet)
-      ..quadraticBezierTo(bubbleSize.width, 0, bubbleSize.width - fillet, 0)
+      ..lineTo(bubbleSize.width, radius)
+      ..arcToPoint(
+        Offset(bubbleSize.width - radius, 0),
+        radius: const Radius.circular(radius),
+        clockwise: false,
+      )
+
       // 오른쪽 위에서 왼쪽 아래 라인
-      ..lineTo(fillet, 0)
-      ..quadraticBezierTo(0, 0, 0, fillet);
+      ..lineTo(radius, 0)
+      ..arcToPoint(
+        const Offset(0, radius),
+        radius: const Radius.circular(radius),
+        clockwise: false,
+      );
+
     // bubble tail
+
+    var points = [
+      Offset(tailStartPoint.x, tailStartPoint.y),
+      Offset(tailStartPoint.x + 10, tailStartPoint.y + 10),
+      Offset(tailStartPoint.x + 15, tailStartPoint.y + 10),
+      Offset(tailStartPoint.x + 20, tailStartPoint.y),
+    ];
+
     final tailPath = Path()
       ..moveTo(tailStartPoint.x, tailStartPoint.y)
-      ..cubicTo(
-        tailStartPoint.x + (tailSize.width * 0.4),
-        tailStartPoint.y,
-        tailStartPoint.x + (tailSize.width * 0.6),
-        tailStartPoint.y + (tailSize.height * 0.2),
-        tailStartPoint.x + tailSize.width / 2, // 목적지 x
-        tailStartPoint.y + tailSize.height, // 목적지 y
-      )
-      ..cubicTo(
-        (tailStartPoint.x + tailSize.width / 2) + (tailSize.width * 0.2),
-        tailStartPoint.y + tailSize.height,
-        tailStartPoint.x + tailSize.width,
-        tailStartPoint.y + (tailSize.height * 0.3),
-        tailStartPoint.x + tailSize.width, // 목적지 x
-        tailStartPoint.y, // 목적지 y
-      );
+      ..addPolygon(points, false)
+      ..close();
+
+    // final tailPath = Path()
+    //   ..cubicTo(
+    //     tailStartPoint.x + (tailSize.width * 0.4),
+    //     tailStartPoint.y,
+    //     tailStartPoint.x + (tailSize.width * 0.6),
+    //     tailStartPoint.y + (tailSize.height * 0.2),
+    //     tailStartPoint.x + tailSize.width / 2, // 목적지 x
+    //     tailStartPoint.y + tailSize.height, // 목적지 y
+    //   )
+    //   ..cubicTo(
+    //     (tailStartPoint.x + tailSize.width / 2) + (tailSize.width * 0.2),
+    //     tailStartPoint.y + tailSize.height,
+    //     tailStartPoint.x + tailSize.width,
+    //     tailStartPoint.y + (tailSize.height * 0.3),
+    //     tailStartPoint.x + tailSize.width, // 목적지 x
+    //     tailStartPoint.y, // 목적지 y
+    //   );
 
     bubblePath.addPath(tailPath, Offset(0, 0));
 
     canvas.drawPath(bubblePath, tagPaint);
 
-    // // Add tag circle
-    // canvas.drawRRect(
-    //     RRect.fromRectAndCorners(
-    //       Rect.fromLTWH(
-    //           0.0, 0.0, textPainter.width + 40, textPainter.height + 20),
-    //       topLeft: radius,
-    //       topRight: radius,
-    //       bottomLeft: radius,
-    //       bottomRight: radius,
-    //     ),
-    //     tagPaint);
-
-    textPainter.paint(canvas, Offset(20, 10));
+    textPainter.paint(canvas, const Offset(20, 10));
 
     // Convert canvas to image
     final ui.Image markerAsImage = await pictureRecorder.endRecording().toImage(
