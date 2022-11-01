@@ -16,6 +16,7 @@ import 'package:base_project/pages/common/error_page.dart';
 import 'package:base_project/pages/login/login_page.dart';
 import 'package:base_project/pages/login/page_email_sign_up.dart';
 import 'package:base_project/pages/post/page_post_create.dart';
+import 'package:base_project/pages/post/page_post_detail.dart';
 import 'package:base_project/pages/root_page.dart';
 import 'package:base_project/pages/tab_page.dart';
 import 'package:flutter/material.dart';
@@ -122,13 +123,17 @@ class AppRouter extends Bloc {
                 builder: (context, state) {
                   return const PagePostCreate();
                 },
-                // pageBuilder: (context, state) {
-                //   return MaterialPage(
-                //     key: state.pageKey,
-                //     child: const PagePostCreate(),
-                //   );
-                // },
               ),
+              GoRoute(
+                parentNavigatorKey: _rootNavigatorKey,
+                path: '${Routes.post}/:id',
+                builder: (context, state) {
+                  String id = state.params['id']!;
+                  return PagePostDetail(
+                    id: id,
+                  );
+                },
+              )
             ],
           ),
           GoRoute(
@@ -195,17 +200,18 @@ class AppRouter extends Bloc {
         ],
       ),
       GoRoute(
-          path: Routes.address,
-          pageBuilder: (context, state) {
-            final Map<String, Function> params =
-                state.extra! as Map<String, Function>;
-            Function setAddress = params['setAddress'] as Function;
-            return MaterialPage(
-              child: AddressPage(
-                setAddress: setAddress,
-              ),
-            );
-          }),
+        path: Routes.address,
+        pageBuilder: (context, state) {
+          final Map<String, Function> params =
+              state.extra! as Map<String, Function>;
+          Function setAddress = params['setAddress'] as Function;
+          return MaterialPage(
+            child: AddressPage(
+              setAddress: setAddress,
+            ),
+          );
+        },
+      ),
       GoRoute(
         path: Routes.error,
         pageBuilder: (context, state) {

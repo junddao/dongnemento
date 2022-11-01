@@ -227,10 +227,13 @@ class _MapPageViewState extends State<MapPageView> {
 
       customIcon = await createCustomMarkerBitmap(pin.title!);
       final marker = Marker(
-        markerId: MarkerId(pin.toString()),
-        position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
-        icon: customIcon!,
-      );
+          markerId: MarkerId(pin.id!),
+          position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
+          icon: customIcon!,
+          onTap: () {
+            // 상세 핀 페이지로 이동
+            context.go('/map/${pin.id}');
+          });
       _pinMarker.add(marker);
     }
   }
