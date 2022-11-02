@@ -37,6 +37,5 @@ class ModelRequestCreatePin {
 
   String toJson() => json.encode(toMap());
 
-  factory ModelRequestCreatePin.fromJson(String source) =>
-      ModelRequestCreatePin.fromMap(json.decode(source));
+  factory ModelRequestCreatePin.fromJson(String source) => ModelRequestCreatePin.fromMap(json.decode(source));
 }

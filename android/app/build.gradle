@@ -56,11 +56,37 @@ android {
         versionName flutterVersionName
     }
 
+    signingConfigs {
+        release {
+            storeFile file('../keystore/key.jks')
+            storePassword file('../keystore/key.password').text.trim()
+            keyPassword file('../keystore/key.password').text.trim()
+            keyAlias 'key'
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+        // ... all existing things like `sourceSets`, ...
+
+    flavorDimensions "app"
+
+    productFlavors {
+        dev {
+            dimension "app"
+            applicationId "com.jtb.dongnemento.dev"
+            resValue "string", "app_name", "동네맨토(dev)"
+        }
+        prod {
+            dimension "app"
+            applicationId "com.jtb.dongnemento"
+            resValue "string", "app_name", "동네맨토"
         }
     }
 }
@@ -71,4 +97,6 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation platform('com.google.firebase:firebase-bom:31.0.2')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 }

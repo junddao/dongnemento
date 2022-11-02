@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:base_project/env.dart';
 import 'package:base_project/global/enum/file_type.dart';
 import 'package:base_project/global/model/file/model_file_response.dart';
 import 'package:base_project/global/repository/api_service.dart';
@@ -15,11 +16,9 @@ class FileCubit extends Cubit<FileState> {
     try {
       emit(FileLoading());
 
-      final response = await ApiService()
-          .postMultiPart('/file/upload', images, FileType.image);
+      final response = await ApiService().postMultiPart('${Env.apiBaseUrl}/upload/file', images, FileType.image);
 
-      ModelFileResponse productImageResponse =
-          ModelFileResponse.fromMap(response);
+      ModelFileResponse productImageResponse = ModelFileResponse.fromMap(response);
 
       emit(FileLoaded(result: productImageResponse.data!));
     } catch (e) {

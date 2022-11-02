@@ -22,17 +22,13 @@ class ModelResponseGetPin {
     return ModelResponseGetPin(
       success: map['success'],
       error: map['error'],
-      data: map['data'] != null
-          ? List<ResponsePin>.from(
-              map['data'].map((x) => ResponsePin.fromMap(x)))
-          : null,
+      data: map['data'] != null ? List<ResponsePin>.from(map['data'].map((x) => ResponsePin.fromMap(x))) : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ModelResponseGetPin.fromJson(String source) =>
-      ModelResponseGetPin.fromMap(json.decode(source));
+  factory ModelResponseGetPin.fromJson(String source) => ModelResponseGetPin.fromMap(json.decode(source));
 
   ModelResponseGetPin copyWith({
     bool? success,
@@ -47,62 +43,20 @@ class ModelResponseGetPin {
   }
 }
 
-// class ResponseGetPinData {
-//   ResponsePin? pin;
-//   int? userId;
-//   String? name;
-//   String? profileImage;
-//   bool? liked;
-//   bool? hated;
-//   String? createAt;
-//   ResponseGetPinData({
-//     this.pin,
-//     this.userId,
-//     this.name,
-//     this.profileImage,
-//     this.liked = false,
-//     this.hated,
-//     this.createAt,
-//   });
-
-//   Map<String, dynamic> toMap() {
-//     return {
-//       'pin': pin?.toMap(),
-//       'userId': userId,
-//       'name': name,
-//       'profileImage': profileImage,
-//       'liked': liked,
-//       'hated': hated,
-//       'createAt': createAt,
-//     };
-//   }
-
-//   factory ResponseGetPinData.fromMap(Map<String, dynamic> map) {
-//     return ResponseGetPinData(
-//       pin: map['pin'] != null ? ResponsePin.fromMap(map['pin']) : null,
-//       userId: map['userId'],
-//       name: map['name'],
-//       profileImage: map['profileImage'],
-//       liked: map['liked'],
-//       hated: map['hated'],
-//       createAt: map['createAt'],
-//     );
-//   }
-
-//   String toJson() => json.encode(toMap());
-
-//   factory ResponseGetPinData.fromJson(String source) =>
-//       ResponseGetPinData.fromMap(json.decode(source));
-// }
-
 class ResponsePin {
   String? id;
   double? lat;
   double? lng;
   String? title;
   String? body;
-  // List<String>? images;
+  List<String>? images;
   String? userId;
+  int? likeCount;
+  bool? isLiked;
+  int? hateCount;
+  bool? isHated;
+  String? createdAt;
+  String? updatedAt;
 
   ResponsePin({
     this.id,
@@ -110,7 +64,14 @@ class ResponsePin {
     this.lng,
     this.title,
     this.body,
+    this.images,
     this.userId,
+    required this.likeCount,
+    required this.isLiked,
+    required this.hateCount,
+    required this.isHated,
+    this.createdAt,
+    this.updatedAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -120,7 +81,14 @@ class ResponsePin {
       'lng': lng,
       'title': title,
       'body': body,
+      'images': images,
       'userId': userId,
+      'likeCount': likeCount,
+      'isLiked': isLiked,
+      'hateCount': hateCount,
+      'isHated': isHated,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 
@@ -131,14 +99,20 @@ class ResponsePin {
       lng: map['lng']?.toDouble(),
       title: map['title'],
       body: map['body'],
+      images: List<String>.from(map['images']),
       userId: map['userId'],
+      likeCount: map['likeCount']?.toInt(),
+      isLiked: map['isLiked'],
+      hateCount: map['hateCount']?.toInt(),
+      isHated: map['isHated'],
+      createdAt: map['createdAt'],
+      updatedAt: map['updatedAt'],
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ResponsePin.fromJson(String source) =>
-      ResponsePin.fromMap(json.decode(source));
+  factory ResponsePin.fromJson(String source) => ResponsePin.fromMap(json.decode(source));
 
   ResponsePin copyWith({
     String? id,
@@ -147,6 +121,12 @@ class ResponsePin {
     String? title,
     String? body,
     String? userId,
+    int? likeCount,
+    bool? isLiked,
+    int? hateCount,
+    bool? isHated,
+    String? createdAt,
+    String? updatedAt,
   }) {
     return ResponsePin(
       id: id ?? this.id,
@@ -155,6 +135,12 @@ class ResponsePin {
       title: title ?? this.title,
       body: body ?? this.body,
       userId: userId ?? this.userId,
+      likeCount: likeCount ?? this.likeCount,
+      isLiked: isLiked ?? this.isLiked,
+      hateCount: hateCount ?? this.hateCount,
+      isHated: isHated ?? this.isHated,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

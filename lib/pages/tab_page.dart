@@ -77,7 +77,6 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
     return BottomNavigationBar(
       onTap: (int idx) => _onItemTapped(idx, context),
       currentIndex: _calculateSelectedIndex(context),
-
       backgroundColor: DUColors.white02,
       items: const [
         BottomNavigationBarItem(
@@ -85,12 +84,8 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
           label: '지도',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.chat_bubble_outline_outlined),
-          label: '채팅',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.production_quantity_limits_outlined),
-          label: '상품',
+          icon: Icon(Icons.favorite_sharp),
+          label: '인기글',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person_outline),
@@ -99,8 +94,6 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
       ],
       selectedFontSize: 11,
       unselectedFontSize: 11,
-      // selectedItemColor: DUColors.blue03,
-      // unselectedItemColor: DUColors.black04,
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
     );
@@ -112,14 +105,12 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
     if (location == '/map') {
       _selectedPage = 0;
     }
-    if (location == '/chat') {
+
+    if (location == '/product') {
       _selectedPage = 1;
     }
-    if (location == '/product') {
-      _selectedPage = 2;
-    }
     if (location == '/more') {
-      _selectedPage = 3;
+      _selectedPage = 2;
     }
     return _selectedPage;
   }
@@ -129,13 +120,11 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
       case 0:
         GoRouter.of(context).go('/map');
         break;
+
       case 1:
-        GoRouter.of(context).go('/chat');
-        break;
-      case 2:
         GoRouter.of(context).go('/product');
         break;
-      case 3:
+      case 2:
         GoRouter.of(context).go('/more');
         break;
     }

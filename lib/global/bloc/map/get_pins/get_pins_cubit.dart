@@ -4,6 +4,7 @@ import 'package:base_project/global/model/common/api_response.dart';
 import 'package:base_project/global/model/pin/model_request_get_pin.dart';
 import 'package:base_project/global/model/pin/model_response_get_pin.dart';
 import 'package:base_project/global/repository/map_repository.dart';
+import 'package:base_project/global/repository/pin_repository.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
@@ -20,24 +21,25 @@ part 'get_pins_state.dart';
 class GetPinsCubit extends Cubit<GetPinsState> {
   GetPinsCubit() : super(GetPinsInitial());
 
-  Future<void> getPinWithMarkers(ModelRequestGetPin modelRequestGetPin) async {
+  Future<void> getPinWithMarkers(ModelRequestGetPin modelRequestGetPin, Function onTapMarker) async {
     BitmapDescriptor? customIcon;
     final List<Marker> pinMarker = [];
     try {
       emit(GetPinsLoading());
 
-      ApiResponse<ModelResponseGetPin> response =
-          await MapRepository.instance.getPins(modelRequestGetPin);
+      ApiResponse<ModelResponseGetPin> response = await PinRepository.instance.getPins(modelRequestGetPin);
 
       ModelResponseGetPin modelResponseGetPin = response.data!;
       List<ResponsePin> pins = modelResponseGetPin.data ?? [];
       for (var pin in pins) {
         customIcon = await createCustomMarkerBitmap(pin.title!);
         final marker = Marker(
-          markerId: MarkerId(pin.id ?? DateTime.now().toString()),
-          position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
-          icon: customIcon,
-        );
+            markerId: MarkerId(pin.id ?? DateTime.now().toString()),
+            position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
+            icon: customIcon,
+            onTap: () {
+              onTapMarker(pin.id);
+            });
         pinMarker.add(marker);
       }
 
@@ -58,12 +60,10 @@ class GetPinsCubit extends Cubit<GetPinsState> {
   }
 
   Future<void> getPins(ModelRequestGetPin modelRequestGetPin) async {
-    BitmapDescriptor? customIcon;
     try {
       emit(GetPinsLoading());
 
-      ApiResponse<ModelResponseGetPin> response =
-          await MapRepository.instance.getPins(modelRequestGetPin);
+      ApiResponse<ModelResponseGetPin> response = await PinRepository.instance.getPins(modelRequestGetPin);
 
       if (response.status == ResponseStatus.error) {
         emit(
@@ -90,9 +90,8 @@ class GetPinsCubit extends Cubit<GetPinsState> {
 
     // Add tag text
     TextPainter textPainter = TextPainter(textDirection: TextDirection.ltr);
-    textPainter.text = TextSpan(
-        text: title.length < 18 ? title : title.substring(0, 16) + '..',
-        style: DUTextStyle.size40B.white);
+    textPainter.text =
+        TextSpan(text: title.length < 18 ? title : title.substring(0, 16) + '..', style: DUTextStyle.size40B.white);
 
     textPainter.layout();
 
@@ -176,12 +175,11 @@ class GetPinsCubit extends Cubit<GetPinsState> {
     textPainter.paint(canvas, const Offset(20, 10));
 
     // Convert canvas to image
-    final ui.Image markerAsImage = await pictureRecorder.endRecording().toImage(
-        textPainter.width.toInt() + 80, textPainter.height.toInt() + 40);
+    final ui.Image markerAsImage =
+        await pictureRecorder.endRecording().toImage(textPainter.width.toInt() + 80, textPainter.height.toInt() + 40);
 
     // Convert image to bytes
-    final ByteData? byteData =
-        await markerAsImage.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? byteData = await markerAsImage.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List uint8List = byteData!.buffer.asUint8List();
 
     return BitmapDescriptor.fromBytes(uint8List);

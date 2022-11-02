@@ -48,8 +48,7 @@ class ApiService {
     Response response;
     try {
       response = await Dio()
-          .get(
-              'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=$lng&y=$lat',
+          .get('https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=$lng&y=$lat',
               options: Options(
                 headers: _kakaoHeader,
               ))
@@ -135,8 +134,7 @@ class ApiService {
     return response.data;
   }
 
-  Future<dynamic> postMultiPart(
-      String url, List<File> files, String type) async {
+  Future<dynamic> postMultiPart(String url, List<File> files, String type) async {
     final token = await _getAuthorizationToken();
     logger.d(token);
 
@@ -144,13 +142,10 @@ class ApiService {
     try {
       _multiPartHeaders['Authorization'] = 'Bearer $token';
       var formData = FormData();
-
-      // formData.fields.add(MapEntry('roomId', roomId));
-      // formData.fields.add(MapEntry('syncKey', generateSyncKey()));
       for (int i = 0; i < files.length; i++) {
         formData.files.add(
           MapEntry(
-            'files',
+            type,
             await MultipartFile.fromFile(files[i].path),
           ),
         );
@@ -281,8 +276,7 @@ class DioException implements Exception {
 }
 
 class FetchDataException extends CustomException {
-  FetchDataException([String? message])
-      : super(message, "Error During Communication: ");
+  FetchDataException([String? message]) : super(message, "Error During Communication: ");
 }
 
 class BadRequestException extends CustomException {

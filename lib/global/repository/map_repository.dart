@@ -17,7 +17,7 @@ class MapRepository {
 
   MapRepository._();
 
-  String apiUrl = Env.apiPinUrl;
+  String apiUrl = Env.apiMapUrl;
 
   Future<KakaoLocalResponseData> getKakaoAddressByKeyword(String keyword,
       {int? page = 15}) async {
@@ -44,40 +44,6 @@ class MapRepository {
       return modelResponseKakaoLocation;
     } catch (e) {
       throw Exception();
-    }
-  }
-
-  Future<ApiResponse<bool>> createPin(
-      ModelRequestCreatePin requestCreatePin) async {
-    late ModelResponseCommon modelResponseCommon;
-    try {
-      Map<String, dynamic> response =
-          await ApiService().post('$apiUrl/create', requestCreatePin.toMap());
-      modelResponseCommon = ModelResponseCommon.fromMap(response);
-      if (modelResponseCommon.success == true) {
-        return ApiResponse.completed(true);
-      } else {
-        return ApiResponse.error(modelResponseCommon.error);
-      }
-    } catch (e) {
-      return ApiResponse.error(e.toString());
-    }
-  }
-
-  Future<ApiResponse<ModelResponseGetPin>> getPins(
-      ModelRequestGetPin requestGetPin) async {
-    late ModelResponseGetPin modelResponseGetPin;
-    try {
-      Map<String, dynamic> response =
-          await ApiService().post('$apiUrl/get/pins', requestGetPin.toMap());
-      modelResponseGetPin = ModelResponseGetPin.fromMap(response);
-      if (modelResponseGetPin.success == true) {
-        return ApiResponse.completed(modelResponseGetPin);
-      } else {
-        return ApiResponse.error(modelResponseGetPin.error);
-      }
-    } catch (e) {
-      return ApiResponse.error(e.toString());
     }
   }
 }

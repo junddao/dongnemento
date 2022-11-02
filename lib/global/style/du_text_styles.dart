@@ -7,8 +7,7 @@ class DUTextStyle {
 
   // fontFamail
   static final String? _fontFamily = Platform.isIOS ? "NotoSansKR" : null;
-  static final List<String>? _fontFamilyFallback =
-      Platform.isIOS ? ["NotoSansKR"] : null;
+  static final List<String>? _fontFamilyFallback = Platform.isIOS ? ["NotoSansKR"] : null;
 
   /// Weight : Regular(400)
   ///
@@ -159,7 +158,7 @@ class DUTextStyle {
   /// Size : 10
   static const size10 = TextStyle(
     fontWeight: FontWeight.w400,
-    fontSize: 20,
+    fontSize: 10,
   );
 
   /// Weight : Medium(500)

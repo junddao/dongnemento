@@ -4,8 +4,6 @@ import 'dart:ui' as ui;
 import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
 import 'package:base_project/global/bloc/map/location/location_cubit.dart';
 import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
-import 'package:base_project/global/enum/cubit_status.dart';
-import 'package:base_project/global/model/pin/model_request_create_pin.dart';
 import 'package:base_project/global/model/pin/model_request_get_pin.dart';
 import 'package:base_project/global/model/pin/model_response_get_pin.dart';
 import 'package:base_project/global/style/constants.dart';
@@ -43,15 +41,14 @@ class MapPageView extends StatefulWidget {
 }
 
 class _MapPageViewState extends State<MapPageView> {
-  List<Marker> _pinMarker = [];
+  List<Marker> _pinMarkers = [];
   final List<Marker> _temporaryMaker = [];
   late LatLng _lastLocation;
+  int? range = 3000;
 
   final Completer<GoogleMapController> _controller = Completer();
 
   late GoogleMapController mapController;
-
-  int? range = 1000;
 
   BitmapDescriptor? customIcon;
 
@@ -64,9 +61,9 @@ class _MapPageViewState extends State<MapPageView> {
     ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
       lat: lat,
       lng: lng,
-      range: 1000,
+      range: range,
     );
-    context.read<GetPinsCubit>().getPinWithMarkers(modelRequestGetPin);
+    context.read<GetPinsCubit>().getPinWithMarkers(modelRequestGetPin, onTapMarker);
     super.initState();
   }
 
@@ -106,7 +103,8 @@ class _MapPageViewState extends State<MapPageView> {
           builder: (context, getPinsState) {
             List<ResponsePin> pins = [];
             if (getPinsState is GetMarkerLoaded) {
-              _pinMarker = getPinsState.markers;
+              _pinMarkers = getPinsState.markers;
+
               // pins = getPinsState.result.data ?? [];
 
               // addPinMarker(pins);
@@ -122,7 +120,7 @@ class _MapPageViewState extends State<MapPageView> {
                     zoom: 15,
                   ),
 
-                  markers: <Marker>{..._pinMarker, ..._temporaryMaker},
+                  markers: <Marker>{..._pinMarkers, ..._temporaryMaker},
                   rotateGesturesEnabled: false,
                   myLocationEnabled: false,
                   myLocationButtonEnabled: false,
@@ -145,9 +143,8 @@ class _MapPageViewState extends State<MapPageView> {
     );
   }
 
-  Future<void> _onMapCreated(
-      GoogleMapController controller, LatLng location) async {
-    _pinMarker.clear();
+  Future<void> _onMapCreated(GoogleMapController controller, LatLng location) async {
+    _pinMarkers.clear();
     _controller.complete(controller);
   }
 
@@ -163,23 +160,7 @@ class _MapPageViewState extends State<MapPageView> {
     });
   }
 
-  // void moveCameraToLastLocation() {
-
-  //   _controller.future.then((value) {
-  //     value.animateCamera(CameraUpdate.newCameraPosition(
-  //       CameraPosition(
-  //         bearing: 0,
-  //         target: LatLng(provider.lastLocation!.latitude,
-  //             provider.lastLocation!.longitude),
-  //         zoom: 15,
-  //       ),
-  //     ));
-  //   });
-  // }
-
   void _onCameraMove(CameraPosition position) {
-    // context.read<LocationCubit>().setLastLocation(position.target);
-    // print("move");
     print(position.zoom.toString());
     range = RangeByZoom.getRangeByZoom(position.zoom);
     _lastLocation = LatLng(position.target.latitude, position.target.longitude);
@@ -191,8 +172,6 @@ class _MapPageViewState extends State<MapPageView> {
     LatLng location = LatLng(lat, lng);
 
     print('handelTap');
-
-    // locationProvider.setPost(point);
 
     // 글을 남길 위치에 임시 마커를 박는다.
     _temporaryMaker.clear();
@@ -215,15 +194,15 @@ class _MapPageViewState extends State<MapPageView> {
     ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
       lat: _lastLocation.latitude,
       lng: _lastLocation.longitude,
-      range: 1000,
+      range: range,
     );
-    context.read<GetPinsCubit>().getPinWithMarkers(modelRequestGetPin);
+    context.read<GetPinsCubit>().getPinWithMarkers(modelRequestGetPin, onTapMarker);
   }
 
   Future<void> addPinMarker(List<ResponsePin> pins) async {
     for (var pin in pins) {
       // customIcon = await createCustomMarkerBitmap(
-      //     element.images, element.pin!.title!);
+      //     element., element.pin!.title!);
 
       customIcon = await createCustomMarkerBitmap(pin.title!);
       final marker = Marker(
@@ -231,10 +210,11 @@ class _MapPageViewState extends State<MapPageView> {
           position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
           icon: customIcon!,
           onTap: () {
+            print('marker onTap()');
             // 상세 핀 페이지로 이동
-            context.go('/map/${pin.id}');
+            // context.go('/map/${pin.id}');
           });
-      _pinMarker.add(marker);
+      _pinMarkers.add(marker);
     }
   }
 
@@ -249,17 +229,15 @@ class _MapPageViewState extends State<MapPageView> {
 
     // Add tag text
     TextPainter textPainter = TextPainter(textDirection: TextDirection.ltr);
-    textPainter.text = TextSpan(
-        text: title.length < 18 ? title : title.substring(0, 16) + '..',
-        style: DUTextStyle.size40B.white);
+    textPainter.text =
+        TextSpan(text: title.length < 18 ? title : title.substring(0, 16) + '..', style: DUTextStyle.size40B.white);
 
     textPainter.layout();
 
     // Add tag circle
     canvas.drawRRect(
         RRect.fromRectAndCorners(
-          Rect.fromLTWH(
-              0.0, 0.0, textPainter.width + 40, textPainter.height + 20),
+          Rect.fromLTWH(0.0, 0.0, textPainter.width + 40, textPainter.height + 20),
           topLeft: radius,
           topRight: radius,
           bottomLeft: radius,
@@ -267,15 +245,14 @@ class _MapPageViewState extends State<MapPageView> {
         ),
         tagPaint);
 
-    textPainter.paint(canvas, Offset(20, 10));
+    textPainter.paint(canvas, const Offset(20, 10));
 
     // Convert canvas to image
-    final ui.Image markerAsImage = await pictureRecorder.endRecording().toImage(
-        textPainter.width.toInt() + 80, textPainter.height.toInt() + 40);
+    final ui.Image markerAsImage =
+        await pictureRecorder.endRecording().toImage(textPainter.width.toInt() + 80, textPainter.height.toInt() + 40);
 
     // Convert image to bytes
-    final ByteData? byteData =
-        await markerAsImage.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? byteData = await markerAsImage.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List uint8List = byteData!.buffer.asUint8List();
 
     return BitmapDescriptor.fromBytes(uint8List);
@@ -286,8 +263,7 @@ class _MapPageViewState extends State<MapPageView> {
       builder: (context, state) {
         return Container(
           decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
               color: DUColors.white),
           child: Padding(
             padding: const EdgeInsets.all(30.0),
@@ -295,8 +271,7 @@ class _MapPageViewState extends State<MapPageView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(state.temporaryLocation?.address ?? '',
-                    style: DUTextStyle.size14M.black),
+                Text(state.temporaryLocation?.address ?? '', style: DUTextStyle.size14M.black),
                 const SizedBox(
                   height: 10,
                 ),
@@ -306,10 +281,7 @@ class _MapPageViewState extends State<MapPageView> {
                   width: SizeConfig.screenWidth,
                   press: () {
                     // context.pop();
-                    context
-                        .read<LocationCubit>()
-                        .setPostLocation(location)
-                        .then((value) {
+                    context.read<LocationCubit>().setPostLocation(location).then((value) {
                       Navigator.pop(context, true);
                       context.go('/map/post');
                     });
@@ -343,5 +315,10 @@ class _MapPageViewState extends State<MapPageView> {
 
   void removeTemporaryMarker() {
     _temporaryMaker.clear();
+  }
+
+  void onTapMarker(String pinId) {
+    // 상세 핀 페이지로 이동
+    context.go('/map/post/$pinId');
   }
 }

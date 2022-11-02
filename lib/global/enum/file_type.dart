@@ -1,4 +1,4 @@
 class FileType {
-  static const image = "image";
+  static const image = "file";
   static const file = "file";
 }

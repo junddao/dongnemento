@@ -1,61 +1,44 @@
 import 'dart:convert';
 
 class ModelFileResponse {
-  String? result;
-  String? message;
-  FileModel? data;
+  bool success;
+  String? error;
+  List<String>? data;
   ModelFileResponse({
-    this.result,
-    this.message,
+    required this.success,
+    this.error,
     this.data,
   });
 
   Map<String, dynamic> toMap() {
-    return {
-      'result': result,
-      'message': message,
-      'data': data?.toMap(),
+    return <String, dynamic>{
+      'success': success,
+      'error': error,
+      'data': data,
     };
   }
 
   factory ModelFileResponse.fromMap(Map<String, dynamic> map) {
     return ModelFileResponse(
-      result: map['result'],
-      message: map['message'],
-      data: FileModel.fromMap(map['data']),
+      success: map['success'],
+      error: map['error'],
+      data: List<String>.from(map['data']),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ModelFileResponse.fromJson(String source) =>
-      ModelFileResponse.fromMap(json.decode(source));
-}
+  factory ModelFileResponse.fromJson(String source) => ModelFileResponse.fromMap(json.decode(source));
 
-class FileModel {
-  List<String>? images;
-  List<String>? files;
-  FileModel({
-    this.images,
-    this.files,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'images': images,
-      'files': files,
-    };
-  }
-
-  factory FileModel.fromMap(Map<String, dynamic> map) {
-    return FileModel(
-      images: List<String>.from(map['images']),
-      files: List<String>.from(map['files']),
+  ModelFileResponse copyWith({
+    bool? success,
+    String? error,
+    List<String>? data,
+  }) {
+    return ModelFileResponse(
+      success: success ?? this.success,
+      error: error ?? this.error,
+      data: data ?? this.data,
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory FileModel.fromJson(String source) =>
-      FileModel.fromMap(json.decode(source));
 }

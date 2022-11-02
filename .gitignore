@@ -49,3 +49,12 @@ app.*.map.json
 # firebsae file
 lib/firebase_options.dart
 /android/app/google-services.json
+/android/app/src/dev/google-services.json
+/android/app/src/prod/google-services.json
+/android/fastlane-playstore-api.json
+
+/ios/config/
+/ios/firebase_app_id_file.json
+
+# fvm
+.fvm/

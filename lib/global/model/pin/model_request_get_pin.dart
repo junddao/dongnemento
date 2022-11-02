@@ -7,7 +7,7 @@ class ModelRequestGetPin {
   ModelRequestGetPin({
     this.lat,
     this.lng,
-    this.range,
+    this.range = 2000,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,6 +28,5 @@ class ModelRequestGetPin {
 
   String toJson() => json.encode(toMap());
 
-  factory ModelRequestGetPin.fromJson(String source) =>
-      ModelRequestGetPin.fromMap(json.decode(source));
+  factory ModelRequestGetPin.fromJson(String source) => ModelRequestGetPin.fromMap(json.decode(source));
 }

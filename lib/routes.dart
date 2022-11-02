@@ -6,17 +6,14 @@ import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/pages/00_home/home_page.dart';
 import 'package:base_project/pages/00_map/map_page.dart';
-import 'package:base_project/pages/01_chat/chat_detail_page.dart';
-import 'package:base_project/pages/01_chat/chat_page.dart';
-import 'package:base_project/pages/02_product/product_detail_page.dart';
-import 'package:base_project/pages/02_product/product_page.dart';
+import 'package:base_project/pages/02_post/create_post_page.dart';
+import 'package:base_project/pages/02_post/favorite_post_list_page.dart';
+import 'package:base_project/pages/02_post/post_detail_page.dart';
 import 'package:base_project/pages/03_more/more_page.dart';
 import 'package:base_project/pages/common/address_page.dart';
 import 'package:base_project/pages/common/error_page.dart';
 import 'package:base_project/pages/login/login_page.dart';
 import 'package:base_project/pages/login/page_email_sign_up.dart';
-import 'package:base_project/pages/post/page_post_create.dart';
-import 'package:base_project/pages/post/page_post_detail.dart';
 import 'package:base_project/pages/root_page.dart';
 import 'package:base_project/pages/tab_page.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +26,6 @@ class Routes {
   static const home = '/home';
   static const map = '/map';
   static const login = '/login';
-  static const chat = '/chat';
   static const product = '/product';
   static const more = '/more';
   static const error = '/error';
@@ -48,11 +44,8 @@ class AppRouter extends Bloc {
   AppRouter(this.authBloc) : super(null);
 
   AuthenticationState? prevAuthState;
-  // final ValueKey<String> _scaffoldKey = const ValueKey<String>('App scaffold');
-  final GlobalKey<NavigatorState> _rootNavigatorKey =
-      GlobalKey<NavigatorState>(debugLabel: 'root');
-  final GlobalKey<NavigatorState> _shellNavigatorKey =
-      GlobalKey<NavigatorState>(debugLabel: 'shell');
+  final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+  final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
 
   late final _goRouter = GoRouter(
     redirect: (context, state) async {
@@ -72,10 +65,9 @@ class AppRouter extends Bloc {
         logger.d('AuthenticationUnknown');
       } else if (authBloc.state is AuthenticationError) {
         logger.d('AuthenticationError');
-
         return Routes.login;
       } else {
-        logger.d('hahaha');
+        logger.d('?? auth else 탑니다.');
       }
 
       return null;
@@ -121,7 +113,7 @@ class AppRouter extends Bloc {
                 parentNavigatorKey: _rootNavigatorKey,
                 path: Routes.post,
                 builder: (context, state) {
-                  return const PagePostCreate();
+                  return const CreatePostPage();
                 },
               ),
               GoRoute(
@@ -137,39 +129,10 @@ class AppRouter extends Bloc {
             ],
           ),
           GoRoute(
-            path: Routes.chat,
-            pageBuilder: (context, state) {
-              return const MaterialPage(
-                child: ChatPage(),
-              );
-            },
-            routes: [
-              GoRoute(
-                path: 'details/:id',
-                pageBuilder: (BuildContext context, GoRouterState state) {
-                  return MaterialPage(
-                    child: ChatDetailPage(id: state.params['id']!),
-                  );
-                },
-              ),
-            ],
-          ),
-          GoRoute(
             path: Routes.product,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: ProductPage());
+              return const MaterialPage(child: FavoritePostListPage());
             },
-            routes: [
-              GoRoute(
-                parentNavigatorKey: _rootNavigatorKey,
-                path: 'details/:id',
-                pageBuilder: (BuildContext context, GoRouterState state) {
-                  return MaterialPage(
-                    child: ProductDetailPage(id: state.params['id']!),
-                  );
-                },
-              ),
-            ],
           ),
           GoRoute(
             path: Routes.more,
@@ -202,8 +165,7 @@ class AppRouter extends Bloc {
       GoRoute(
         path: Routes.address,
         pageBuilder: (context, state) {
-          final Map<String, Function> params =
-              state.extra! as Map<String, Function>;
+          final Map<String, Function> params = state.extra! as Map<String, Function>;
           Function setAddress = params['setAddress'] as Function;
           return MaterialPage(
             child: AddressPage(
@@ -223,9 +185,7 @@ class AppRouter extends Bloc {
       ),
     ],
     errorPageBuilder: (context, state) {
-      return MaterialPage(
-          key: state.pageKey,
-          child: ErrorPage(exception: state.error.toString()));
+      return MaterialPage(key: state.pageKey, child: ErrorPage(exception: state.error.toString()));
     },
     debugLogDiagnostics: true,
   );

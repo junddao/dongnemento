@@ -18,7 +18,7 @@ class FileLoading extends FileState {
 }
 
 class FileLoaded extends FileState {
-  final FileModel result;
+  final List<String> result;
   const FileLoaded({required this.result});
   @override
   List<Object> get props => [result];
