@@ -1,255 +1,129 @@
-import 'package:base_project/global/component/du_inside_button.dart';
-import 'package:base_project/global/style/du_colors.dart';
-import 'package:base_project/global/style/du_text_styles.dart';
-import 'package:base_project/global/util/extension/extension.dart';
+import 'package:base_project/global/style/constants.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter/services.dart';
 
+// ignore: must_be_immutable
 class DUTextFormField extends StatefulWidget {
-  const DUTextFormField({
-    Key? key,
-    this.controller,
-    this.initialValue,
-    this.focusNode,
-    this.decoration = const InputDecoration(),
-    this.keyboardType,
-    this.textCapitalization = TextCapitalization.none,
-    this.textInputAction,
-    this.style,
-    this.strutStyle,
-    this.textDirection,
-    this.textAlign = TextAlign.start,
-    this.textAlignVertical,
-    this.autofocus = false,
-    this.readOnly = false,
-    this.toolbarOptions,
-    this.showCursor,
-    this.obscuringCharacter = '•',
-    this.obscureText = false,
-    this.autocorrect = true,
-    this.smartDashesType,
-    this.smartQuotesType,
-    this.enableSuggestions = true,
-    this.maxLengthEnforcement,
-    this.maxLines = 1,
-    this.minLines,
-    this.expands = false,
-    this.maxLength,
-    this.onChanged,
-    this.onTap,
-    this.onEditingComplete,
-    this.onFieldSubmitted,
-    this.onSaved,
-    this.validator,
-    this.inputFormatters,
-    this.enabled,
-    this.cursorWidth,
-    this.cursorHeight,
-    this.cursorRadius,
-    this.cursorColor,
-    this.keyboardAppearance,
-    this.scrollPadding,
-    this.enableInteractiveSelection = true,
-    this.selectionControls,
-    this.buildCounter,
-    this.scrollPhysics,
-    this.autofillHints,
-    this.autovalidateMode,
-    this.scrollController,
-    this.restorationId,
-    this.enableIMEPersonalizedLearning = true,
-    this.isClearButton = true,
-    this.onCleared,
-    this.showErrorOrHintText = false,
-  }) : super(key: key);
-
-  final TextEditingController? controller;
-  final String? initialValue;
+  final Widget? child;
   final FocusNode? focusNode;
-  final InputDecoration decoration;
-  final TextInputType? keyboardType;
-  final TextCapitalization textCapitalization;
-  final TextInputAction? textInputAction;
-  final TextStyle? style;
-  final StrutStyle? strutStyle;
-  final TextDirection? textDirection;
-  final TextAlign textAlign;
-  final TextAlignVertical? textAlignVertical;
-  final bool autofocus;
-  final bool readOnly;
-  final ToolbarOptions? toolbarOptions;
-  final bool? showCursor;
-  final String obscuringCharacter;
-  final bool obscureText;
-  final bool autocorrect;
-  final SmartDashesType? smartDashesType;
-  final SmartQuotesType? smartQuotesType;
-  final bool enableSuggestions;
-  final MaxLengthEnforcement? maxLengthEnforcement;
-  final int? maxLines;
-  final int? minLines;
-  final bool expands;
-  final int? maxLength;
+  final String? title;
+  final String? hintText;
+  final String? warningMessage;
+  final FormFieldValidator<String>? validator;
+  final IconData? icon;
   final ValueChanged<String>? onChanged;
-  final GestureTapCallback? onTap;
+  final TextEditingController? controller;
   final VoidCallback? onEditingComplete;
   final ValueChanged<String>? onFieldSubmitted;
-  final FormFieldSetter<String>? onSaved;
-  final FormFieldValidator<String>? validator;
+  final TextInputAction? textInputAction;
+  final bool autocorrect;
+  final bool autofocus;
+  final bool showSecure;
+  final bool showClear;
+  final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
-  final bool? enabled;
-  final double? cursorWidth;
-  final double? cursorHeight;
-  final Radius? cursorRadius;
-  final Color? cursorColor;
-  final Brightness? keyboardAppearance;
-  final EdgeInsets? scrollPadding;
-  final bool enableInteractiveSelection;
-  final TextSelectionControls? selectionControls;
-  final InputCounterWidgetBuilder? buildCounter;
-  final ScrollPhysics? scrollPhysics;
-  final Iterable<String>? autofillHints;
-  final AutovalidateMode? autovalidateMode;
-  final ScrollController? scrollController;
-  final String? restorationId;
-  final bool enableIMEPersonalizedLearning;
-  final bool isClearButton;
-  final BoolCallback? onCleared; //* onCleared에서 true를 리턴해야 텍스트를 지웁니다.
-  final bool showErrorOrHintText;
+  bool isSecure = false;
+  DUTextFormField({
+    Key? key,
+    this.focusNode,
+    this.child,
+    this.title,
+    this.hintText,
+    this.autocorrect = false,
+    this.autofocus = false,
+    this.warningMessage,
+    this.validator,
+    this.icon,
+    this.isSecure = false,
+    this.showSecure = false,
+    this.showClear = false,
+    this.onChanged,
+    this.controller,
+    this.onEditingComplete,
+    this.onFieldSubmitted,
+    this.textInputAction,
+    this.keyboardType,
+    this.inputFormatters,
+  }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _TextFormFieldState();
+  DUTextFormFieldState createState() => DUTextFormFieldState();
 }
 
-class _TextFormFieldState extends State<DUTextFormField> {
-  late final TextEditingController textCtrl;
-  late final FocusNode focusNode;
-
-  /* 
-  keyboardType: TextInputType.phone or TextInputType.number를 사용할 경우 
-  TextEditingController에서 문제가 발생되 정상적으로 입력이 안되는 버그로 
-  StatefulWidget으로 변경하여 initState에서 TextEditingController를 초기화하여 문제를 해결함
-  */
-
-  @override
-  void initState() {
-    super.initState();
-    textCtrl = widget.controller ?? TextEditingController(text: widget.initialValue);
-    focusNode = widget.focusNode ?? FocusNode();
-  }
-
-  @override
-  void dispose() {
-    if (widget.controller == null) textCtrl.dispose();
-    if (widget.focusNode == null) focusNode.dispose();
-
-    super.dispose();
-  }
-
+class DUTextFormFieldState extends State<DUTextFormField> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          color: widget.showErrorOrHintText ? null : DUColors.grey5, borderRadius: BorderRadius.circular(2)),
-      height: (widget.maxLines ?? 1) > 1 && (widget.maxLength ?? 1) > 1
-          ? null
-          : widget.showErrorOrHintText
-              ? null
-              : 52,
-      padding: (widget.maxLines ?? 1) > 1 && (widget.maxLength ?? 1) > 1 ? const EdgeInsets.only(bottom: 6) : null,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: TextFormField(
-          controller: textCtrl,
-          initialValue: null,
-          focusNode: focusNode,
-          decoration: getDecoration(),
-          keyboardType: widget.keyboardType,
-          textCapitalization: widget.textCapitalization,
-          textInputAction: widget.textInputAction,
-          style: widget.style ?? DUTextStyle.size14.h1_5.grey0,
-          strutStyle: widget.strutStyle,
-          textDirection: widget.textDirection,
-          textAlign: widget.textAlign,
-          textAlignVertical: widget.textAlignVertical,
-          autofocus: widget.autofocus,
-          readOnly: widget.readOnly,
-          toolbarOptions: widget.toolbarOptions,
-          showCursor: widget.showCursor,
-          obscuringCharacter: widget.obscuringCharacter,
-          obscureText: widget.obscureText,
-          autocorrect: widget.autocorrect,
-          smartDashesType: widget.smartDashesType,
-          smartQuotesType: widget.smartQuotesType,
-          enableSuggestions: widget.enableSuggestions,
-          maxLengthEnforcement: widget.maxLengthEnforcement,
-          maxLines: widget.maxLines,
-          minLines: widget.minLines,
-          expands: widget.expands,
-          maxLength: widget.maxLength,
-          onChanged: widget.onChanged,
-          onTap: widget.onTap,
-          onEditingComplete: widget.onEditingComplete,
-          onFieldSubmitted: widget.onFieldSubmitted,
-          onSaved: widget.onSaved,
-          validator: widget.validator,
-          inputFormatters: widget.inputFormatters,
-          enabled: widget.enabled,
-          cursorWidth: widget.cursorWidth ?? 2.0,
-          cursorHeight: widget.cursorHeight,
-          cursorRadius: widget.cursorRadius,
-          cursorColor: widget.cursorColor,
-          keyboardAppearance: widget.keyboardAppearance,
-          scrollPadding: widget.scrollPadding ?? const EdgeInsets.all(20.0),
-          enableInteractiveSelection: widget.enableInteractiveSelection,
-          selectionControls: widget.selectionControls,
-          buildCounter: widget.buildCounter,
-          scrollPhysics: widget.scrollPhysics,
-          autofillHints: widget.autofillHints,
-          autovalidateMode: widget.autovalidateMode,
-          scrollController: widget.scrollController,
-          restorationId: widget.restorationId,
-          enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning,
-        ),
+    Size size = MediaQuery.of(context).size;
+
+    return TextFormField(
+      focusNode: widget.focusNode,
+      controller: widget.controller,
+      autocorrect: widget.autocorrect,
+      autofocus: widget.autofocus,
+      textCapitalization: TextCapitalization.none,
+      obscureText: widget.isSecure,
+      onChanged: (text) {
+        setState(() {});
+        if (widget.onChanged != null) {
+          widget.onChanged!(text);
+        }
+      },
+      validator: widget.warningMessage == null || widget.validator != null
+          ? widget.validator
+          : _validateText,
+      onEditingComplete: widget.onEditingComplete,
+      onFieldSubmitted: widget.onFieldSubmitted,
+      textInputAction: widget.textInputAction,
+      textAlignVertical: TextAlignVertical.center,
+      keyboardType: widget.keyboardType,
+      inputFormatters: widget.inputFormatters,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(vertical: 20.0),
+        isDense: true,
+        labelText: widget.title,
+        hintText: widget.hintText,
+        fillColor: Colors.blue,
+        icon: widget.icon == null
+            ? null
+            : Icon(widget.icon, color: kPrimaryColor),
+        suffixIcon: suffixIcon(),
       ),
     );
   }
 
-  InputDecoration getDecoration() {
-    InputDecoration decoration;
-
-    decoration = widget.isClearButton
-        ? (widget.decoration.suffixIcon == null
-            ? widget.decoration.copyWith(
-                filled: widget.showErrorOrHintText ? true : false,
-                suffixIcon:
-                    DUInsideButton.suffixClear(controller: textCtrl, focusNode: focusNode, onCleared: widget.onCleared),
-                suffixIconConstraints: const BoxConstraints(),
-              )
-            : (widget.decoration.suffixIcon is DUInsideButton
-                ? widget.decoration.copyWith(
-                    filled: widget.showErrorOrHintText ? true : false,
-                    suffixIcon: DUInsideButton.suffixClear(
-                      controller: textCtrl,
-                      focusNode: focusNode,
-                      onCleared: widget.onCleared ?? (widget.decoration.suffixIcon as DUInsideButton).onCleared,
-                      color: (widget.decoration.suffixIcon as DUInsideButton).color,
-                      icon: (widget.decoration.suffixIcon as DUInsideButton).icon,
-                      iconSize: (widget.decoration.suffixIcon as DUInsideButton).iconSize,
-                      label: (widget.decoration.suffixIcon as DUInsideButton).label,
-                      text: (widget.decoration.suffixIcon as DUInsideButton).text,
-                      onPressed: (widget.decoration.suffixIcon as DUInsideButton).onPressed,
-                      onTapDown: (widget.decoration.suffixIcon as DUInsideButton).onTapDown,
-                    ),
-                    suffixIconConstraints: const BoxConstraints(),
-                  )
-                : widget.decoration.copyWith(filled: widget.showErrorOrHintText ? true : false)))
-        : widget.decoration.copyWith(filled: widget.showErrorOrHintText ? true : false);
-
-    if (widget.maxLines?.toInt() == 1) {
-      decoration.copyWith(contentPadding: const EdgeInsets.symmetric(vertical: 16.5, horizontal: 8));
+  Widget? suffixIcon() {
+    if (widget.showSecure) {
+      return IconButton(
+        icon: widget.isSecure
+            ? const Icon(Icons.visibility, color: kPrimaryColor)
+            : const Icon(Icons.visibility_off, color: kPrimaryColor),
+        onPressed: () {
+          setState(() {
+            widget.isSecure = !widget.isSecure;
+          });
+        },
+      );
     }
+    if (widget.showClear) {
+      return widget.controller!.text.isNotEmpty
+          ? IconButton(
+              icon: const Icon(Icons.clear_rounded, size: 15),
+              onPressed: () {
+                setState(() {
+                  widget.controller!.clear();
+                });
+              })
+          : null;
+    }
+    return null;
+  }
 
-    return decoration;
+  String? _validateText(String? text) {
+    if (text == null || text.isEmpty || text.trim().isEmpty) {
+      return widget.warningMessage;
+    } else {
+      return null;
+    }
   }
 }

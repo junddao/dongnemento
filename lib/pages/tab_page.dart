@@ -1,9 +1,4 @@
-import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_colors.dart';
-import 'package:base_project/pages/00_home/home_page.dart';
-import 'package:base_project/pages/01_chat/chat_page.dart';
-import 'package:base_project/pages/02_product/product_page.dart';
-import 'package:base_project/pages/03_more/more_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -71,19 +66,6 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
         ),
         child: _navigationBar(),
       ),
-      floatingActionButton: Container(
-        height: 60,
-        width: double.infinity,
-        child: InkWell(
-          onTap: () {},
-          child: const CircleAvatar(
-            radius: 30,
-            backgroundColor: DUColors.blue03,
-            child: Icon(Icons.add, size: 36, color: DUColors.white02),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -95,21 +77,15 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
     return BottomNavigationBar(
       onTap: (int idx) => _onItemTapped(idx, context),
       currentIndex: _calculateSelectedIndex(context),
-
       backgroundColor: DUColors.white02,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.maps_home_work_outlined),
-          label: '홈',
+          label: '지도',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.chat_bubble_outline_outlined),
-          label: '채팅',
-        ),
-        BottomNavigationBarItem(icon: SizedBox.shrink(), label: ''),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.production_quantity_limits_outlined),
-          label: '상품',
+          icon: Icon(Icons.favorite_sharp),
+          label: '인기글',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person_outline),
@@ -118,8 +94,6 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
       ],
       selectedFontSize: 11,
       unselectedFontSize: 11,
-      // selectedItemColor: DUColors.blue03,
-      // unselectedItemColor: DUColors.black04,
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
     );
@@ -128,17 +102,15 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
   int _calculateSelectedIndex(BuildContext context) {
     final GoRouter route = GoRouter.of(context);
     final String location = route.location;
-    if (location == '/home') {
+    if (location == '/map') {
       _selectedPage = 0;
     }
-    if (location == '/chat') {
+
+    if (location == '/product') {
       _selectedPage = 1;
     }
-    if (location == '/product') {
-      _selectedPage = 3;
-    }
     if (location == '/more') {
-      _selectedPage = 4;
+      _selectedPage = 2;
     }
     return _selectedPage;
   }
@@ -146,15 +118,13 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       case 0:
-        GoRouter.of(context).go('/home');
+        GoRouter.of(context).go('/map');
         break;
+
       case 1:
-        GoRouter.of(context).go('/chat');
-        break;
-      case 3:
         GoRouter.of(context).go('/product');
         break;
-      case 4:
+      case 2:
         GoRouter.of(context).go('/more');
         break;
     }

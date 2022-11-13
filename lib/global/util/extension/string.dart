@@ -53,6 +53,19 @@ extension StringExtension2 on String? {
     return '${this!.substring(4, 6)}.${this!.substring(6, 8)}';
   }
 
+  // 월일
+  String toDateWithSeconds() {
+    try {
+      if (this == null) return '';
+      // if (this!.length != 8) return this!;
+      DateTime dateValue = DateTime.parse(this!).toLocal();
+      var formattedDate = DateFormat('yyyy-MM-dd hh:mm').format(dateValue);
+      return formattedDate;
+    } catch (e) {
+      return '';
+    }
+  }
+
   /// 가격 포맷
   ///
   /// Example:

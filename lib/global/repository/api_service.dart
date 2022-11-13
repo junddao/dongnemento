@@ -1,21 +1,71 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:base_project/global/model/auth/response/sign_in_result.dart';
+import 'package:base_project/global/model/etc/kakao_local_result.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:dio/dio.dart';
 
 class ApiService {
-  static String tokenKey = 'baseToken';
   static String appVersion = '';
   final Map<String, String> _headers = {
     'Content-Type': 'application/json',
   };
 
+  final Map<String, String> _kakaoHeader = {
+    'Content-Type': 'application/json',
+    'Authorization': 'KakaoAK ddf47dd3cff3564342e4770cb40cc057',
+  };
+
   final Map<String, String> _multiPartHeaders = {
     'Content-Type': 'multipart/form-data',
   };
+
+  Future<dynamic> getKakaoApi(path) async {
+    Response response;
+    try {
+      response = await Dio()
+          .get(path,
+              options: Options(
+                headers: _kakaoHeader,
+              ))
+          .timeout(const Duration(seconds: 10));
+
+      logger.d('dio response = ${response.toString()}');
+    } on DioError catch (e) {
+      final errorMessage = DioException.fromDioError(e).toString();
+      throw errorMessage;
+    } on SocketException {
+      logger.d('No network');
+      throw FetchDataException('No Internet connection');
+    } catch (e) {
+      throw CustomException('Unknown Error');
+    }
+    return response.data;
+  }
+
+  Future<dynamic> getKakaoAddressByLocation(double lng, double lat) async {
+    Response response;
+    try {
+      response = await Dio()
+          .get('https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=$lng&y=$lat',
+              options: Options(
+                headers: _kakaoHeader,
+              ))
+          .timeout(const Duration(seconds: 10));
+
+      logger.d('dio response = ${response.toString()}');
+    } on DioError catch (e) {
+      final errorMessage = DioException.fromDioError(e).toString();
+      throw errorMessage;
+    } on SocketException {
+      logger.d('No network');
+      throw FetchDataException('No Internet connection');
+    } catch (e) {
+      throw CustomException('Unknown Error');
+    }
+    return KakaoLocalResponseData.fromMap(response.data);
+  }
 
   Future<dynamic> get(String url, {bool useToken = true}) async {
     logger.d('Api get : url $url start.');
@@ -23,7 +73,7 @@ class ApiService {
     try {
       if (useToken) {
         final token = await _getAuthorizationToken();
-        _headers[tokenKey] = '$token';
+        _headers['Authorization'] = 'Bearer $token';
         logger.d(token);
       }
 
@@ -54,7 +104,7 @@ class ApiService {
     try {
       if (useToken) {
         final token = await _getAuthorizationToken();
-        _headers[tokenKey] = '$token';
+        _headers['Authorization'] = 'Bearer $token';
         logger.d(token);
       }
 
@@ -84,21 +134,18 @@ class ApiService {
     return response.data;
   }
 
-  Future<dynamic> postMultiPart(String url, List<File> files, Map<String, dynamic> map) async {
+  Future<dynamic> postMultiPart(String url, List<File> files, String type) async {
     final token = await _getAuthorizationToken();
     logger.d(token);
 
     Response response;
     try {
-      _multiPartHeaders['Authorization'] = '$token';
-      final formData = FormData.fromMap(map);
-
-      // formData.fields.add(MapEntry('roomId', roomId));
-      // formData.fields.add(MapEntry('syncKey', generateSyncKey()));
+      _multiPartHeaders['Authorization'] = 'Bearer $token';
+      var formData = FormData();
       for (int i = 0; i < files.length; i++) {
         formData.files.add(
           MapEntry(
-            'files',
+            type,
             await MultipartFile.fromFile(files[i].path),
           ),
         );
@@ -133,38 +180,37 @@ class ApiService {
   }
 
   Future<String?> _getAuthorizationToken() async {
-    SignIn? result = await SecureStorage.instance.readToken();
-    logger.d(result?.expiresIn);
-    logger.d(result?.token);
-    return result?.token;
+    String? token = await SecureStorage.instance.readToken();
+
+    return token;
   }
 
-  Future<void> getRefreshToken() async {
-    var jwt = await SecureStorage.instance.readToken();
-    final variables = {
-      "input": {
-        "refreshToken": jwt?.refreshToken,
-      },
-    };
+  // Future<void> getRefreshToken() async {
+  //   var jwt = await SecureStorage.instance.readToken();
+  //   final variables = {
+  //     "input": {
+  //       "refreshToken": jwt?.refreshToken,
+  //     },
+  //   };
 
-    String key = "refreshSign";
+  //   String key = "refreshSign";
 
-    // GQLOperation query = refreshSign_syntax;
-    // QueryResult result = await _client(Env.apiAuthUrl, jwt?.token).mutate(query.toMutationOption(
-    //   variables: variables,
-    // ));
-    // if (result.hasException) {
-    //   Singleton().mode = AuthStatus.unknown;
-    //   Bloc bloc = ModeChangeBloc();
-    //   bloc.add(ModeChangeRequested());
-    // } else {
-    //   var data = result.data![key];
+  //   // GQLOperation query = refreshSign_syntax;
+  //   // QueryResult result = await _client(Env.apiAuthUrl, jwt?.token).mutate(query.toMutationOption(
+  //   //   variables: variables,
+  //   // ));
+  //   // if (result.hasException) {
+  //   //   Singleton().mode = AuthStatus.unknown;
+  //   //   Bloc bloc = ModeChangeBloc();
+  //   //   bloc.add(ModeChangeRequested());
+  //   // } else {
+  //   //   var data = result.data![key];
 
-    //   final SignInResult reFresh = SignInResult.fromMap(data!);
+  //   //   final SignInResult reFresh = SignInResult.fromMap(data!);
 
-    //   LocalRepository().writeJWT(reFresh);
-    // }
-  }
+  //   //   LocalRepository().writeJWT(reFresh);
+  //   // }
+  // }
 }
 
 class DioException implements Exception {

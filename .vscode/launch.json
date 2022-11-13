@@ -1,0 +1,65 @@
+{
+  // IntelliSense를 사용하여 가능한 특성에 대해 알아보세요.
+  // 기존 특성에 대한 설명을 보려면 가리킵니다.
+  // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "dongnemento",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "dongnemento (profile mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "dongnemento (release mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "dev",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/env/dev.dart",
+      "args": [
+          "--flavor=dev"
+      ]
+    },
+    {
+        "name": "stage",
+        "type": "dart",
+        "request": "launch",
+        "program": "lib/env/stage.dart",
+        "args": [
+            "--flavor=stage"
+        ]
+    },
+    {
+        "name": "prod",
+        "type": "dart",
+        "request": "launch",
+        "program": "lib/env/prod.dart",
+        "args": [
+            "--flavor=prod"
+        ]
+    },
+    {
+        "name": "crediApp",
+        "request": "launch",
+        "type": "dart"
+    },
+    {
+        "name": "Flutter debug",
+        "request": "launch",
+        "type": "dart",
+        "args": [
+            "--dart-define=isDebug=true"
+        ]
+    }
+  ]
+}

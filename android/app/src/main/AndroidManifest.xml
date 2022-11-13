@@ -1,9 +1,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.base_project">
+    package="com.jtb.dongnemento">
+
+    <!-- google map -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <!-- images picker -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
    <application
-        android:label="base_project"
+        android:label="@string/app_name"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+       
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyCv2VpSC0TqmvnFiz8FTURIeMnJ_2qQStA"/>
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

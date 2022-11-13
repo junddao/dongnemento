@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:base_project/env/environment.dart';
 
 enum OpMode {
   unknown,
@@ -6,27 +6,41 @@ enum OpMode {
   product,
 }
 
-const _prodApiBaseUrl = "https://api.dingdongu.com";
-const _prodApiAuthUrl = "$_prodApiBaseUrl$_apiAuth";
-const _prodApiAccountUrl = "$_prodApiBaseUrl$_apiAccount";
+const _prodApiBaseUrl = 'http://43.200.119.214';
+const _prodApiAuthUrl = '$_prodApiBaseUrl$_apiAuth';
+const _prodApiMapUrl = '$_prodApiBaseUrl$_apiMap';
+const _prodApiPinUrl = '$_prodApiBaseUrl$_apiPin';
+const _prodApiPinReplyUrl = '$_prodApiBaseUrl$_apiPinReply';
 
-const _devApiBaseUrl = "https://dev-api.dingdongu.com";
-const _devApiAuthUrl = "$_devApiBaseUrl$_apiAuth";
-const _devApiAccountUrl = "$_devApiBaseUrl$_apiAccount";
+const _devApiBaseUrl = 'http://192.168.1.82:17008';
+// const _devApiBaseUrl = 'http://192.168.1.47:17008';
 
-const _apiAuth = "/auth";
-const _apiAccount = "/accounts";
+const _devApiAuthUrl = '$_devApiBaseUrl$_apiAuth';
+const _devApiMapUrl = '$_devApiBaseUrl$_apiMap';
+const _devApiPinUrl = '$_devApiBaseUrl$_apiPin';
+const _devApiPinReplyUrl = '$_devApiBaseUrl$_apiPinReply';
+
+const _apiAuth = '/user';
+const _apiMap = '/map';
+const _apiPin = '/pin';
+const _apiPinReply = '/reply';
 
 class Env {
   static Env? _instance;
 
   static late OpMode _mode;
+  static late String _apiBaseUrl;
   static late String _apiAuthUrl;
-  static late String _apiAccountUrl;
+  static late String _apiMapUrl;
+  static late String _apiPinUrl;
+  static late String _apiPinReplyUrl;
 
   /// User API 접속 주소
+  static String get apiBaseUrl => _apiBaseUrl;
   static String get apiAuthUrl => _apiAuthUrl;
-  static String get apiAccountUrl => _apiAccountUrl;
+  static String get apiMapUrl => _apiMapUrl;
+  static String get apiPinUrl => _apiPinUrl;
+  static String get apiPinReplyUrl => _apiPinReplyUrl;
 
   //End Point
   static OpMode get opMode => _mode;
@@ -36,13 +50,24 @@ class Env {
     return _instance!;
   }
 
+  // Env._internal() {
+  //   //Product API EndPoint (주의 실제 운영 중인 API EndPoint)
+  //   if (kReleaseMode) _mode = OpMode.product;
+  //   //QA API EndPoint
+  //   // if (kProfileMode) _mode = OpMode.STAGING;
+  //   //개발 API EndPoint
+  //   if (kDebugMode) _mode = OpMode.dev;
+
+  //   changeMode(_mode);
+  // }
   Env._internal() {
-    //Product API EndPoint (주의 실제 운영 중인 API EndPoint)
-    if (kReleaseMode) _mode = OpMode.product;
-    //QA API EndPoint
-    // if (kProfileMode) _mode = OpMode.STAGING;
-    //개발 API EndPoint
-    if (kDebugMode) _mode = OpMode.dev;
+    if (Environment.buildType == BuildType.dev) {
+      _mode = OpMode.dev;
+    } else if (Environment.buildType == BuildType.prod) {
+      _mode = OpMode.product;
+    } else {
+      _mode = OpMode.dev;
+    }
 
     changeMode(_mode);
   }
@@ -52,17 +77,23 @@ class Env {
 
     switch (mode) {
       case OpMode.product: //운영 모드
+        _apiBaseUrl = _prodApiBaseUrl;
         _apiAuthUrl = _prodApiAuthUrl;
-        _apiAccountUrl = _prodApiAccountUrl;
+        _apiMapUrl = _prodApiMapUrl;
+        _apiPinUrl = _prodApiPinUrl;
+        _apiPinReplyUrl = _prodApiPinReplyUrl;
         break;
       case OpMode.dev: //개발 모드
+        _apiBaseUrl = _devApiBaseUrl;
         _apiAuthUrl = _devApiAuthUrl;
-        _apiAccountUrl = _devApiAccountUrl;
+        _apiMapUrl = _devApiMapUrl;
+        _apiPinUrl = _devApiPinUrl;
+        _apiPinReplyUrl = _devApiPinReplyUrl;
         break;
       case OpMode.unknown:
       default:
-        _apiAuthUrl = "";
-        _apiAccountUrl = "";
+        _apiAuthUrl = '';
+        _apiMapUrl = '';
         break;
     }
   }

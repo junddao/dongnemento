@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ">=2.17.6 <3.0.0"
@@ -34,6 +34,7 @@ dependencies:
   dots_indicator: ^2.1.0
   equatable: ^2.0.5
   eraser: ^2.0.1
+  firebase_auth: ^3.11.2
   firebase_core: ^1.21.1
   firebase_messaging: ^13.0.0
   flutter:
@@ -43,18 +44,27 @@ dependencies:
   flutter_local_notifications: ^9.9.1
   flutter_native_splash: ^2.2.8
   flutter_secure_storage: ^6.0.0
+  font_awesome_flutter: ^10.2.1
   freezed_annotation: ^2.1.0
-  go_router: ^5.0.5
+  get_it: ^7.2.0
+  go_router: ^5.1.1
+  google_maps_flutter: ^2.2.1
   graphql_flutter: ^5.1.0
+  image_picker: ^0.8.6
+  images_picker: ^1.2.11
   intl: ^0.17.0
   json_annotation: ^4.6.0
+  location: ^4.4.0
   logger: ^1.1.0
   path_provider: ^2.0.11
-  pmvvm: ^4.0.1
+  permission_handler: ^10.1.0
   synchronized: ^3.0.0+3
   system_clock: ^1.2.0
+  wechat_assets_picker: ^8.1.3
 
 dev_dependencies:
+  flutter_localizations:
+    sdk: flutter
   build_runner: ^2.2.0
   flutter_launcher_icons: ^0.10.0
 
@@ -81,20 +91,22 @@ flutter:
     - assets/fonts/
     - assets/texts/
     - assets/images/
+    - assets/icons/
     - assets/translations/
     - assets/videos/
+    - assets/config/
 
   fonts:
     - family: DUIcons
       fonts:
         - asset: assets/fonts/DUIcons.ttf
-    - family: Noto_Serif_KR
+    - family: NotoSansKR
       fonts:
-        - asset: assets/fonts/NotoSerifKR-Regular.otf
-        - asset: assets/fonts/NotoSerifKR-Medium.otf
+        - asset: fonts/NotoSansKR-Regular.otf
+        - asset: fonts/NotoSansKR-Medium.otf
           weight: 500
-        - asset: assets/fonts/NotoSerifKR-Medium.otf
-          weight: 600
+        - asset: fonts/NotoSansKR-Bold.otf
+          weight: 700
 
 # flutter_launcher_icons 설정값 변경 후 컴파일 명령어 입력
 # 아래는 컴파일 명령

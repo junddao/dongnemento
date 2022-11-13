@@ -1,6 +1,7 @@
+import 'package:base_project/global/component/du_nested_scroll_view/du_nested_scroll_view.dart';
 import 'package:base_project/global/style/constants.dart';
+import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/pages/00_home/components/event_widget.dart';
-import 'package:base_project/pages/00_home/components/home_intro_widget.dart';
 import 'package:base_project/pages/00_home/components/magazine_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,7 @@ class HomePageView extends StatefulWidget {
 }
 
 class _HomePageViewState extends State<HomePageView> {
+  final double sliverMaxHeight = 200.0;
   @override
   void initState() {
     super.initState();
@@ -34,18 +36,38 @@ class _HomePageViewState extends State<HomePageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: _appBar(),
-      body: _body(),
+      body: SafeArea(
+        top: true,
+        child: DUNestedScrollView(
+          body: _body(),
+          maxChild: maxChild,
+          minChild: minChild,
+          maxHeight: sliverMaxHeight,
+        ),
+      ),
     );
   }
 
-  // DUAppBar _appBar() {
-  //   return DUAppBar(
-  //     automaticallyImplyLeading: false,
-  //     centerTitle: false,
-  //     title: Text('홈'),
-  //   );
-  // }
+  Widget minChild() {
+    return AppBar(
+      title: const Text('3분 컨설팅 요청은 동네멘토!'),
+    );
+  }
+
+  Widget maxChild() {
+    return SizedBox(
+      height: sliverMaxHeight,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 80),
+          Text('3분이면', style: DUTextStyle.size24B),
+          Text('컨설팅 요청 끝!', style: DUTextStyle.size24B),
+        ],
+      ),
+    );
+  }
 
   Widget _body() {
     return SingleChildScrollView(
@@ -54,16 +76,9 @@ class _HomePageViewState extends State<HomePageView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 40),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding),
-              child: HomeIntroWidget(goUserGuide: () {}),
-            ),
-
-            const SizedBox(height: 12),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: kDefaultHorizontalPadding),
               child: EventWidget(openEvent: () {}),
             ),
             const SizedBox(height: 12),
@@ -71,10 +86,7 @@ class _HomePageViewState extends State<HomePageView> {
               padding: const EdgeInsets.only(left: kDefaultHorizontalPadding),
               child: MagazineWidget(openMagazine: () {}),
             ),
-
             const SizedBox(height: 40),
-            // magagineWidget(),
-            // nationalSupportProjectWidget(),
           ],
         ),
       ),
