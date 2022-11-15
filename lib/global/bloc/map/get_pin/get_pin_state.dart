@@ -11,6 +11,14 @@ class GetPinInitial extends GetPinState {}
 
 class GetPinLoading extends GetPinState {}
 
+class GetPinUpdated extends GetPinState {
+  final ModelResponseGetPin result;
+
+  const GetPinUpdated({required this.result});
+  @override
+  List<Object> get props => [result];
+}
+
 class GetPinLoaded extends GetPinState {
   final ModelResponseGetPin result;
 

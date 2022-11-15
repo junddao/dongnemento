@@ -15,7 +15,7 @@ class FavoritePostListPage extends StatefulWidget {
 class _FavoritePostListPageState extends State<FavoritePostListPage> {
   @override
   Widget build(BuildContext context) {
-    return ProductPageView();
+    return const ProductPageView();
   }
 }
 

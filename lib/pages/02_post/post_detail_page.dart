@@ -1,18 +1,18 @@
+import 'package:base_project/global/bloc/like/set_pin_like/set_pin_like_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pin/get_pin_cubit.dart';
 import 'package:base_project/global/bloc/reply/create_pin_reply/create_pin_reply_cubit.dart';
 import 'package:base_project/global/bloc/reply/get_pin_replies/get_pin_replies_cubit.dart';
 import 'package:base_project/global/component/du_photo_view.dart';
+import 'package:base_project/global/model/like/model_request_set_pin_like.dart';
 import 'package:base_project/global/model/pin/model_request_create_pin_reply.dart';
 import 'package:base_project/global/model/pin/model_response_get_pin.dart';
 import 'package:base_project/global/model/reply/model_response_pin_replies.dart';
 import 'package:base_project/global/style/constants.dart';
-import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:base_project/pages/common/error_page.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -40,6 +40,9 @@ class _PagePostDetailState extends State<PagePostDetail> {
         ),
         BlocProvider(
           create: (context) => GetPinRepliesCubit()..getPinReplies(widget.id),
+        ),
+        BlocProvider(
+          create: (context) => SetPinLikeCubit(),
         ),
       ],
       child: PagePostDetailView(id: widget.id),
@@ -135,17 +138,25 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                         child: const Icon(
                                           Icons.thumb_up_outlined,
                                         ),
-                                        onTap: () {},
+                                        onTap: () {
+                                          ModelRequestSetPinLike modelRequestSetPinLike =
+                                              ModelRequestSetPinLike(pinId: pin.id ?? '');
+                                          context.read<GetPinCubit>().setPinLike(modelRequestSetPinLike, true);
+                                        },
                                       )
                                     : InkWell(
                                         child: const Icon(
                                           Icons.thumb_up,
                                           color: DUColors.tomato,
                                         ),
-                                        onTap: () {},
+                                        onTap: () {
+                                          ModelRequestSetPinLike modelRequestSetPinLike =
+                                              ModelRequestSetPinLike(pinId: pin.id ?? '');
+                                          context.read<GetPinCubit>().setPinLike(modelRequestSetPinLike, false);
+                                        },
                                       ),
                                 const SizedBox(width: 6),
-                                Text('123', style: DUTextStyle.size10.grey1),
+                                Text('${pin.likeCount ?? 0}', style: DUTextStyle.size10.grey1),
                                 const SizedBox(width: 12),
                                 pin.isHated == false
                                     ? InkWell(
