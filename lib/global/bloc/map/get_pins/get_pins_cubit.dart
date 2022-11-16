@@ -1,20 +1,18 @@
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:base_project/global/model/common/api_response.dart';
 import 'package:base_project/global/model/pin/model_request_get_pin.dart';
 import 'package:base_project/global/model/pin/model_response_get_pin.dart';
-import 'package:base_project/global/repository/map_repository.dart';
 import 'package:base_project/global/repository/pin_repository.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import 'dart:ui' as ui;
 
 part 'get_pins_state.dart';
 
@@ -90,8 +88,9 @@ class GetPinsCubit extends Cubit<GetPinsState> {
 
     // Add tag text
     TextPainter textPainter = TextPainter(textDirection: TextDirection.ltr);
-    textPainter.text =
-        TextSpan(text: title.length < 18 ? title : title.substring(0, 16) + '..', style: DUTextStyle.size40B.white);
+    textPainter.text = TextSpan(
+        text: title.length < 22 ? title : '${title.substring(0, 10)}\n${title.substring(10, 20)}..',
+        style: DUTextStyle.size30B.white);
 
     textPainter.layout();
 

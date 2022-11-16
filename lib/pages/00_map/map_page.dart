@@ -201,9 +201,6 @@ class _MapPageViewState extends State<MapPageView> {
 
   Future<void> addPinMarker(List<ResponsePin> pins) async {
     for (var pin in pins) {
-      // customIcon = await createCustomMarkerBitmap(
-      //     element., element.pin!.title!);
-
       customIcon = await createCustomMarkerBitmap(pin.title!);
       final marker = Marker(
           markerId: MarkerId(pin.id!),
@@ -230,7 +227,7 @@ class _MapPageViewState extends State<MapPageView> {
     // Add tag text
     TextPainter textPainter = TextPainter(textDirection: TextDirection.ltr);
     textPainter.text =
-        TextSpan(text: title.length < 18 ? title : title.substring(0, 16) + '..', style: DUTextStyle.size40B.white);
+        TextSpan(text: title.length < 12 ? title : title.substring(0, 10) + '..', style: DUTextStyle.size40B.white);
 
     textPainter.layout();
 
