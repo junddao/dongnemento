@@ -1,8 +1,8 @@
-import 'package:base_project/global/bloc/like/set_pin_like/set_pin_like_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pin/get_pin_cubit.dart';
 import 'package:base_project/global/bloc/reply/create_pin_reply/create_pin_reply_cubit.dart';
 import 'package:base_project/global/bloc/reply/get_pin_replies/get_pin_replies_cubit.dart';
 import 'package:base_project/global/component/du_photo_view.dart';
+import 'package:base_project/global/model/hate/model_request_set_pin_hate.dart';
 import 'package:base_project/global/model/like/model_request_set_pin_like.dart';
 import 'package:base_project/global/model/pin/model_request_create_pin_reply.dart';
 import 'package:base_project/global/model/pin/model_response_get_pin.dart';
@@ -40,9 +40,6 @@ class _PagePostDetailState extends State<PagePostDetail> {
         ),
         BlocProvider(
           create: (context) => GetPinRepliesCubit()..getPinReplies(widget.id),
-        ),
-        BlocProvider(
-          create: (context) => SetPinLikeCubit(),
         ),
       ],
       child: PagePostDetailView(id: widget.id),
@@ -163,17 +160,25 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                         child: const Icon(
                                           Icons.thumb_down_outlined,
                                         ),
-                                        onTap: () {},
+                                        onTap: () {
+                                          ModelRequestSetPinHate modelRequestSetPinHate =
+                                              ModelRequestSetPinHate(pinId: pin.id ?? '');
+                                          context.read<GetPinCubit>().setPinHate(modelRequestSetPinHate, true);
+                                        },
                                       )
                                     : InkWell(
                                         child: const Icon(
                                           Icons.thumb_down,
                                           color: DUColors.facebook_blue,
                                         ),
-                                        onTap: () {},
+                                        onTap: () {
+                                          ModelRequestSetPinHate modelRequestSetPinHate =
+                                              ModelRequestSetPinHate(pinId: pin.id ?? '');
+                                          context.read<GetPinCubit>().setPinHate(modelRequestSetPinHate, false);
+                                        },
                                       ),
                                 const SizedBox(width: 6),
-                                Text('3', style: DUTextStyle.size10.grey1),
+                                Text('${pin.hateCount ?? 0}', style: DUTextStyle.size10.grey1),
                               ],
                             ),
                             const SizedBox(height: 30),

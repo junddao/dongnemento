@@ -12,8 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc
-    extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc() : super(const AuthenticationInitial()) {
     on<AuthenticationStatusChanged>(
       (event, emit) async {
@@ -43,16 +42,13 @@ class AuthenticationBloc
         emit(const AuthenticationUnAuthenticated());
         break;
       case AuthenticationStatusType.authenticated:
-        ApiResponse<ModelUser> responseModelUser =
-            await AuthRepository.instance.getMe();
+        ApiResponse<ModelUser> responseModelUser = await AuthRepository.instance.getMe();
         if (responseModelUser.status == ResponseStatus.error) {
           emit(
-            AuthenticationError(
-                errorMessage: responseModelUser.message ?? 'get me error'),
+            AuthenticationError(errorMessage: responseModelUser.message ?? 'get me error'),
           );
         } else {
           ModelUser me = responseModelUser.data ?? ModelUser();
-          // SecureStorage.instance.writeMe(me);
 
           emit(AuthenticationAuthenticated(me: me));
         }
@@ -77,8 +73,7 @@ class AuthenticationBloc
       //signIn
       switch (event.socialType) {
         case SocialType.email:
-          responseModelSignIn =
-              await emailLogin(event.email ?? '', event.password ?? '');
+          responseModelSignIn = await emailLogin(event.email ?? '', event.password ?? '');
           break;
         // case SocialType.kakao:
         //   result = await kakaoLogin();
@@ -91,18 +86,15 @@ class AuthenticationBloc
 
       if (responseModelSignIn.status == ResponseStatus.error) {
         emit(
-          AuthenticationError(
-              errorMessage: responseModelSignIn.message ?? 'sign in error'),
+          AuthenticationError(errorMessage: responseModelSignIn.message ?? 'sign in error'),
         );
       }
 
       //get me
-      ApiResponse<ModelUser> responseModelUser =
-          await AuthRepository.instance.getMe();
+      ApiResponse<ModelUser> responseModelUser = await AuthRepository.instance.getMe();
       if (responseModelUser.status == ResponseStatus.error) {
         emit(
-          AuthenticationError(
-              errorMessage: responseModelUser.message ?? 'get me error'),
+          AuthenticationError(errorMessage: responseModelUser.message ?? 'get me error'),
         );
       }
       ModelUser? me = responseModelUser.data!;
@@ -129,8 +121,7 @@ class AuthenticationBloc
     }
   }
 
-  Future<ApiResponse<ModelSignIn>> emailLogin(
-      String email, String password) async {
+  Future<ApiResponse<ModelSignIn>> emailLogin(String email, String password) async {
     late ApiResponse<ModelSignIn> result;
 
     result = await AuthRepository.instance.signIn(email, password);
