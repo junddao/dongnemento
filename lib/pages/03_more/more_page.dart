@@ -11,6 +11,7 @@ import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
+import 'package:base_project/routes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,9 +76,8 @@ class _MorePageViewState extends State<MorePageView> {
       body: _body(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          BuildContext parentContext = GoRouter.of(context).navigator!.context;
-          showBottomSheet(
-              context: parentContext,
+          showModalBottomSheet(
+              context: rootNavigatorKey.currentContext!,
               builder: (context) {
                 return Container(
                   height: 200,
@@ -166,9 +166,8 @@ class _MorePageViewState extends State<MorePageView> {
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: kDefaultHorizontalPadding,
-                  vertical: kDefaultVerticalPadding),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -188,26 +187,17 @@ class _MorePageViewState extends State<MorePageView> {
                             RichText(
                               text: TextSpan(
                                 children: [
+                                  TextSpan(text: '안녕하세요\n', style: DUTextStyle.size18.grey1),
                                   TextSpan(
-                                      text: '안녕하세요\n',
-                                      style: DUTextStyle.size18.grey1),
-                                  TextSpan(
-                                      text: context
-                                              .watch<SingletonMeCubit>()
-                                              .me
-                                              .name ??
-                                          '이름없음',
+                                      text: context.watch<SingletonMeCubit>().me.name ?? '이름없음',
                                       style: DUTextStyle.size18.black),
-                                  TextSpan(
-                                      text: '님!',
-                                      style: DUTextStyle.size18.grey1),
+                                  TextSpan(text: '님!', style: DUTextStyle.size18.grey1),
                                 ],
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 20),
-                            Text(context.watch<SingletonMeCubit>().me.email ??
-                                ''),
+                            Text(context.watch<SingletonMeCubit>().me.email ?? ''),
                           ],
                         ),
                       ],
@@ -242,8 +232,7 @@ class _MorePageViewState extends State<MorePageView> {
                         DUButton(
                             text: '변경하기',
                             press: () {
-                              context.push('/address',
-                                  extra: {'setAddress': setAddress});
+                              context.push('/address', extra: {'setAddress': setAddress});
                             },
                             type: ButtonType.transparent),
                       ],
@@ -255,21 +244,13 @@ class _MorePageViewState extends State<MorePageView> {
                           ModelUser updatedMe = context
                               .read<SingletonMeCubit>()
                               .me
-                              .copyWith(
-                                  address: _address,
-                                  lat: _lat,
-                                  lng: _lng,
-                                  name: _textNameController.text);
+                              .copyWith(address: _address, lat: _lat, lng: _lng, name: _textNameController.text);
 
                           // singletonMe update
-                          context
-                              .read<SingletonMeCubit>()
-                              .updateSingletonMe(updatedMe);
+                          context.read<SingletonMeCubit>().updateSingletonMe(updatedMe);
 
                           // server 정보 update
-                          await context
-                              .read<UpdateUserCubit>()
-                              .updateUser(updatedMe.toMap());
+                          await context.read<UpdateUserCubit>().updateUser(updatedMe.toMap());
                         },
                         type: ButtonType.normal,
                         width: SizeConfig.screenWidth),
@@ -294,8 +275,7 @@ class _MorePageViewState extends State<MorePageView> {
               borderRadius: BorderRadius.circular(300),
               child: CachedNetworkImage(
                 imageUrl: defaultUser,
-                errorWidget: (context, url, error) =>
-                    Image.network(defaultUser),
+                errorWidget: (context, url, error) => Image.network(defaultUser),
                 fit: BoxFit.cover,
                 height: 80,
                 width: 80,

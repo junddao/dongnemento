@@ -13,6 +13,7 @@ import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/date_converter.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:base_project/global/util/range_by_zoom.dart';
+import 'package:base_project/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -179,8 +180,7 @@ class _MapPageViewState extends State<MapPageView> {
     context.read<LocationCubit>().setTemporaryLocation(location);
 
     showModalBottomSheet(
-      context: GoRouter.of(context).navigator!.context,
-      // isScrollControlled: true,
+      context: rootNavigatorKey.currentContext!,
       builder: (_) {
         return buildSelectLocationBottomSheet(context, location);
       },

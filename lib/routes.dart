@@ -36,6 +36,9 @@ class Routes {
   static const post = 'post';
 }
 
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
+
 class AppRouter extends Bloc {
   late final AuthenticationBloc authBloc;
 
@@ -44,8 +47,6 @@ class AppRouter extends Bloc {
   AppRouter(this.authBloc) : super(null);
 
   AuthenticationState? prevAuthState;
-  final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-  final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
 
   late final _goRouter = GoRouter(
     redirect: (context, state) async {
@@ -72,8 +73,9 @@ class AppRouter extends Bloc {
 
       return null;
     },
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     refreshListenable: GoRouterRefreshStream(authBloc.stream),
+    initialLocation: Routes.root,
     routes: <RouteBase>[
       GoRoute(
         path: Routes.root,
@@ -85,7 +87,7 @@ class AppRouter extends Bloc {
         },
       ),
       ShellRoute(
-        navigatorKey: _shellNavigatorKey,
+        navigatorKey: shellNavigatorKey,
         pageBuilder: (context, state, child) {
           return MaterialPage(
             key: state.pageKey,
@@ -110,14 +112,14 @@ class AppRouter extends Bloc {
             },
             routes: [
               GoRoute(
-                parentNavigatorKey: _rootNavigatorKey,
+                parentNavigatorKey: rootNavigatorKey,
                 path: Routes.post,
                 builder: (context, state) {
                   return const CreatePostPage();
                 },
               ),
               GoRoute(
-                parentNavigatorKey: _rootNavigatorKey,
+                parentNavigatorKey: rootNavigatorKey,
                 path: '${Routes.post}/:id',
                 builder: (context, state) {
                   String id = state.params['id']!;
@@ -137,7 +139,9 @@ class AppRouter extends Bloc {
           GoRoute(
             path: Routes.more,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: MorePage());
+              return const MaterialPage(
+                child: MorePage(),
+              );
             },
           ),
         ],

@@ -3,21 +3,17 @@ import 'package:base_project/global/bloc/auth/authentication/authentication_bloc
 import 'package:base_project/global/bloc/auth/get_me/get_me_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
 import 'package:base_project/global/bloc/map/location/location_cubit.dart';
-import 'package:base_project/global/bloc/reply/create_pin_reply/create_pin_reply_cubit.dart';
 import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/theme/theme.dart';
 import 'package:base_project/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_file.dart';
-
-import 'firebase_options.dart';
 
 void mainCommon() async {
   //앱 세팅
