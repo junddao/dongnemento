@@ -11,7 +11,6 @@ import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
-import 'package:base_project/routes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,26 +73,6 @@ class _MorePageViewState extends State<MorePageView> {
     return Scaffold(
       appBar: _appBar(),
       body: _body(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-              context: rootNavigatorKey.currentContext!,
-              builder: (context) {
-                return Container(
-                  height: 200,
-                  width: double.infinity,
-                  color: Colors.yellow,
-                  child: TextButton(
-                    child: Text('pop'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                );
-              });
-        },
-        child: Icon(Icons.add),
-      ),
     );
   }
 
@@ -107,7 +86,6 @@ class _MorePageViewState extends State<MorePageView> {
           onSelected: (value) async {
             if (value == 0) {
               _logout();
-              // Navigator.of(context).pushNamedAndRemoveUntil('PageLogin', (route) => false);
             } else if (value == 1) {
               bool result = await DUDialog.showTwoButtonDialog(
                   context: context,
@@ -122,7 +100,7 @@ class _MorePageViewState extends State<MorePageView> {
             }
           },
           itemBuilder: (context) => [
-            PopupMenuItem(
+            const PopupMenuItem(
               value: 0,
               child: Text('로그아웃', style: DUTextStyle.size14),
             ),

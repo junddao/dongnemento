@@ -85,7 +85,7 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.favorite_sharp),
-          label: '인기글',
+          label: '주변 인기글',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person_outline),
@@ -120,7 +120,6 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
       case 0:
         GoRouter.of(context).go('/map');
         break;
-
       case 1:
         GoRouter.of(context).go('/product');
         break;

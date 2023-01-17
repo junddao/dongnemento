@@ -126,22 +126,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
           );
         }
         if (state is FileLoaded) {
-          double lat = context.read<LocationCubit>().state.postLocation!.lat!;
-          double lng = context.read<LocationCubit>().state.postLocation!.lng!;
-
-          location = LatLng(lat, lng);
-
-          imagePaths = state.result;
-
-          ModelRequestCreatePin requestCreatePin = ModelRequestCreatePin(
-            lat: location!.latitude,
-            lng: location!.longitude,
-            title: _titleController.text,
-            body: _bodyController.text,
-            images: imagePaths,
-          );
-
-          context.read<CreatePinCubit>().createPin(requestCreatePin);
+          _createPin(imagePaths: state.result);
         }
 
         return BlocConsumer<CreatePinCubit, CreatePinState>(
@@ -343,7 +328,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
     return Column(children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [
+        children: const [
           Text('사진', style: DUTextStyle.size16M),
         ],
       ),
@@ -486,11 +471,30 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
 
     if (files.isNotEmpty) {
       context.read<FileCubit>().uploadImages(files);
+    } else {
+      _createPin();
     }
   }
 
   void onTapMarker(String pinId) {
     // 상세 핀 페이지로 이동
     context.go('/map/post/$pinId');
+  }
+
+  void _createPin({List<String>? imagePaths}) {
+    double lat = context.read<LocationCubit>().state.postLocation!.lat!;
+    double lng = context.read<LocationCubit>().state.postLocation!.lng!;
+
+    location = LatLng(lat, lng);
+
+    ModelRequestCreatePin requestCreatePin = ModelRequestCreatePin(
+      lat: location!.latitude,
+      lng: location!.longitude,
+      title: _titleController.text,
+      body: _bodyController.text,
+      images: imagePaths,
+    );
+
+    context.read<CreatePinCubit>().createPin(requestCreatePin);
   }
 }

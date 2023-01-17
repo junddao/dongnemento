@@ -57,7 +57,6 @@ class ResponsePin {
   bool? isHated;
   String? createdAt;
   String? updatedAt;
-
   ResponsePin({
     this.id,
     this.lat,
@@ -66,10 +65,10 @@ class ResponsePin {
     this.body,
     this.images,
     this.userId,
-    required this.likeCount,
-    required this.isLiked,
-    required this.hateCount,
-    required this.isHated,
+    this.likeCount,
+    this.isLiked,
+    this.hateCount,
+    this.isHated,
     this.createdAt,
     this.updatedAt,
   });
@@ -99,7 +98,7 @@ class ResponsePin {
       lng: map['lng']?.toDouble(),
       title: map['title'],
       body: map['body'],
-      images: List<String>.from(map['images']),
+      images: map['images'] != null ? List<String>.from(map['images']) : null,
       userId: map['userId'],
       likeCount: map['likeCount']?.toInt(),
       isLiked: map['isLiked'],
