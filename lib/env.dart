@@ -14,8 +14,8 @@ const _prodApiPinReplyUrl = '$_prodApiBaseUrl$_apiPinReply';
 const _prodApiLikeUrl = '$_prodApiBaseUrl$_apiLike';
 const _prodApiHateUrl = '$_prodApiBaseUrl$_apiHate';
 
-const _devApiBaseUrl = 'http://192.168.1.82:17008'; // 06
-// const _devApiBaseUrl = 'http://192.168.1.47:17008';  // 05
+// const _devApiBaseUrl = 'http://192.168.1.82:17008'; // 06
+const _devApiBaseUrl = 'http://192.168.1.47:17008'; // 05
 
 const _devApiAuthUrl = '$_devApiBaseUrl$_apiAuth';
 const _devApiMapUrl = '$_devApiBaseUrl$_apiMap';
