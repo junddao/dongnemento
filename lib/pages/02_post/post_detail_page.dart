@@ -134,6 +134,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                     ? InkWell(
                                         child: const Icon(
                                           Icons.thumb_up_outlined,
+                                          size: 18,
                                         ),
                                         onTap: () {
                                           ModelRequestSetPinLike modelRequestSetPinLike =
@@ -145,6 +146,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                         child: const Icon(
                                           Icons.thumb_up,
                                           color: DUColors.tomato,
+                                          size: 18,
                                         ),
                                         onTap: () {
                                           ModelRequestSetPinLike modelRequestSetPinLike =
@@ -159,6 +161,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                     ? InkWell(
                                         child: const Icon(
                                           Icons.thumb_down_outlined,
+                                          size: 18,
                                         ),
                                         onTap: () {
                                           ModelRequestSetPinHate modelRequestSetPinHate =
@@ -170,6 +173,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                         child: const Icon(
                                           Icons.thumb_down,
                                           color: DUColors.facebook_blue,
+                                          size: 18,
                                         ),
                                         onTap: () {
                                           ModelRequestSetPinHate modelRequestSetPinHate =

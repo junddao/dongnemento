@@ -15,7 +15,8 @@ const _prodApiLikeUrl = '$_prodApiBaseUrl$_apiLike';
 const _prodApiHateUrl = '$_prodApiBaseUrl$_apiHate';
 
 // const _devApiBaseUrl = 'http://192.168.1.82:17008'; // 06
-const _devApiBaseUrl = 'http://192.168.1.47:17008'; // 05
+// const _devApiBaseUrl = 'http://192.168.1.47:17008'; // 05
+const _devApiBaseUrl = 'http://192.168.2.40:17008'; // 05
 
 const _devApiAuthUrl = '$_devApiBaseUrl$_apiAuth';
 const _devApiMapUrl = '$_devApiBaseUrl$_apiMap';
@@ -59,17 +60,6 @@ class Env {
     _instance ??= Env._internal();
     return _instance!;
   }
-
-  // Env._internal() {
-  //   //Product API EndPoint (주의 실제 운영 중인 API EndPoint)
-  //   if (kReleaseMode) _mode = OpMode.product;
-  //   //QA API EndPoint
-  //   // if (kProfileMode) _mode = OpMode.STAGING;
-  //   //개발 API EndPoint
-  //   if (kDebugMode) _mode = OpMode.dev;
-
-  //   changeMode(_mode);
-  // }
   Env._internal() {
     if (Environment.buildType == BuildType.dev) {
       _mode = OpMode.dev;

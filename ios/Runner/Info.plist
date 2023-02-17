@@ -53,5 +53,7 @@
 	<string>디자인 사진 게시 및 수정을 위해 사용합니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>프로필 및 디자인 사진 게시를 위해 사용합니다.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>
