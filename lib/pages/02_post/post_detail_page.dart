@@ -16,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../routes.dart';
+
 class PagePostDetail extends StatefulWidget {
   const PagePostDetail({
     super.key,
@@ -183,6 +185,13 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                       ),
                                 const SizedBox(width: 6),
                                 Text('${pin.hateCount ?? 0}', style: DUTextStyle.size10.grey1),
+                                const Spacer(),
+                                TextButton(
+                                  onPressed: () {
+                                    context.push(Routes.report);
+                                  },
+                                  child: Text('신고하기', style: DUTextStyle.size12B.tomato),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 30),
