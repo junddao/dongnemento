@@ -86,13 +86,13 @@ class DUDialog {
     return result;
   }
 
-  static Future<bool> showOneButtonDialog({
+  static Future<bool?> showOneButtonDialog({
     required BuildContext context,
     String? title,
     String? subTitle,
     String? btnText,
   }) async {
-    bool result = await showDialog(
+    bool? result = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
