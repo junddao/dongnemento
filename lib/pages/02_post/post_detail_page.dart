@@ -128,7 +128,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                             const SizedBox(height: 20),
                             Text(pin.title!, style: DUTextStyle.size18B),
                             const SizedBox(height: 20),
-                            Text(pin.body ?? '글이 없어용.'),
+                            Text(pin.body ?? '글이 없어요.'),
                             const SizedBox(height: 30),
                             Row(
                               children: [

@@ -12,7 +12,12 @@
           "package_name": "com.jtb.dongnemento"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "558531435873-93rfoe00ldcihspnsprvd8nma8kiujko.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBcA4p5KxOzlu-8mNCwfqIohixj7WcSchk"
@@ -22,10 +27,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "558531435873-h0lt9ee6aa61q8fgcvr2a3uln5rjvusp.apps.googleusercontent.com",
+              "client_id": "558531435873-93rfoe00ldcihspnsprvd8nma8kiujko.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "558531435873-c3vnd6rn1taslfmemcu2cjidjorfqbh8.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.jtb.dongnemento.dev"
+                "bundle_id": "com.jtb.dongnemento.dev",
+                "app_store_id": "6444169758"
               }
             }
           ]
@@ -47,6 +57,10 @@
             "package_name": "com.jtb.dongnemento.dev",
             "certificate_hash": "b094831232d5906e976a4c78cfde6742b5ac7ac0"
           }
+        },
+        {
+          "client_id": "558531435873-93rfoe00ldcihspnsprvd8nma8kiujko.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -58,10 +72,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "558531435873-h0lt9ee6aa61q8fgcvr2a3uln5rjvusp.apps.googleusercontent.com",
+              "client_id": "558531435873-93rfoe00ldcihspnsprvd8nma8kiujko.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "558531435873-c3vnd6rn1taslfmemcu2cjidjorfqbh8.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.jtb.dongnemento.dev"
+                "bundle_id": "com.jtb.dongnemento.dev",
+                "app_store_id": "6444169758"
               }
             }
           ]
