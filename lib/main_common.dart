@@ -15,6 +15,10 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import 'firebase_options.dart' as firebase_option;
+import 'firebase_options_dev.dart' as firebase_option_dev;
+import 'global/service/dynamic_link.dart';
+
 void mainCommon() async {
   //앱 세팅
   await platformSetup();
@@ -27,7 +31,20 @@ Future<void> platformSetup() async {
   // Flutter 엔진과 위젯의 바인딩 작업
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
+  // 기본설정
+  Env();
+
+  if (Env.opMode == OpMode.dev) {
+    await Firebase.initializeApp(
+      name: 'dongnemento_dev',
+      options: firebase_option_dev.DefaultFirebaseOptions.currentPlatform,
+    );
+  } else {
+    await Firebase.initializeApp(
+      name: 'dongnemento',
+      options: firebase_option.DefaultFirebaseOptions.currentPlatform,
+    );
+  }
   // firebase 초기화
   // await FCMWrapper.instance.initialize();
 
@@ -36,9 +53,6 @@ Future<void> platformSetup() async {
 
   // 다국어 기본 한국어로 적용
   Intl.defaultLocale = 'ko_KR';
-
-  // 기본설정
-  Env();
 }
 
 class MyApp extends StatefulWidget {
@@ -84,6 +98,8 @@ class _MyAppState extends State<MyApp> {
       child: Builder(
         builder: (context) {
           GoRouter router = context.read<AppRouter>().router;
+          // init dynamic link
+          DynamicLink.instance.setup(router);
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
             routerConfig: router,

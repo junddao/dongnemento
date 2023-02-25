@@ -10,6 +10,7 @@ import 'package:base_project/pages/02_post/create_post_page.dart';
 import 'package:base_project/pages/02_post/favorite_post_list_page.dart';
 import 'package:base_project/pages/02_post/post_detail_page.dart';
 import 'package:base_project/pages/03_more/more_page.dart';
+import 'package:base_project/pages/04_report/report_page.dart';
 import 'package:base_project/pages/common/address_page.dart';
 import 'package:base_project/pages/common/error_page.dart';
 import 'package:base_project/pages/login/login_page.dart';
@@ -30,6 +31,7 @@ class Routes {
   static const more = '/more';
   static const error = '/error';
   static const address = '/address';
+  static const report = '/report';
 
   // 2 depth
   static const signUp = 'sign_up';
@@ -175,6 +177,14 @@ class AppRouter extends Bloc {
             child: AddressPage(
               setAddress: setAddress,
             ),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.report,
+        pageBuilder: (context, state) {
+          return const MaterialPage(
+            child: ReportPage(),
           );
         },
       ),
