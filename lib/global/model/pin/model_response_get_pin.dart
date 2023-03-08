@@ -51,6 +51,8 @@ class ResponsePin {
   String? body;
   List<String>? images;
   String? userId;
+  String? userName;
+  String? userProfileImage;
   int? likeCount;
   bool? isLiked;
   int? hateCount;
@@ -65,6 +67,8 @@ class ResponsePin {
     this.body,
     this.images,
     this.userId,
+    this.userName,
+    this.userProfileImage,
     this.likeCount,
     this.isLiked,
     this.hateCount,
@@ -82,6 +86,8 @@ class ResponsePin {
       'body': body,
       'images': images,
       'userId': userId,
+      'userName': userName,
+      'userProfileImage': userProfileImage,
       'likeCount': likeCount,
       'isLiked': isLiked,
       'hateCount': hateCount,
@@ -100,6 +106,8 @@ class ResponsePin {
       body: map['body'],
       images: map['images'] != null ? List<String>.from(map['images']) : null,
       userId: map['userId'],
+      userName: map['userName'],
+      userProfileImage: map['userProfileImage'],
       likeCount: map['likeCount']?.toInt(),
       isLiked: map['isLiked'],
       hateCount: map['hateCount']?.toInt(),
@@ -121,6 +129,8 @@ class ResponsePin {
     String? body,
     List<String>? images,
     String? userId,
+    String? userName,
+    String? userProfileImage,
     int? likeCount,
     bool? isLiked,
     int? hateCount,
@@ -136,6 +146,8 @@ class ResponsePin {
       body: body ?? this.body,
       images: images ?? this.images,
       userId: userId ?? this.userId,
+      userName: userName ?? this.userName,
+      userProfileImage: userProfileImage ?? this.userProfileImage,
       likeCount: likeCount ?? this.likeCount,
       isLiked: isLiked ?? this.isLiked,
       hateCount: hateCount ?? this.hateCount,

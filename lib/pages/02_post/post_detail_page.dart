@@ -69,12 +69,6 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
   }
 
   AppBar _appBar() {
-    // String title = '';
-    // GetPinState state = context.watch<GetPinCubit>().state;
-    // if (state is GetPinLoaded) {
-    //   title = state.result.data?.first.title ?? '';
-    // }
-    // return AppBar(title: Text(title));
     return AppBar(
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios),
@@ -125,6 +119,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // _buildUserProfile(pin),
                             const SizedBox(height: 20),
                             Text(pin.title!, style: DUTextStyle.size18B),
                             const SizedBox(height: 20),
@@ -232,6 +227,12 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
       },
     );
   }
+
+  // Widget _buildUserProfile(ResponsePin pin) {
+  //   return ListTile(
+  //     leading: pin,
+  //   );
+  // }
 
   Widget _buildReviewList(List<PinReplies> replies) {
     return replies.isEmpty

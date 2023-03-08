@@ -126,8 +126,7 @@ class _MapPageViewState extends State<MapPageView> {
                   myLocationEnabled: false,
                   myLocationButtonEnabled: false,
 
-                  // padding: const EdgeInsets.only(bottom: 130, right: 0),
-                  // mapToolbarEnabled: false,
+            
                   zoomControlsEnabled: false,
                   onCameraMove: _onCameraMove,
                   onCameraIdle: _onCameraIdle,
