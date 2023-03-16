@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../global/component/du_profile.dart';
 import '../../routes.dart';
 
 class PagePostDetail extends StatefulWidget {
@@ -119,7 +120,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // _buildUserProfile(pin),
+                            _buildUserProfile(pin),
                             const SizedBox(height: 20),
                             Text(pin.title!, style: DUTextStyle.size18B),
                             const SizedBox(height: 20),
@@ -228,11 +229,19 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
     );
   }
 
-  // Widget _buildUserProfile(ResponsePin pin) {
-  //   return ListTile(
-  //     leading: pin,
-  //   );
-  // }
+  Widget _buildUserProfile(ResponsePin pin) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: DUProfile(
+        size: 40,
+        profileUrl: pin.userProfileImage ?? '',
+        // height: 30,
+        // width: 30,
+      ),
+      title: Text(pin.userName ?? 'No name'),
+      subtitle: Text(pin.updatedAt.toDateWithSeconds(), style: DUTextStyle.size10.grey2),
+    );
+  }
 
   Widget _buildReviewList(List<PinReplies> replies) {
     return replies.isEmpty
