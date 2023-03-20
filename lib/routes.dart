@@ -4,13 +4,13 @@ import 'package:base_project/global/bloc/auth/authentication/authentication_bloc
 import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/util/simple_logger.dart';
+import 'package:base_project/pages/00_etc/page_confirm.dart';
 import 'package:base_project/pages/00_home/home_page.dart';
 import 'package:base_project/pages/00_map/map_page.dart';
 import 'package:base_project/pages/02_post/create_post_page.dart';
 import 'package:base_project/pages/02_post/favorite_post_list_page.dart';
 import 'package:base_project/pages/02_post/post_detail_page.dart';
 import 'package:base_project/pages/03_more/more_page.dart';
-import 'package:base_project/pages/04_report/report_page.dart';
 import 'package:base_project/pages/common/address_page.dart';
 import 'package:base_project/pages/common/error_page.dart';
 import 'package:base_project/pages/login/login_page.dart';
@@ -20,6 +20,8 @@ import 'package:base_project/pages/tab_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import 'global/component/du_photo_viewer.dart';
 
 class Routes {
   // 1 depth
@@ -31,7 +33,8 @@ class Routes {
   static const more = '/more';
   static const error = '/error';
   static const address = '/address';
-  static const report = '/report';
+  static const confirm = '/confirm';
+  static const photoView = '/photo_view';
 
   // 2 depth
   static const signUp = 'sign_up';
@@ -181,10 +184,29 @@ class AppRouter extends Bloc {
         },
       ),
       GoRoute(
-        path: Routes.report,
+        path: Routes.confirm,
+        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) {
-          return const MaterialPage(
-            child: ReportPage(),
+          final params = state.extra! as Map<String, dynamic>;
+          String title = params['title'];
+          String contents1 = params['contents1'];
+          String contents2 = params['contents2'];
+          return MaterialPage(
+            child: PageConfirm(
+              title: title,
+              contents1: contents1,
+              contents2: contents2,
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.photoView,
+        name: Routes.photoView,
+        pageBuilder: (context, state) {
+          String? filePath = state.params as String;
+          return MaterialPage(
+            child: DUPhotoViewer(filePath: filePath),
           );
         },
       ),

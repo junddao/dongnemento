@@ -60,8 +60,8 @@ class _HomePageViewState extends State<HomePageView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 80),
+        children: const [
+          SizedBox(height: 80),
           Text('3분이면', style: DUTextStyle.size24B),
           Text('컨설팅 요청 끝!', style: DUTextStyle.size24B),
         ],
@@ -77,8 +77,7 @@ class _HomePageViewState extends State<HomePageView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: kDefaultHorizontalPadding),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding),
               child: EventWidget(openEvent: () {}),
             ),
             const SizedBox(height: 12),

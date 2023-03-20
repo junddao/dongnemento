@@ -4,6 +4,12 @@ import 'package:base_project/global/util/extension/extension.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:path/path.dart' as path;
+
+// import 'path'
+
+import '../../routes.dart';
 
 class DUPhotoView extends StatefulWidget {
   const DUPhotoView({
@@ -31,8 +37,7 @@ class _DUPhotoViewState extends State<DUPhotoView> {
             decoration: const BoxDecoration(
               color: DUColors.greyish,
             ),
-            child: Center(
-                child: Text('No Image', style: DUTextStyle.size14B.white)),
+            child: Center(child: Text('No Image', style: DUTextStyle.size14B.white)),
           )
         : Container(
             width: double.infinity,
@@ -42,16 +47,17 @@ class _DUPhotoViewState extends State<DUPhotoView> {
                 PageView.builder(
                     itemCount: widget.imageUrls.length,
                     itemBuilder: (context, index) {
+                      String filePath = widget.imageUrls[index];
                       return InkWell(
                         onTap: () {
-                          Navigator.of(context).pushNamed('DSPhotoViewer',
-                              arguments: widget.imageUrls[index]);
+                          context.push(path.join(Routes.photoView, filePath));
+                          Navigator.of(context).pushNamed('DSPhotoViewer', arguments: filePath);
                         },
                         child: CachedNetworkImage(
-                          imageUrl: widget.imageUrls[index],
+                          imageUrl: filePath,
                           fit: BoxFit.cover,
-                          errorWidget: (BuildContext, String, dynamic) {
-                            return Container(child: Text('이미지를 불러오지 못했습니다.'));
+                          errorWidget: (context, _, __) {
+                            return const SizedBox(child: Text('이미지를 불러오지 못했습니다.'));
                           },
                         ),
                         // child: ClipRRect(

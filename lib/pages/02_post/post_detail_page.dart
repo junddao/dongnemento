@@ -12,6 +12,7 @@ import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:base_project/pages/common/error_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -121,11 +122,11 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildUserProfile(pin),
-                            const SizedBox(height: 20),
+                            const Divider(height: 8),
                             Text(pin.title!, style: DUTextStyle.size18B),
                             const SizedBox(height: 20),
                             Text(pin.body ?? '글이 없어요.'),
-                            const SizedBox(height: 30),
+                            const SizedBox(height: 16),
                             Row(
                               children: [
                                 pin.isLiked == false
@@ -184,13 +185,47 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                 const Spacer(),
                                 TextButton(
                                   onPressed: () {
-                                    context.push(Routes.report);
+                                    showCupertinoModalPopup<void>(
+                                      context: context,
+                                      builder: (BuildContext context) => CupertinoActionSheet(
+                                          title: const Text('신고 / 차단'),
+                                          message: const Text('신고, 차단한 사용자의 글은\n 지도상에 표시되지 않습니다.'),
+                                          actions: <CupertinoActionSheetAction>[
+                                            CupertinoActionSheetAction(
+                                              child: const Text('신고하기'),
+                                              onPressed: () async {
+                                                context.push(Routes.confirm, extra: {
+                                                  'title': '신고하기',
+                                                  'contents1': '신고가 정상적으로 접수되었습니다.',
+                                                  'contents2': '다수의 사용자가 해당글을 신고할 경우\n해당 글은 삭제처리 됩니다.'
+                                                });
+                                              },
+                                            ),
+                                            CupertinoActionSheetAction(
+                                              child: const Text('차단하기'),
+                                              onPressed: () async {
+                                                context.push(Routes.confirm, extra: {
+                                                  'title': '차단하기',
+                                                  'contents1': '해당 사용자를 차단하였습니다.',
+                                                  'contents2': '해당 사용자의 글은 숨김처리 됩니다.'
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                          cancelButton: CupertinoActionSheetAction(
+                                            child: const Text('취소'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          )),
+                                    );
+                                    // context.push(Routes.report);
                                   },
                                   child: Text('신고하기', style: DUTextStyle.size12B.tomato),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 30),
+                            const SizedBox(height: 16),
                             const Divider(
                               thickness: 1,
                             ),
