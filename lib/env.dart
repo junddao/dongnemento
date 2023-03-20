@@ -13,6 +13,7 @@ const _prodApiPinUrl = '$_prodApiBaseUrl$_apiPin';
 const _prodApiPinReplyUrl = '$_prodApiBaseUrl$_apiPinReply';
 const _prodApiLikeUrl = '$_prodApiBaseUrl$_apiLike';
 const _prodApiHateUrl = '$_prodApiBaseUrl$_apiHate';
+const _prodApiReportUrl = '$_prodApiBaseUrl$_apiReport';
 
 // const _devApiBaseUrl = 'http://192.168.1.82:17008'; // 06
 // const _devApiBaseUrl = 'http://192.168.1.47:17008'; // 05
@@ -26,6 +27,7 @@ const _devApiPinUrl = '$_devApiBaseUrl$_apiPin';
 const _devApiPinReplyUrl = '$_devApiBaseUrl$_apiPinReply';
 const _devApiLikeUrl = '$_devApiBaseUrl$_apiLike';
 const _devApiHateUrl = '$_devApiBaseUrl$_apiHate';
+const _devApiReportUrl = '$_devApiBaseUrl$_apiReport';
 
 const _apiAuth = '/user';
 const _apiMap = '/map';
@@ -33,6 +35,7 @@ const _apiPin = '/pin';
 const _apiPinReply = '/reply';
 const _apiLike = '/like';
 const _apiHate = '/hate';
+const _apiReport = '/report';
 
 class Env {
   static Env? _instance;
@@ -45,6 +48,7 @@ class Env {
   static late String _apiPinReplyUrl;
   static late String _apiLikeUrl;
   static late String _apiHateUrl;
+  static late String _apiReportUrl;
 
   /// User API 접속 주소
   static String get apiBaseUrl => _apiBaseUrl;
@@ -54,6 +58,7 @@ class Env {
   static String get apiPinReplyUrl => _apiPinReplyUrl;
   static String get apiLikeUrl => _apiLikeUrl;
   static String get apiHateUrl => _apiHateUrl;
+  static String get apiReportUrl => _apiReportUrl;
 
   //End Point
   static OpMode get opMode => _mode;
@@ -86,6 +91,7 @@ class Env {
         _apiPinReplyUrl = _prodApiPinReplyUrl;
         _apiLikeUrl = _prodApiLikeUrl;
         _apiHateUrl = _prodApiHateUrl;
+        _apiReportUrl = _prodApiReportUrl;
         break;
       case OpMode.dev: //개발 모드
         _apiBaseUrl = _devApiBaseUrl;
@@ -95,6 +101,7 @@ class Env {
         _apiPinReplyUrl = _devApiPinReplyUrl;
         _apiLikeUrl = _devApiLikeUrl;
         _apiHateUrl = _devApiHateUrl;
+        _apiReportUrl = _devApiReportUrl;
         break;
       case OpMode.unknown:
       default:
