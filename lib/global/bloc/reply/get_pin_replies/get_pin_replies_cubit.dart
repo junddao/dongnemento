@@ -12,7 +12,7 @@ class GetPinRepliesCubit extends Cubit<GetPinRepliesState> {
   Future<void> getPinReplies(String pinId) async {
     try {
       emit(GetPinRepliesLoading());
-      print(pinId);
+
       ApiResponse<ModelResponseGetPinReplies> response = await ReplyRepository.instance.getPinReplies(pinId);
 
       if (response.status == ResponseStatus.error) {

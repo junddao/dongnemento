@@ -43,6 +43,7 @@ class MapPageView extends StatefulWidget {
 
 class _MapPageViewState extends State<MapPageView> {
   List<Marker> _pinMarkers = [];
+  List<ResponsePin> pins = [];
   final List<Marker> _temporaryMaker = [];
   late LatLng _lastLocation;
   int? range = 3000;
@@ -64,7 +65,7 @@ class _MapPageViewState extends State<MapPageView> {
       lng: lng,
       range: range,
     );
-    context.read<GetPinsCubit>().getPinWithMarkers(modelRequestGetPin, onTapMarker);
+    context.read<GetPinsCubit>().getPins(modelRequestGetPin);
     super.initState();
   }
 
@@ -103,33 +104,38 @@ class _MapPageViewState extends State<MapPageView> {
 
         return BlocBuilder<GetPinsCubit, GetPinsState>(
           builder: (context, getPinsState) {
-            List<ResponsePin> pins = [];
-            if (getPinsState is GetMarkerLoaded) {
-              _pinMarkers = getPinsState.markers;
+            if (getPinsState is GetPinsLoaded) {
+              pins = getPinsState.result.data ?? [];
+              // _pinMarkers = getPinsState.markers;
+              // _drawPin(pins);
             }
-            return Stack(
-              children: [
-                GoogleMap(
-                  onMapCreated: (controller) async {
-                    await _onMapCreated(controller, _lastLocation);
-                  },
-                  initialCameraPosition: CameraPosition(
-                    target: _lastLocation,
-                    zoom: 15,
-                  ),
-                  markers: <Marker>{..._pinMarkers, ..._temporaryMaker},
-                  rotateGesturesEnabled: false,
-                  myLocationEnabled: false,
-                  myLocationButtonEnabled: false,
-                  zoomControlsEnabled: false,
-                  onCameraMove: _onCameraMove,
-                  onCameraIdle: _onCameraIdle,
-                  onTap: (point) {
-                    _handleTap(point);
-                  },
-                ),
-              ],
-            );
+            return FutureBuilder(
+                future: _drawPin(pins),
+                builder: (context, snapshot) {
+                  return Stack(
+                    children: [
+                      GoogleMap(
+                        onMapCreated: (controller) async {
+                          await _onMapCreated(controller, _lastLocation);
+                        },
+                        initialCameraPosition: CameraPosition(
+                          target: _lastLocation,
+                          zoom: 15,
+                        ),
+                        markers: <Marker>{..._pinMarkers, ..._temporaryMaker},
+                        rotateGesturesEnabled: false,
+                        myLocationEnabled: false,
+                        myLocationButtonEnabled: false,
+                        zoomControlsEnabled: false,
+                        onCameraMove: _onCameraMove,
+                        onCameraIdle: _onCameraIdle,
+                        onTap: (point) {
+                          _handleTap(point);
+                        },
+                      ),
+                    ],
+                  );
+                });
           },
         );
       },
@@ -188,7 +194,7 @@ class _MapPageViewState extends State<MapPageView> {
       lng: _lastLocation.longitude,
       range: range,
     );
-    context.read<GetPinsCubit>().getPinWithMarkers(modelRequestGetPin, onTapMarker);
+    context.read<GetPinsCubit>().getPins(modelRequestGetPin);
   }
 
   Future<void> addPinMarker(List<ResponsePin> pins) async {
@@ -306,8 +312,26 @@ class _MapPageViewState extends State<MapPageView> {
     _temporaryMaker.clear();
   }
 
-  void onTapMarker(String pinId) {
+  void onTapMarker(String pinId, String userId) {
     // 상세 핀 페이지로 이동
-    context.go('/map/post/$pinId');
+    context.go('/map/post/$pinId/$userId');
+  }
+
+  // BitmapDescriptor? customIcon;
+
+  _drawPin(List<ResponsePin> pins) async {
+    List<Marker> markers = [];
+    for (var pin in pins) {
+      BitmapDescriptor? customIcon = await createCustomMarkerBitmap(pin.title!);
+      final marker = Marker(
+          markerId: MarkerId(pin.id ?? DateTime.now().toString()),
+          position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
+          icon: customIcon,
+          onTap: () {
+            onTapMarker(pin.id!, pin.userId!);
+          });
+      markers.add(marker);
+    }
+    _pinMarkers = markers;
   }
 }

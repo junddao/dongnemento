@@ -2,6 +2,7 @@ import 'package:base_project/global/bloc/auth/block_user/block_user_cubit.dart';
 import 'package:base_project/global/bloc/auth/get_user/cubit/get_user_cubit.dart';
 import 'package:base_project/global/bloc/map/delete_pin/cubit/delete_pin_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pin/get_pin_cubit.dart';
+import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
 import 'package:base_project/global/bloc/reply/create_pin_reply/create_pin_reply_cubit.dart';
 import 'package:base_project/global/bloc/reply/get_pin_replies/get_pin_replies_cubit.dart';
 import 'package:base_project/global/bloc/report/cubit/create_report_cubit.dart';
@@ -23,6 +24,7 @@ import '../../global/component/du_photo_view.dart';
 import '../../global/component/du_profile.dart';
 import '../../global/model/hate/model_request_set_pin_hate.dart';
 import '../../global/model/like/model_request_set_pin_like.dart';
+import '../../global/model/pin/model_request_get_pin.dart';
 import '../../global/model/report/model_request_report.dart';
 import '../../global/model/user/model_request_block.dart';
 import '../../global/style/du_button.dart';
@@ -33,8 +35,10 @@ class PagePostDetail extends StatefulWidget {
   const PagePostDetail({
     super.key,
     required this.id,
+    required this.userId,
   });
 
+  final String userId;
   final String id;
   @override
   State<PagePostDetail> createState() => _PagePostDetailState();
@@ -61,17 +65,21 @@ class _PagePostDetailState extends State<PagePostDetail> {
           create: (context) => BlockUserCubit(),
         ),
         BlocProvider(
-          create: (context) => GetUserCubit(),
+          create: (context) => GetUserCubit()..getUser(widget.userId),
         ),
+        BlocProvider(
+          create: (context) => DeletePinCubit(),
+        )
       ],
-      child: PagePostDetailView(id: widget.id),
+      child: PagePostDetailView(id: widget.id, userId: widget.userId),
     );
   }
 }
 
 class PagePostDetailView extends StatefulWidget {
-  const PagePostDetailView({super.key, required this.id});
+  const PagePostDetailView({super.key, required this.id, required this.userId});
   final String id;
+  final String userId;
   @override
   State<PagePostDetailView> createState() => _PagePostDetailViewState();
 }
@@ -102,267 +110,287 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
   }
 
   Widget _body() {
-    final value = context.watch<DeletePinCubit>();
-    if (value.state is DeletePinLoaded) {
-      context.go(Routes.map);
-      // context.pop();
-    }
-
-    // if (value.state is DeletePinError) {
-    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('다시 시도해주세요.')));
-    // }
-
-    return BlocBuilder<GetPinCubit, GetPinState>(
+    return BlocBuilder<GetUserCubit, GetUserState>(
       builder: (context, state) {
-        if (state is GetPinLoading) {
+        if (state is GetUserLoading) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
-        if (state is GetPinError) {
+        if (state is GetUserError) {
           return ErrorPage(exception: state.errorMessage);
         }
-        if (state is GetPinLoaded) {
-          final value = context.watch<CreatePinReplyCubit>();
-          if (value.state is CreatePinReplyLoaded) {
-            context.read<GetPinRepliesCubit>().getPinReplies(widget.id);
-          }
-          ResponsePin pin = state.result.data!.first;
+        if (state is GetUserLoaded) {
+          if (state.user.isBlocked == true) {
+            return Padding(
+              padding: const EdgeInsets.all(kDefaultPadding),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Expanded(child: Center(child: Text('차단된 사용자 입니다.\n\n모든 사용자의 글은 차단됩니다.'))),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DUButton(
+                            width: double.infinity,
+                            // type: ButtonType.dark,
+                            text: '나가기',
+                            press: () {
+                              context.pop();
+                            }),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: DUButton(
+                            width: double.infinity,
+                            text: '차단해제',
+                            press: () {
+                              ModelRequestBlock modelRequestBlock =
+                                  ModelRequestBlock(userId: widget.id, isBlocked: false);
+                              context.read<BlockUserCubit>().blockUser(modelRequestBlock);
+                            }),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return BlocConsumer<DeletePinCubit, DeletePinState>(
+              listener: (context, state) {
+                if (state is DeletePinLoaded) {
+                  double lat = context.read<SingletonMeCubit>().me.lat ?? 0;
+                  double lng = context.read<SingletonMeCubit>().me.lng ?? 0;
 
-          context.read<GetUserCubit>().getUser(pin.userId!);
+                  ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+                    lat: lat,
+                    lng: lng,
+                  );
+                  context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+                  context.pop();
+                  // context.pop();
+                }
+              },
+              builder: (context, state) {
+                if (state is DeletePinLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (state is DeletePinError) {
+                  return ErrorPage(exception: state.errorMessage);
+                }
+                final value = context.watch<CreatePinReplyCubit>();
+                if (value.state is CreatePinReplyLoaded) {
+                  context.read<GetPinRepliesCubit>().getPinReplies(widget.id);
+                }
+                return BlocBuilder<GetPinCubit, GetPinState>(
+                  builder: (context, state) {
+                    if (state is GetPinLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (state is GetPinError) {
+                      return ErrorPage(exception: state.errorMessage);
+                    }
+                    if (state is GetPinLoaded) {
+                      ResponsePin pin = state.result.data!.first;
 
-          return BlocConsumer<CreateReportCubit, CreateReportState>(
-            listener: (context, state) {
-              if (state is CreateReportLoaded) {
-                context.push(Routes.confirm, extra: {
-                  'title': '신고하기',
-                  'contents1': '신고가 정상적으로 접수되었습니다.',
-                  'contents2': '다수의 사용자가 해당글을 신고할 경우\n해당 글은 삭제처리 됩니다.'
-                });
-              }
-            },
-            builder: (context, state) {
-              if (state is CreateReportLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (state is CreateReportError) {
-                return ErrorPage(exception: state.errorMessage);
-              }
+                      return BlocConsumer<CreateReportCubit, CreateReportState>(
+                        listener: (context, state) {
+                          if (state is CreateReportLoaded) {
+                            context.push(Routes.confirm, extra: {
+                              'title': '신고하기',
+                              'contents1': '신고가 정상적으로 접수되었습니다.',
+                              'contents2': '다수의 사용자가 해당글을 신고할 경우\n해당 글은 삭제처리 됩니다.'
+                            });
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state is CreateReportLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          if (state is CreateReportError) {
+                            return ErrorPage(exception: state.errorMessage);
+                          }
 
-              return BlocConsumer<BlockUserCubit, BlockUserState>(
-                listener: (context, state) {
-                  if (state is BlockUserLoaded) {
-                    context.push(Routes.confirm, extra: {
-                      'title': '차단하기',
-                      'contents1': '해당 유저가 정상적으로 차단되었습니다.',
-                      'contents2': '해당 유저의 글들은 blind 처리 됩니다.'
-                    });
-                  }
-                },
-                builder: (context, state) {
-                  if (state is BlockUserLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (state is BlockUserError) {
-                    return ErrorPage(exception: state.errorMessage);
-                  }
-                  return BlocBuilder<GetUserCubit, GetUserState>(
-                    builder: (context, state) {
-                      if (state is GetUserLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      if (state is GetUserError) {
-                        return ErrorPage(exception: state.errorMessage);
-                      }
-                      if (state is GetUserLoaded) {
-                        if (state.user.isBlocked == true) {
-                          return Padding(
-                            padding: const EdgeInsets.all(kDefaultPadding),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Expanded(child: Center(child: Text('차단된 사용자 입니다.\n\n모든 사용자의 글은 차단됩니다.'))),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: DUButton(
-                                          width: double.infinity,
-                                          // type: ButtonType.dark,
-                                          text: '나가기',
-                                          press: () {
-                                            context.pop();
-                                          }),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: DUButton(
-                                          width: double.infinity,
-                                          text: '차단해제',
-                                          press: () {
-                                            ModelRequestBlock modelRequestBlock =
-                                                ModelRequestBlock(userId: pin.userId!, isBlocked: false);
-                                            context.read<BlockUserCubit>().blockUser(modelRequestBlock);
-                                          }),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        } else {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      DUPhotoView(
-                                        imageUrls: [...pin.images ?? []],
-                                        screenHeight: (SizeConfig.screenHeight * 0.4),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            _buildUserProfile(pin),
-                                            const Divider(height: 8),
-                                            Text(pin.title!, style: DUTextStyle.size18B),
-                                            const SizedBox(height: 20),
-                                            Text(pin.body ?? '글이 없어요.'),
-                                            const SizedBox(height: 16),
-                                            Row(
+                          return BlocConsumer<BlockUserCubit, BlockUserState>(
+                            listener: (context, state) {
+                              if (state is BlockUserLoaded) {
+                                context.push(Routes.confirm, extra: {
+                                  'title': '차단하기',
+                                  'contents1': '해당 유저가 정상적으로 차단되었습니다.',
+                                  'contents2': '해당 유저의 글들은 blind 처리 됩니다.'
+                                });
+                              }
+                            },
+                            builder: (context, state) {
+                              if (state is BlockUserLoading) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              if (state is BlockUserError) {
+                                return ErrorPage(exception: state.errorMessage);
+                              }
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          DUPhotoView(
+                                            imageUrls: [...pin.images ?? []],
+                                            screenHeight: (SizeConfig.screenHeight * 0.4),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                pin.isLiked == false
-                                                    ? InkWell(
-                                                        child: const Icon(
-                                                          Icons.thumb_up_outlined,
-                                                          size: 18,
-                                                        ),
-                                                        onTap: () {
-                                                          ModelRequestSetPinLike modelRequestSetPinLike =
-                                                              ModelRequestSetPinLike(pinId: pin.id ?? '');
-                                                          context
-                                                              .read<GetPinCubit>()
-                                                              .setPinLike(modelRequestSetPinLike, true);
-                                                        },
-                                                      )
-                                                    : InkWell(
-                                                        child: const Icon(
-                                                          Icons.thumb_up,
-                                                          color: DUColors.tomato,
-                                                          size: 18,
-                                                        ),
-                                                        onTap: () {
-                                                          ModelRequestSetPinLike modelRequestSetPinLike =
-                                                              ModelRequestSetPinLike(pinId: pin.id ?? '');
-                                                          context
-                                                              .read<GetPinCubit>()
-                                                              .setPinLike(modelRequestSetPinLike, false);
-                                                        },
-                                                      ),
-                                                const SizedBox(width: 6),
-                                                Text('${pin.likeCount ?? 0}', style: DUTextStyle.size10.grey1),
-                                                const SizedBox(width: 12),
-                                                pin.isHated == false
-                                                    ? InkWell(
-                                                        child: const Icon(
-                                                          Icons.thumb_down_outlined,
-                                                          size: 18,
-                                                        ),
-                                                        onTap: () {
-                                                          ModelRequestSetPinHate modelRequestSetPinHate =
-                                                              ModelRequestSetPinHate(pinId: pin.id ?? '');
-                                                          context
-                                                              .read<GetPinCubit>()
-                                                              .setPinHate(modelRequestSetPinHate, true);
-                                                        },
-                                                      )
-                                                    : InkWell(
-                                                        child: const Icon(
-                                                          Icons.thumb_down,
-                                                          color: DUColors.facebook_blue,
-                                                          size: 18,
-                                                        ),
-                                                        onTap: () {
-                                                          ModelRequestSetPinHate modelRequestSetPinHate =
-                                                              ModelRequestSetPinHate(pinId: pin.id ?? '');
-                                                          context
-                                                              .read<GetPinCubit>()
-                                                              .setPinHate(modelRequestSetPinHate, false);
-                                                        },
-                                                      ),
-                                                const SizedBox(width: 6),
-                                                Text('${pin.hateCount ?? 0}', style: DUTextStyle.size10.grey1),
-                                                const Spacer(),
-                                                GetIt.I.get<SingletonMeCubit>().me.id == pin.userId
-                                                    ? TextButton(
-                                                        onPressed: () {
-                                                          context.read<DeletePinCubit>().deletePin(pin.id!);
-                                                        },
-                                                        child: Text('삭제하기', style: DUTextStyle.size12B.tomato),
-                                                      )
-                                                    : TextButton(
-                                                        onPressed: () async {
-                                                          _showModalForReport(pin);
-                                                        },
-                                                        child: Text('신고하기', style: DUTextStyle.size12B.tomato),
-                                                      ),
+                                                _buildUserProfile(pin),
+                                                const Divider(height: 8),
+                                                Text(pin.title!, style: DUTextStyle.size18B),
+                                                const SizedBox(height: 20),
+                                                Text(pin.body ?? '글이 없어요.'),
+                                                const SizedBox(height: 16),
+                                                Row(
+                                                  children: [
+                                                    pin.isLiked == false
+                                                        ? InkWell(
+                                                            child: const Icon(
+                                                              Icons.thumb_up_outlined,
+                                                              size: 18,
+                                                            ),
+                                                            onTap: () {
+                                                              ModelRequestSetPinLike modelRequestSetPinLike =
+                                                                  ModelRequestSetPinLike(pinId: pin.id ?? '');
+                                                              context
+                                                                  .read<GetPinCubit>()
+                                                                  .setPinLike(modelRequestSetPinLike, true);
+                                                            },
+                                                          )
+                                                        : InkWell(
+                                                            child: const Icon(
+                                                              Icons.thumb_up,
+                                                              color: DUColors.tomato,
+                                                              size: 18,
+                                                            ),
+                                                            onTap: () {
+                                                              ModelRequestSetPinLike modelRequestSetPinLike =
+                                                                  ModelRequestSetPinLike(pinId: pin.id ?? '');
+                                                              context
+                                                                  .read<GetPinCubit>()
+                                                                  .setPinLike(modelRequestSetPinLike, false);
+                                                            },
+                                                          ),
+                                                    const SizedBox(width: 6),
+                                                    Text('${pin.likeCount ?? 0}', style: DUTextStyle.size10.grey1),
+                                                    const SizedBox(width: 12),
+                                                    pin.isHated == false
+                                                        ? InkWell(
+                                                            child: const Icon(
+                                                              Icons.thumb_down_outlined,
+                                                              size: 18,
+                                                            ),
+                                                            onTap: () {
+                                                              ModelRequestSetPinHate modelRequestSetPinHate =
+                                                                  ModelRequestSetPinHate(pinId: pin.id ?? '');
+                                                              context
+                                                                  .read<GetPinCubit>()
+                                                                  .setPinHate(modelRequestSetPinHate, true);
+                                                            },
+                                                          )
+                                                        : InkWell(
+                                                            child: const Icon(
+                                                              Icons.thumb_down,
+                                                              color: DUColors.facebook_blue,
+                                                              size: 18,
+                                                            ),
+                                                            onTap: () {
+                                                              ModelRequestSetPinHate modelRequestSetPinHate =
+                                                                  ModelRequestSetPinHate(pinId: pin.id ?? '');
+                                                              context
+                                                                  .read<GetPinCubit>()
+                                                                  .setPinHate(modelRequestSetPinHate, false);
+                                                            },
+                                                          ),
+                                                    const SizedBox(width: 6),
+                                                    Text('${pin.hateCount ?? 0}', style: DUTextStyle.size10.grey1),
+                                                    const Spacer(),
+                                                    GetIt.I.get<SingletonMeCubit>().me.id == pin.userId
+                                                        ? TextButton(
+                                                            onPressed: () {
+                                                              context.read<DeletePinCubit>().deletePin(pin.id!);
+                                                            },
+                                                            child: Text('삭제하기', style: DUTextStyle.size12B.tomato),
+                                                          )
+                                                        : TextButton(
+                                                            onPressed: () async {
+                                                              _showModalForReport(pin);
+                                                            },
+                                                            child: Text('신고하기', style: DUTextStyle.size12B.tomato),
+                                                          ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 16),
+                                                const Divider(
+                                                  thickness: 1,
+                                                ),
+                                                BlocBuilder<GetPinRepliesCubit, GetPinRepliesState>(
+                                                  buildWhen: (previous, current) {
+                                                    if (previous != current) {
+                                                      return true;
+                                                    }
+                                                    return false;
+                                                  },
+                                                  builder: (context, state) {
+                                                    List<PinReplies>? replies;
+                                                    // if (state is GetPinRepliesLoading) {
+                                                    //   return const Center(
+                                                    //     child: CircularProgressIndicator(),
+                                                    //   );
+                                                    // }
+                                                    if (state is GetPinRepliesError) {
+                                                      return const Center(
+                                                        child: Text('댓글을 가져오지 못했습니다.'),
+                                                      );
+                                                    }
+                                                    if (state is GetPinRepliesLoaded) {
+                                                      replies = state.result.data?.reversed.toList() ?? [];
+                                                    }
+                                                    return _buildReviewList(replies ?? []);
+                                                  },
+                                                ),
                                               ],
                                             ),
-                                            const SizedBox(height: 16),
-                                            const Divider(
-                                              thickness: 1,
-                                            ),
-                                            BlocBuilder<GetPinRepliesCubit, GetPinRepliesState>(
-                                              builder: (context, state) {
-                                                List<PinReplies>? replies;
-                                                if (state is GetPinRepliesLoading) {
-                                                  return const Center(
-                                                    child: CircularProgressIndicator(),
-                                                  );
-                                                }
-                                                if (state is GetPinRepliesError) {
-                                                  return const Center(
-                                                    child: Text('댓글을 가져오지 못했습니다.'),
-                                                  );
-                                                }
-                                                if (state is GetPinRepliesLoaded) {
-                                                  replies = state.result.data?.reversed.toList() ?? [];
-                                                }
-                                                return _buildReviewList(replies ?? []);
-                                              },
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                              _buildMessageComposer(pin),
-                            ],
+                                  _buildMessageComposer(pin),
+                                ],
+                              );
+                            },
                           );
-                        }
-                      }
-                      return Container();
-                    },
-                  );
-                },
-              );
-            },
-          );
+                        },
+                      );
+                    }
+                    return Container();
+                  },
+                );
+              },
+            );
+          }
         }
         return Container();
       },

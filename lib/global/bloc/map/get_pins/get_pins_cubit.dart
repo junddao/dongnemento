@@ -19,44 +19,6 @@ part 'get_pins_state.dart';
 class GetPinsCubit extends Cubit<GetPinsState> {
   GetPinsCubit() : super(GetPinsInitial());
 
-  Future<void> getPinWithMarkers(ModelRequestGetPin modelRequestGetPin, Function onTapMarker) async {
-    BitmapDescriptor? customIcon;
-    final List<Marker> pinMarker = [];
-    try {
-      emit(GetPinsLoading());
-
-      ApiResponse<ModelResponseGetPin> response = await PinRepository.instance.getPins(modelRequestGetPin);
-
-      ModelResponseGetPin modelResponseGetPin = response.data!;
-      List<ResponsePin> pins = modelResponseGetPin.data ?? [];
-      for (var pin in pins) {
-        customIcon = await createCustomMarkerBitmap(pin.title!);
-        final marker = Marker(
-            markerId: MarkerId(pin.id ?? DateTime.now().toString()),
-            position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
-            icon: customIcon,
-            onTap: () {
-              onTapMarker(pin.id);
-            });
-        pinMarker.add(marker);
-      }
-
-      if (response.status == ResponseStatus.error) {
-        emit(
-          GetPinsError(errorMessage: response.message ?? 'get pin error'),
-        );
-      } else {
-        emit(GetMarkerLoaded(markers: pinMarker));
-      }
-    } catch (e) {
-      emit(
-        GetPinsError(
-          errorMessage: e.toString(),
-        ),
-      );
-    }
-  }
-
   Future<void> getPins(ModelRequestGetPin modelRequestGetPin) async {
     try {
       emit(GetPinsLoading());
