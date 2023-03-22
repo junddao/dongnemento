@@ -22,7 +22,7 @@ class DynamicLink {
   Future<void> navigation(String page, {String id = ''}) async {
     late String path;
     if (page.isEmpty) {
-      path = Routes.home;
+      path = Routes.map;
     } else {
       path = id.isEmpty ? page : '$page/$id';
     }

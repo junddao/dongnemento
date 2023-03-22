@@ -100,15 +100,12 @@ class _MapPageViewState extends State<MapPageView> {
         if (locationState is LocationLoaded) {
           print('state loaded');
         }
+
         return BlocBuilder<GetPinsCubit, GetPinsState>(
           builder: (context, getPinsState) {
             List<ResponsePin> pins = [];
             if (getPinsState is GetMarkerLoaded) {
               _pinMarkers = getPinsState.markers;
-
-              // pins = getPinsState.result.data ?? [];
-
-              // addPinMarker(pins);
             }
             return Stack(
               children: [
@@ -120,17 +117,13 @@ class _MapPageViewState extends State<MapPageView> {
                     target: _lastLocation,
                     zoom: 15,
                   ),
-
                   markers: <Marker>{..._pinMarkers, ..._temporaryMaker},
                   rotateGesturesEnabled: false,
                   myLocationEnabled: false,
                   myLocationButtonEnabled: false,
-
-            
                   zoomControlsEnabled: false,
                   onCameraMove: _onCameraMove,
                   onCameraIdle: _onCameraIdle,
-
                   onTap: (point) {
                     _handleTap(point);
                   },

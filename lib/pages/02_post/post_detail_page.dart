@@ -1,29 +1,32 @@
 import 'package:base_project/global/bloc/auth/block_user/block_user_cubit.dart';
 import 'package:base_project/global/bloc/auth/get_user/cubit/get_user_cubit.dart';
+import 'package:base_project/global/bloc/map/delete_pin/cubit/delete_pin_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pin/get_pin_cubit.dart';
 import 'package:base_project/global/bloc/reply/create_pin_reply/create_pin_reply_cubit.dart';
 import 'package:base_project/global/bloc/reply/get_pin_replies/get_pin_replies_cubit.dart';
 import 'package:base_project/global/bloc/report/cubit/create_report_cubit.dart';
-import 'package:base_project/global/component/du_photo_view.dart';
-import 'package:base_project/global/model/hate/model_request_set_pin_hate.dart';
-import 'package:base_project/global/model/like/model_request_set_pin_like.dart';
 import 'package:base_project/global/model/pin/model_request_create_pin_reply.dart';
 import 'package:base_project/global/model/pin/model_response_get_pin.dart';
 import 'package:base_project/global/model/reply/model_response_pin_replies.dart';
-import 'package:base_project/global/model/report/model_request_report.dart';
 import 'package:base_project/global/style/constants.dart';
-import 'package:base_project/global/style/du_button.dart';
-import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:base_project/pages/common/error_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../global/bloc/singleton_me/singleton_me_cubit.dart';
+import '../../global/component/du_photo_view.dart';
 import '../../global/component/du_profile.dart';
+import '../../global/model/hate/model_request_set_pin_hate.dart';
+import '../../global/model/like/model_request_set_pin_like.dart';
+import '../../global/model/report/model_request_report.dart';
 import '../../global/model/user/model_request_block.dart';
+import '../../global/style/du_button.dart';
+import '../../global/style/du_colors.dart';
 import '../../routes.dart';
 
 class PagePostDetail extends StatefulWidget {
@@ -59,7 +62,7 @@ class _PagePostDetailState extends State<PagePostDetail> {
         ),
         BlocProvider(
           create: (context) => GetUserCubit(),
-        )
+        ),
       ],
       child: PagePostDetailView(id: widget.id),
     );
@@ -99,6 +102,16 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
   }
 
   Widget _body() {
+    final value = context.watch<DeletePinCubit>();
+    if (value.state is DeletePinLoaded) {
+      context.go(Routes.map);
+      // context.pop();
+    }
+
+    // if (value.state is DeletePinError) {
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('다시 시도해주세요.')));
+    // }
+
     return BlocBuilder<GetPinCubit, GetPinState>(
       builder: (context, state) {
         if (state is GetPinLoading) {
@@ -118,91 +131,91 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
 
           context.read<GetUserCubit>().getUser(pin.userId!);
 
-          return BlocBuilder<GetUserCubit, GetUserState>(
+          return BlocConsumer<CreateReportCubit, CreateReportState>(
+            listener: (context, state) {
+              if (state is CreateReportLoaded) {
+                context.push(Routes.confirm, extra: {
+                  'title': '신고하기',
+                  'contents1': '신고가 정상적으로 접수되었습니다.',
+                  'contents2': '다수의 사용자가 해당글을 신고할 경우\n해당 글은 삭제처리 됩니다.'
+                });
+              }
+            },
             builder: (context, state) {
-              if (state is GetUserLoading) {
+              if (state is CreateReportLoading) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
-              if (state is GetUserError) {
+              if (state is CreateReportError) {
                 return ErrorPage(exception: state.errorMessage);
               }
-              if (state is GetUserLoaded) {
-                if (state.user.isBlocked == true) {
-                  return Padding(
-                    padding: const EdgeInsets.all(kDefaultPadding),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(child: Center(child: const Text('차단된 사용자 입니다.\n\n모든 사용자의 글은 차단됩니다.'))),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: DUButton(
-                                  width: double.infinity,
-                                  // type: ButtonType.dark,
-                                  text: '나가기',
-                                  press: () {
-                                    context.pop();
-                                  }),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: DUButton(
-                                  width: double.infinity,
-                                  text: '차단해제',
-                                  press: () {
-                                    ModelRequestBlock modelRequestBlock =
-                                        ModelRequestBlock(userId: pin.userId!, isBlocked: false);
-                                    context.read<BlockUserCubit>().blockUser(modelRequestBlock);
-                                  }),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return BlocConsumer<CreateReportCubit, CreateReportState>(
-                    listener: (context, state) {
-                      if (state is CreateReportLoaded) {
-                        context.push(Routes.confirm, extra: {
-                          'title': '신고하기',
-                          'contents1': '신고가 정상적으로 접수되었습니다.',
-                          'contents2': '다수의 사용자가 해당글을 신고할 경우\n해당 글은 삭제처리 됩니다.'
-                        });
-                      }
-                    },
+
+              return BlocConsumer<BlockUserCubit, BlockUserState>(
+                listener: (context, state) {
+                  if (state is BlockUserLoaded) {
+                    context.push(Routes.confirm, extra: {
+                      'title': '차단하기',
+                      'contents1': '해당 유저가 정상적으로 차단되었습니다.',
+                      'contents2': '해당 유저의 글들은 blind 처리 됩니다.'
+                    });
+                  }
+                },
+                builder: (context, state) {
+                  if (state is BlockUserLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state is BlockUserError) {
+                    return ErrorPage(exception: state.errorMessage);
+                  }
+                  return BlocBuilder<GetUserCubit, GetUserState>(
                     builder: (context, state) {
-                      if (state is CreateReportLoading) {
+                      if (state is GetUserLoading) {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
-                      if (state is CreateReportError) {
+                      if (state is GetUserError) {
                         return ErrorPage(exception: state.errorMessage);
                       }
-
-                      return BlocConsumer<BlockUserCubit, BlockUserState>(
-                        listener: (context, state) {
-                          if (state is BlockUserLoaded) {
-                            context.push(Routes.confirm, extra: {
-                              'title': '차단하기',
-                              'contents1': '해당 유저가 정상적으로 차단되었습니다.',
-                              'contents2': '해당 유저의 글들은 blind 처리 됩니다.'
-                            });
-                          }
-                        },
-                        builder: (context, state) {
-                          if (state is BlockUserLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          if (state is BlockUserError) {
-                            return ErrorPage(exception: state.errorMessage);
-                          }
+                      if (state is GetUserLoaded) {
+                        if (state.user.isBlocked == true) {
+                          return Padding(
+                            padding: const EdgeInsets.all(kDefaultPadding),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Expanded(child: Center(child: Text('차단된 사용자 입니다.\n\n모든 사용자의 글은 차단됩니다.'))),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: DUButton(
+                                          width: double.infinity,
+                                          // type: ButtonType.dark,
+                                          text: '나가기',
+                                          press: () {
+                                            context.pop();
+                                          }),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: DUButton(
+                                          width: double.infinity,
+                                          text: '차단해제',
+                                          press: () {
+                                            ModelRequestBlock modelRequestBlock =
+                                                ModelRequestBlock(userId: pin.userId!, isBlocked: false);
+                                            context.read<BlockUserCubit>().blockUser(modelRequestBlock);
+                                          }),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -293,50 +306,19 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                 const SizedBox(width: 6),
                                                 Text('${pin.hateCount ?? 0}', style: DUTextStyle.size10.grey1),
                                                 const Spacer(),
-                                                TextButton(
-                                                  onPressed: () async {
-                                                    await showCupertinoModalPopup<int>(
-                                                      context: context,
-                                                      builder: (BuildContext context) => CupertinoActionSheet(
-                                                          title: const Text('신고 / 차단'),
-                                                          message: const Text('신고, 차단한 사용자의 글은\n 지도상에 표시되지 않습니다.'),
-                                                          actions: <CupertinoActionSheetAction>[
-                                                            CupertinoActionSheetAction(
-                                                              child: const Text('신고하기'),
-                                                              onPressed: () async {
-                                                                Navigator.of(context).pop(0);
-                                                              },
-                                                            ),
-                                                            CupertinoActionSheetAction(
-                                                              child: const Text('차단하기'),
-                                                              onPressed: () async {
-                                                                Navigator.of(context).pop(1);
-                                                              },
-                                                            ),
-                                                          ],
-                                                          cancelButton: CupertinoActionSheetAction(
-                                                            child: const Text('취소'),
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                          )),
-                                                    ).then((value) {
-                                                      if (value == 0) {
-                                                        ModelRequestReport modelRequestReport =
-                                                            ModelRequestReport(pinId: pin.id!);
-                                                        context
-                                                            .read<CreateReportCubit>()
-                                                            .createReport(modelRequestReport);
-                                                      }
-                                                      if (value == 1) {
-                                                        ModelRequestBlock modelRequestBlock =
-                                                            ModelRequestBlock(userId: pin.userId!, isBlocked: true);
-                                                        context.read<BlockUserCubit>().blockUser(modelRequestBlock);
-                                                      }
-                                                    });
-                                                  },
-                                                  child: Text('신고하기', style: DUTextStyle.size12B.tomato),
-                                                ),
+                                                GetIt.I.get<SingletonMeCubit>().me.id == pin.userId
+                                                    ? TextButton(
+                                                        onPressed: () {
+                                                          context.read<DeletePinCubit>().deletePin(pin.id!);
+                                                        },
+                                                        child: Text('삭제하기', style: DUTextStyle.size12B.tomato),
+                                                      )
+                                                    : TextButton(
+                                                        onPressed: () async {
+                                                          _showModalForReport(pin);
+                                                        },
+                                                        child: Text('신고하기', style: DUTextStyle.size12B.tomato),
+                                                      ),
                                               ],
                                             ),
                                             const SizedBox(height: 16),
@@ -372,13 +354,13 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                               _buildMessageComposer(pin),
                             ],
                           );
-                        },
-                      );
+                        }
+                      }
+                      return Container();
                     },
                   );
-                }
-              }
-              return Container();
+                },
+              );
             },
           );
         }
@@ -521,5 +503,48 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
         ],
       ),
     );
+  }
+
+  Future<void> _showModalForReport(ResponsePin pin) async {
+    return await showCupertinoModalPopup<int>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+          title: const Text('신고 / 차단'),
+          message: const Text('신고, 차단한 사용자의 글은\n 지도상에 표시되지 않습니다.'),
+          actions: <CupertinoActionSheetAction>[
+            CupertinoActionSheetAction(
+              child: const Text('신고하기'),
+              onPressed: () async {
+                Navigator.of(context).pop(0);
+              },
+            ),
+            CupertinoActionSheetAction(
+              child: const Text('차단하기'),
+              onPressed: () async {
+                Navigator.of(context).pop(1);
+              },
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: const Text('취소'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )),
+    ).then((value) {
+      if (value == 0) {
+        ModelRequestReport modelRequestReport = ModelRequestReport(pinId: pin.id!);
+        context.read<CreateReportCubit>().createReport(modelRequestReport);
+      }
+      if (value == 1) {
+        ModelRequestBlock modelRequestBlock = ModelRequestBlock(userId: pin.userId!, isBlocked: true);
+        context.read<BlockUserCubit>().blockUser(modelRequestBlock);
+      }
+    });
+  }
+
+  void onTapMarker(String pinId) {
+    // 상세 핀 페이지로 이동
+    context.go('/map/post/$pinId');
   }
 }

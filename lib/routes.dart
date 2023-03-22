@@ -5,7 +5,6 @@ import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/pages/00_etc/page_confirm.dart';
-import 'package:base_project/pages/00_home/home_page.dart';
 import 'package:base_project/pages/00_map/map_page.dart';
 import 'package:base_project/pages/02_post/create_post_page.dart';
 import 'package:base_project/pages/02_post/favorite_post_list_page.dart';
@@ -26,7 +25,7 @@ import 'global/component/du_photo_viewer.dart';
 class Routes {
   // 1 depth
   static const root = '/';
-  static const home = '/home';
+  // static const home = '/home';
   static const map = '/map';
   static const login = '/login';
   static const product = '/product';
@@ -100,14 +99,14 @@ class AppRouter extends Bloc {
           );
         },
         routes: [
-          GoRoute(
-            path: Routes.home,
-            pageBuilder: (context, state) {
-              return const MaterialPage(
-                child: HomePage(),
-              );
-            },
-          ),
+          // GoRoute(
+          //   path: Routes.home,
+          //   pageBuilder: (context, state) {
+          //     return const MaterialPage(
+          //       child: HomePage(),
+          //     );
+          //   },
+          // ),
           GoRoute(
             path: Routes.map,
             pageBuilder: (context, state) {

@@ -17,6 +17,7 @@ import 'package:intl/intl.dart';
 
 import 'firebase_options.dart' as firebase_option;
 import 'firebase_options_dev.dart' as firebase_option_dev;
+import 'global/bloc/map/delete_pin/cubit/delete_pin_cubit.dart';
 import 'global/service/dynamic_link.dart';
 
 void mainCommon() async {
@@ -94,6 +95,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => GetPinsCubit(),
         ),
+        BlocProvider(
+          create: (context) => DeletePinCubit(),
+        )
       ],
       child: Builder(
         builder: (context) {
