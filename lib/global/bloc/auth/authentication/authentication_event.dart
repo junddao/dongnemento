@@ -18,16 +18,14 @@ class AuthenticationStatusChanged extends AuthenticationEvent {
 
 class AuthenticationSignIn extends AuthenticationEvent {
   final SocialType socialType;
-  final String? email;
-  final String? password;
+  final Map<String, dynamic> input;
   const AuthenticationSignIn({
     required this.socialType,
-    this.email,
-    this.password,
+    required this.input,
   });
 
   @override
-  List<Object> get props => [socialType, email!, password!];
+  List<Object> get props => [socialType, input];
 }
 
 class AuthenticationSignOut extends AuthenticationEvent {

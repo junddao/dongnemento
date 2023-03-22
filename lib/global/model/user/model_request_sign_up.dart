@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 class ModelRequestSignUp {
-  String uid;
   String social;
   String email;
   String name;
@@ -11,7 +10,6 @@ class ModelRequestSignUp {
   double? lng;
   String? address;
   ModelRequestSignUp({
-    required this.uid,
     required this.social,
     required this.email,
     required this.name,
@@ -24,7 +22,6 @@ class ModelRequestSignUp {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'uid': uid,
       'social': social,
       'email': email,
       'name': name,
@@ -38,7 +35,6 @@ class ModelRequestSignUp {
 
   factory ModelRequestSignUp.fromMap(Map<String, dynamic> map) {
     return ModelRequestSignUp(
-      uid: map['uid'],
       social: map['social'],
       email: map['email'],
       name: map['name'],
@@ -52,6 +48,5 @@ class ModelRequestSignUp {
 
   String toJson() => json.encode(toMap());
 
-  factory ModelRequestSignUp.fromJson(String source) =>
-      ModelRequestSignUp.fromMap(json.decode(source));
+  factory ModelRequestSignUp.fromJson(String source) => ModelRequestSignUp.fromMap(json.decode(source));
 }

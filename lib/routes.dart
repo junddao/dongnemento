@@ -124,11 +124,13 @@ class AppRouter extends Bloc {
               ),
               GoRoute(
                 parentNavigatorKey: rootNavigatorKey,
-                path: '${Routes.post}/:id',
+                path: '${Routes.post}/:id/:userId',
                 builder: (context, state) {
                   String id = state.params['id']!;
+                  String userId = state.params['userId']!;
                   return PagePostDetail(
                     id: id,
+                    userId: userId,
                   );
                 },
               )

@@ -4,6 +4,6 @@ enum SocialType {
   email('email'),
   none('none');
 
-  final String name;
-  const SocialType(this.name);
+  final String value;
+  const SocialType(this.value);
 }

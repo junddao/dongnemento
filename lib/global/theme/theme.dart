@@ -67,12 +67,8 @@ ThemeData lightTheme() {
       style: TextButton.styleFrom(
         minimumSize: const Size(64, 48),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-        // textStyle: DUTextStyle.size14M,
-      ).copyWith(
-        foregroundColor: materialStateColor(mainColor, DUColors.grey2),
-        overlayColor: MaterialStateProperty.all<Color?>(Colors.transparent),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        splashFactory: InkHighlightFactory(),
+        foregroundColor: mainColor,
+        disabledForegroundColor: DUColors.grey2,
       ),
     ),
 

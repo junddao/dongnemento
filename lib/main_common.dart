@@ -14,13 +14,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 import 'firebase_options.dart' as firebase_option;
 import 'firebase_options_dev.dart' as firebase_option_dev;
-import 'global/bloc/map/delete_pin/cubit/delete_pin_cubit.dart';
 import 'global/service/dynamic_link.dart';
 
 void mainCommon() async {
+  KakaoSdk.init(nativeAppKey: 'fe61b284ae34feac55334127ab92a21c');
   //앱 세팅
   await platformSetup();
 
@@ -37,12 +38,12 @@ Future<void> platformSetup() async {
 
   if (Env.opMode == OpMode.dev) {
     await Firebase.initializeApp(
-      name: 'dongnemento_dev',
+      name: 'dongnesosik_dev',
       options: firebase_option_dev.DefaultFirebaseOptions.currentPlatform,
     );
   } else {
     await Firebase.initializeApp(
-      name: 'dongnemento',
+      name: 'dongnesosik',
       options: firebase_option.DefaultFirebaseOptions.currentPlatform,
     );
   }
@@ -95,9 +96,6 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => GetPinsCubit(),
         ),
-        BlocProvider(
-          create: (context) => DeletePinCubit(),
-        )
       ],
       child: Builder(
         builder: (context) {

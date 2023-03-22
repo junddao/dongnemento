@@ -23,7 +23,7 @@ class CreatePostPage extends StatefulWidget {
   const CreatePostPage({Key? key}) : super(key: key);
 
   @override
-  _CreatePostPageState createState() => _CreatePostPageState();
+  State<CreatePostPage> createState() => _CreatePostPageState();
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
@@ -139,7 +139,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
                 lat: lat,
                 lng: lng,
               );
-              context.read<GetPinsCubit>().getPinWithMarkers(modelRequestGetPin, onTapMarker);
+              context.read<GetPinsCubit>().getPins(modelRequestGetPin);
               context.pop();
             }
             if (state is CreatePinError) {
@@ -474,11 +474,6 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
     } else {
       _createPin();
     }
-  }
-
-  void onTapMarker(String pinId) {
-    // 상세 핀 페이지로 이동
-    context.go('/map/post/$pinId');
   }
 
   void _createPin({List<String>? imagePaths}) {
