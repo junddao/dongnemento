@@ -134,6 +134,43 @@ class ApiService {
     return response.data;
   }
 
+  Future<dynamic> put(String url, Map map, {bool useToken = true}) async {
+    logger.d('Api put : url $url start.');
+
+    Response response;
+    try {
+      if (useToken) {
+        final token = await _getAuthorizationToken();
+        _headers['Authorization'] = 'Bearer $token';
+        logger.d(token);
+      }
+
+      var data = jsonEncode(map);
+
+      response = await Dio()
+          .put(
+            url,
+            data: data,
+            options: Options(
+              headers: _headers,
+            ),
+          )
+          .timeout(const Duration(seconds: 10));
+
+      logger.d('Api put : url $url  done.');
+      logger.d('dio response = ${response.toString()}');
+    } on DioError catch (e) {
+      final errorMessage = DioException.fromDioError(e).toString();
+      throw errorMessage;
+    } on SocketException {
+      logger.d('No network');
+      throw FetchDataException('No Internet connection');
+    } catch (e) {
+      throw CustomException('Unknown Error');
+    }
+    return response.data;
+  }
+
   Future<dynamic> postMultiPart(String url, List<File> files, String type) async {
     final token = await _getAuthorizationToken();
     logger.d(token);

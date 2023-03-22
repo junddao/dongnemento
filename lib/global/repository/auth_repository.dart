@@ -10,6 +10,9 @@ import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/repository/api_service.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
 
+import '../model/user/model_request_block.dart';
+import '../model/user/model_response_user.dart';
+
 class AuthRepository {
   static final AuthRepository instance = AuthRepository._internal();
 
@@ -23,11 +26,9 @@ class AuthRepository {
   Future<ApiResponse<ModelSignIn>> signIn(String email, String password) async {
     late ModelResponseSignIn modelResponseSignIn;
     try {
-      ModelRequestSignIn modelRequestSignIn =
-          ModelRequestSignIn(email: email, password: password);
+      ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn(email: email, password: password);
       String url = '$apiUrl/signin';
-      Map<String, dynamic> response = await ApiService()
-          .post(url, modelRequestSignIn.toMap(), useToken: false);
+      Map<String, dynamic> response = await ApiService().post(url, modelRequestSignIn.toMap(), useToken: false);
       modelResponseSignIn = ModelResponseSignIn.fromMap(response);
       if (modelResponseSignIn.success == true) {
         ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
@@ -45,8 +46,7 @@ class AuthRepository {
     late ModelResponseCommon modelResponseCommon;
     try {
       String url = '$apiUrl/kakao';
-      Map<String, dynamic> response =
-          await ApiService().post(url, user, useToken: false);
+      Map<String, dynamic> response = await ApiService().post(url, user, useToken: false);
       modelResponseCommon = ModelResponseCommon.fromMap(response);
       if (modelResponseCommon.success == true) {
         final customTokenResponse = response['data'].first;
@@ -63,12 +63,10 @@ class AuthRepository {
     late ModelResponseSignIn modelResponseSignIn;
 
     try {
-      ModelRequestGetToken modelRequestGetToken =
-          ModelRequestGetToken(email: email);
+      ModelRequestGetToken modelRequestGetToken = ModelRequestGetToken(email: email);
 
       String url = '$apiUrl/get/token';
-      Map<String, dynamic> response = await ApiService()
-          .post(url, modelRequestGetToken.toMap(), useToken: false);
+      Map<String, dynamic> response = await ApiService().post(url, modelRequestGetToken.toMap(), useToken: false);
       modelResponseSignIn = ModelResponseSignIn.fromMap(response);
       if (modelResponseSignIn.success == true) {
         ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
@@ -87,8 +85,7 @@ class AuthRepository {
     try {
       String url = '$apiUrl/apple';
 
-      Map<String, dynamic> response =
-          await ApiService().post(url, user, useToken: false);
+      Map<String, dynamic> response = await ApiService().post(url, user, useToken: false);
       modelResponseCommon = ModelResponseCommon.fromMap(response);
       if (modelResponseCommon.success == true) {
         final customTokenResponse = response['data'].first;
@@ -122,8 +119,7 @@ class AuthRepository {
     late ModelResponseCommon modelResponseCommon;
     try {
       String url = '$apiUrl/signup';
-      Map<String, dynamic> response =
-          await ApiService().post(url, map, useToken: false);
+      Map<String, dynamic> response = await ApiService().post(url, map, useToken: false);
       modelResponseCommon = ModelResponseCommon.fromMap(response);
       if (modelResponseCommon.success == true) {
         return ApiResponse.completed(true);
@@ -141,6 +137,40 @@ class AuthRepository {
       String path = '$apiUrl/update';
       Map<String, dynamic> response = await ApiService().post(path, map);
       modelResponseUpdate = ModelResponseUpdate.fromMap(response);
+      if (modelResponseUpdate.success == true) {
+        ModelUser modelUser = modelResponseUpdate.data!.first;
+        return ApiResponse.completed(modelUser);
+      } else {
+        throw Exception(modelResponseUpdate.error);
+      }
+    } catch (e) {
+      return ApiResponse.error(e.toString());
+    }
+  }
+
+  Future<ApiResponse<ModelUser>> blockUser(ModelRequestBlock input) async {
+    late ModelResponseUpdate modelResponseUpdate;
+    try {
+      String path = '$apiUrl/block';
+      Map<String, dynamic> response = await ApiService().put(path, input.toMap());
+      modelResponseUpdate = ModelResponseUpdate.fromMap(response);
+      if (modelResponseUpdate.success == true) {
+        ModelUser modelUser = modelResponseUpdate.data!.first;
+        return ApiResponse.completed(modelUser);
+      } else {
+        throw Exception(modelResponseUpdate.error);
+      }
+    } catch (e) {
+      return ApiResponse.error(e.toString());
+    }
+  }
+
+  Future<ApiResponse<ModelUser>> getUser(String id) async {
+    late ModelResponseUser modelResponseUpdate;
+    try {
+      String path = '$apiUrl/get/$id';
+      Map<String, dynamic> response = await ApiService().get(path);
+      modelResponseUpdate = ModelResponseUser.fromMap(response);
       if (modelResponseUpdate.success == true) {
         ModelUser modelUser = modelResponseUpdate.data!.first;
         return ApiResponse.completed(modelUser);

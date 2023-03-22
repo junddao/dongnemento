@@ -92,6 +92,7 @@ class Env {
         _apiLikeUrl = _prodApiLikeUrl;
         _apiHateUrl = _prodApiHateUrl;
         _apiReportUrl = _prodApiReportUrl;
+
         break;
       case OpMode.dev: //개발 모드
         _apiBaseUrl = _devApiBaseUrl;
@@ -102,6 +103,7 @@ class Env {
         _apiLikeUrl = _devApiLikeUrl;
         _apiHateUrl = _devApiHateUrl;
         _apiReportUrl = _devApiReportUrl;
+
         break;
       case OpMode.unknown:
       default:

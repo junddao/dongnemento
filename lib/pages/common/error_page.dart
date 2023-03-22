@@ -1,8 +1,8 @@
 import 'package:base_project/global/style/du_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../routes.dart';
 
 class ErrorPage extends StatefulWidget {
   const ErrorPage({super.key, required this.exception});
@@ -30,9 +30,9 @@ class _ErrorPageState extends State<ErrorPage> {
             widget.exception ?? 'error',
           ),
           DUButton(
-              text: '로그인으로 돌아가기',
+              text: '홈으로 돌아가기',
               press: () {
-                context.go('/login');
+                context.go(Routes.map);
               })
         ],
       ),

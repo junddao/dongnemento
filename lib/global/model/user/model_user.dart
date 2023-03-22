@@ -7,6 +7,7 @@ class ModelUser {
   String? introduce;
   String? profileImage;
   String? password;
+  bool? isBlocked;
 
   String? social;
   bool? pushEnabled;
@@ -26,6 +27,7 @@ class ModelUser {
     this.introduce,
     this.profileImage,
     this.password,
+    this.isBlocked,
     this.social,
     this.pushEnabled,
     this.lat,
@@ -37,12 +39,13 @@ class ModelUser {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      '_id': id,
       'email': email,
       'name': name,
       'introduce': introduce,
       'profileImage': profileImage,
       'password': password,
+      'isBlocked': isBlocked,
       'social': social,
       'pushEnabled': pushEnabled,
       'lat': lat,
@@ -55,12 +58,13 @@ class ModelUser {
 
   factory ModelUser.fromMap(Map<String, dynamic> map) {
     return ModelUser(
-      id: map['id'],
+      id: map['_id'],
       email: map['email'],
       name: map['name'],
       introduce: map['introduce'],
       profileImage: map['profileImage'],
       password: map['password'],
+      isBlocked: map['isBlocked'],
       social: map['social'],
       pushEnabled: map['pushEnabled'],
       lat: map['lat']?.toDouble(),
@@ -73,8 +77,7 @@ class ModelUser {
 
   String toJson() => json.encode(toMap());
 
-  factory ModelUser.fromJson(String source) =>
-      ModelUser.fromMap(json.decode(source));
+  factory ModelUser.fromJson(String source) => ModelUser.fromMap(json.decode(source));
 
   ModelUser copyWith({
     String? id,
@@ -83,6 +86,7 @@ class ModelUser {
     String? introduce,
     String? profileImage,
     String? password,
+    bool? isBlocked,
     String? social,
     bool? pushEnabled,
     double? lat,
@@ -98,6 +102,7 @@ class ModelUser {
       introduce: introduce ?? this.introduce,
       profileImage: profileImage ?? this.profileImage,
       password: password ?? this.password,
+      isBlocked: isBlocked ?? this.isBlocked,
       social: social ?? this.social,
       pushEnabled: pushEnabled ?? this.pushEnabled,
       lat: lat ?? this.lat,

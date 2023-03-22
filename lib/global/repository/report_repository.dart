@@ -18,7 +18,7 @@ class ReportRepository {
   Future<ApiResponse<bool>> createReport(ModelRequestReport modelRequestReport) async {
     late ModelResponseCommon modelResponseCommon;
     try {
-      Map<String, dynamic> response = await ApiService().post('$apiUrl/report/report', modelRequestReport.toMap());
+      Map<String, dynamic> response = await ApiService().post('$apiUrl/create', modelRequestReport.toMap());
       modelResponseCommon = ModelResponseCommon.fromMap(response);
       if (modelResponseCommon.success == true) {
         return ApiResponse.completed(true);
