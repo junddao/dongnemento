@@ -21,7 +21,7 @@ import 'firebase_options_dev.dart' as firebase_option_dev;
 import 'global/service/dynamic_link.dart';
 
 void mainCommon() async {
-  KakaoSdk.init(nativeAppKey: 'fe61b284ae34feac55334127ab92a21c');
+  KakaoSdk.init(nativeAppKey: '8548a68be13838496d1f23538f9f8ce7');
   //앱 세팅
   await platformSetup();
 
