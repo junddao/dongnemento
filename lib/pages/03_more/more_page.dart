@@ -16,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../routes.dart';
+
 class MorePage extends StatefulWidget {
   const MorePage({super.key});
 
@@ -210,7 +212,7 @@ class _MorePageViewState extends State<MorePageView> {
                         DUButton(
                             text: '변경하기',
                             press: () {
-                              context.push('/address', extra: {'setAddress': setAddress});
+                              context.push(Routes.address, extra: {'setAddress': setAddress});
                             },
                             type: ButtonType.transparent),
                       ],

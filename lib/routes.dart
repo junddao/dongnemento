@@ -60,6 +60,12 @@ class AppRouter extends Bloc {
       prevAuthState = authBloc.state;
       if (authBloc.state is AuthenticationAuthenticated) {
         context.read<SingletonMeCubit>().updateSingletonMe(authBloc.state.me!);
+
+        // 최초 가입시 좌표값이 없어 주소 입력창으로 이동
+        if (authBloc.state.me!.lat == null || authBloc.state.me!.lng == null) {
+          return Routes.address;
+        }
+
         logger.d('Authenticated');
         return Routes.map;
       } else if (authBloc.state is AuthenticationUnAuthenticated) {

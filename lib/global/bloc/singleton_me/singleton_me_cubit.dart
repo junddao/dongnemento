@@ -16,4 +16,25 @@ class SingletonMeCubit extends Cubit<SingletonMeState> {
     _me = me;
     emit(SingletonMeLoaded(singletonMe: me));
   }
+
+  void copyWithSingletonMe(ModelUser me) {
+    emit(SingletonMeLoading());
+    _me = me.copyWith(
+      address: me.address,
+      createdAt: me.createdAt,
+      email: me.email,
+      id: me.id,
+      name: me.name,
+      introduce: me.introduce,
+      updatedAt: me.updatedAt,
+      isBlocked: me.isBlocked,
+      lat: me.lat,
+      lng: me.lng,
+      password: me.password,
+      profileImage: me.address,
+      pushEnabled: me.pushEnabled,
+      social: me.social,
+    );
+    emit(SingletonMeLoaded(singletonMe: me));
+  }
 }
