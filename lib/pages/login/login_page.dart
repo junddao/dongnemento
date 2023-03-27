@@ -195,6 +195,11 @@ class _LoginPageViewState extends State<LoginPageView> {
           Navigator.pop(loading);
           //  existUser 확인
           if (user == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('로그인을 실패했어요. 다시 시도해 주세요.'),
+              ),
+            );
             return;
           }
 
@@ -208,34 +213,6 @@ class _LoginPageViewState extends State<LoginPageView> {
                 input: modelRequestKakaoSignIn.toMap(),
               ));
         });
-
-        // bool result = await context.read<AuthProvider>().kakaoLogin();
-        bool result = true;
-        if (!result) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('로그인을 실패했어요. 다시 시도해 주세요.'),
-            ),
-          );
-          return;
-        }
-
-        // result = await context.read<UserProvider>().getMe();
-        if (!result) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('유저 정보를 가져오지 못했습니다. 다시 시도해 주세요.'),
-            ),
-          );
-          return;
-        }
-
-        if (result == true) {
-          Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('로그인 실패')));
-          return;
-        }
       },
       child: Container(
         width: SizeConfig.screenWidth - 40,

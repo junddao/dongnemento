@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
@@ -218,27 +219,92 @@ class _MapPageViewState extends State<MapPageView> {
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
 
-    final Radius radius = Radius.circular(70);
-
     final Paint tagPaint = Paint()..color = DUColors.tomato;
 
     // Add tag text
     TextPainter textPainter = TextPainter(textDirection: TextDirection.ltr);
-    textPainter.text =
-        TextSpan(text: title.length < 12 ? title : title.substring(0, 10) + '..', style: DUTextStyle.size40B.white);
+    textPainter.text = TextSpan(
+        text: title.length < 22 ? title : '${title.substring(0, 10)}\n${title.substring(10, 20)}..',
+        style: DUTextStyle.size30B.white);
 
     textPainter.layout();
 
-    // Add tag circle
-    canvas.drawRRect(
-        RRect.fromRectAndCorners(
-          Rect.fromLTWH(0.0, 0.0, textPainter.width + 40, textPainter.height + 20),
-          topLeft: radius,
-          topRight: radius,
-          bottomLeft: radius,
-          bottomRight: radius,
-        ),
-        tagPaint);
+    // add shape
+    Size size = Size(textPainter.width + 40, textPainter.height + 20);
+    final bubbleSize = Size(size.width, size.height);
+    final tailSize = Size(20, bubbleSize.height);
+
+    const radius = 20.0;
+    final tailStartPoint = Point(size.width * 0.5 - 10, bubbleSize.height);
+    //bubble body
+    final bubblePath = Path()
+      ..moveTo(0, radius)
+      // 왼쪽 위에서 왼쪽 아래 라인
+      ..lineTo(0, bubbleSize.height - radius)
+      ..arcToPoint(
+        Offset(radius, bubbleSize.height),
+        radius: const Radius.circular(radius),
+        clockwise: false,
+      )
+      // 왼쪽 아래에서 오른쪽 아래 라인
+      ..lineTo(bubbleSize.width - radius, bubbleSize.height)
+      ..arcToPoint(
+        Offset(bubbleSize.width, bubbleSize.height - radius),
+        radius: const Radius.circular(radius),
+        clockwise: false,
+      )
+
+      // 오른쪽 아래에서 오른쪽 위 라인
+      ..lineTo(bubbleSize.width, radius)
+      ..arcToPoint(
+        Offset(bubbleSize.width - radius, 0),
+        radius: const Radius.circular(radius),
+        clockwise: false,
+      )
+
+      // 오른쪽 위에서 왼쪽 아래 라인
+      ..lineTo(radius, 0)
+      ..arcToPoint(
+        const Offset(0, radius),
+        radius: const Radius.circular(radius),
+        clockwise: false,
+      );
+
+    // bubble tail
+
+    var points = [
+      Offset(tailStartPoint.x, tailStartPoint.y),
+      Offset(tailStartPoint.x + 10, tailStartPoint.y + 10),
+      Offset(tailStartPoint.x + 15, tailStartPoint.y + 10),
+      Offset(tailStartPoint.x + 20, tailStartPoint.y),
+    ];
+
+    final tailPath = Path()
+      ..moveTo(tailStartPoint.x, tailStartPoint.y)
+      ..addPolygon(points, false)
+      ..close();
+
+    // final tailPath = Path()
+    //   ..cubicTo(
+    //     tailStartPoint.x + (tailSize.width * 0.4),
+    //     tailStartPoint.y,
+    //     tailStartPoint.x + (tailSize.width * 0.6),
+    //     tailStartPoint.y + (tailSize.height * 0.2),
+    //     tailStartPoint.x + tailSize.width / 2, // 목적지 x
+    //     tailStartPoint.y + tailSize.height, // 목적지 y
+    //   )
+    //   ..cubicTo(
+    //     (tailStartPoint.x + tailSize.width / 2) + (tailSize.width * 0.2),
+    //     tailStartPoint.y + tailSize.height,
+    //     tailStartPoint.x + tailSize.width,
+    //     tailStartPoint.y + (tailSize.height * 0.3),
+    //     tailStartPoint.x + tailSize.width, // 목적지 x
+    //     tailStartPoint.y, // 목적지 y
+    //   );
+
+    bubblePath.addPath(tailPath, Offset(0, 0));
+
+    canvas.drawPath(bubblePath, tagPaint);
 
     textPainter.paint(canvas, const Offset(20, 10));
 
