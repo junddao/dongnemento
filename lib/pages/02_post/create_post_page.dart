@@ -4,7 +4,6 @@ import 'package:base_project/global/bloc/file/file_cubit.dart';
 import 'package:base_project/global/bloc/map/create_pin/create_pin_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
 import 'package:base_project/global/bloc/map/location/location_cubit.dart';
-import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/component/du_two_button_dialog.dart';
 import 'package:base_project/global/model/pin/model_request_create_pin.dart';
 import 'package:base_project/global/model/pin/model_request_get_pin.dart';
@@ -18,6 +17,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:images_picker/images_picker.dart';
+
+import '../../global/bloc/auth/get_me/me_cubit.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({Key? key}) : super(key: key);
@@ -132,8 +133,8 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
         return BlocConsumer<CreatePinCubit, CreatePinState>(
           listener: (context, state) {
             if (state is CreatePinLoaded) {
-              double lat = context.read<SingletonMeCubit>().me.lat ?? 0;
-              double lng = context.read<SingletonMeCubit>().me.lng ?? 0;
+              double lat = context.read<MeCubit>().me.lat ?? 0;
+              double lng = context.read<MeCubit>().me.lng ?? 0;
 
               ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
                 lat: lat,
@@ -316,9 +317,8 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   }
 
   getMyLocation() {
-    String address = context.read<SingletonMeCubit>().me.address!;
-    double lng = context.read<SingletonMeCubit>().me.lng!;
-    double lat = context.read<SingletonMeCubit>().me.lat!;
+    double lng = context.read<MeCubit>().me.lng!;
+    double lat = context.read<MeCubit>().me.lat!;
     LatLng location = LatLng(lat, lng);
 
     context.read<LocationCubit>().setPostLocation(location);

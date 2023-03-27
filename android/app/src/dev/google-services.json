@@ -1,86 +1,40 @@
 {
   "project_info": {
-    "project_number": "558531435873",
-    "project_id": "dongnemento",
-    "storage_bucket": "dongnemento.appspot.com"
+    "project_number": "683830123184",
+    "project_id": "dongnesosik",
+    "storage_bucket": "dongnesosik.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:558531435873:android:dfd6beca9b5db65e3e7920",
+        "mobilesdk_app_id": "1:683830123184:android:14df9cfeb72769e1fd7975",
         "android_client_info": {
-          "package_name": "com.jtb.dongnemento"
+          "package_name": "com.jj.dongnesosik.dev"
         }
       },
       "oauth_client": [
         {
-          "client_id": "558531435873-93rfoe00ldcihspnsprvd8nma8kiujko.apps.googleusercontent.com",
+          "client_id": "683830123184-j9237qo5bg2u1hnb7ru4a9tnqsoja3uo.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBcA4p5KxOzlu-8mNCwfqIohixj7WcSchk"
+          "current_key": "AIzaSyCuuGFepkNdTLU-kbwG7T-UGl9yNI9nKUg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "558531435873-93rfoe00ldcihspnsprvd8nma8kiujko.apps.googleusercontent.com",
+              "client_id": "683830123184-j9237qo5bg2u1hnb7ru4a9tnqsoja3uo.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "558531435873-c3vnd6rn1taslfmemcu2cjidjorfqbh8.apps.googleusercontent.com",
+              "client_id": "683830123184-5ivu6t20qf02aa9j10eq7miceiq6ncpd.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.jtb.dongnemento.dev",
-                "app_store_id": "6444169758"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:558531435873:android:98f645c6d57a43c03e7920",
-        "android_client_info": {
-          "package_name": "com.jtb.dongnemento.dev"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "558531435873-p9idq74bnj2puae4tnm5bn3t20cpqn7j.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.jtb.dongnemento.dev",
-            "certificate_hash": "b094831232d5906e976a4c78cfde6742b5ac7ac0"
-          }
-        },
-        {
-          "client_id": "558531435873-93rfoe00ldcihspnsprvd8nma8kiujko.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBcA4p5KxOzlu-8mNCwfqIohixj7WcSchk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "558531435873-93rfoe00ldcihspnsprvd8nma8kiujko.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "558531435873-c3vnd6rn1taslfmemcu2cjidjorfqbh8.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.jtb.dongnemento.dev",
-                "app_store_id": "6444169758"
+                "bundle_id": "com.jj.dongnesosik.dev"
               }
             }
           ]

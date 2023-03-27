@@ -1,8 +1,10 @@
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/bloc/auth/get_me/me_cubit.dart';
 import 'package:base_project/global/bloc/auth/sign_up/sign_up_cubit.dart';
-import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
 import 'package:base_project/global/enum/authentication_status_type.dart';
+import 'package:base_project/global/enum/social_type.dart';
+import 'package:base_project/global/model/user/model_request_sign_up.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
@@ -11,8 +13,6 @@ import 'package:base_project/global/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:provider/provider.dart';
 
 class PageEmailSignUp extends StatefulWidget {
   const PageEmailSignUp({Key? key}) : super(key: key);
@@ -71,9 +71,9 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
     return BlocConsumer<SignUpCubit, SignUpState>(
       listener: (context, state) {
         if (state is SignUpLoaded) {
-          context.read<AuthenticationBloc>().add(
-              const AuthenticationStatusChanged(
-                  status: AuthenticationStatusType.authenticated));
+          context
+              .read<AuthenticationBloc>()
+              .add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
         }
       },
       builder: (context, state) {
@@ -99,8 +99,7 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                 }
               },
               child: SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(
                   children: [
                     Form(
@@ -122,14 +121,11 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                               hintText: "이메일",
                               keyboardType: TextInputType.emailAddress,
                               // textInputAction: TextInputAction.next,
-                              onEditingComplete: () =>
-                                  context.nextEditableTextFocus(),
+                              onEditingComplete: () => context.nextEditableTextFocus(),
                               showClear: true,
                               onChanged: (value) {},
                               validator: (val) {
-                                return val == null ||
-                                        !RegExp(Validation.emailRegex)
-                                            .hasMatch(val)
+                                return val == null || !RegExp(Validation.emailRegex).hasMatch(val)
                                     ? "이메일이 맞는지 확인해주세요"
                                     : null;
                               },
@@ -140,12 +136,9 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                               hintText: "비밀번호",
                               showSecure: true,
                               isSecure: true,
-                              onEditingComplete: () =>
-                                  context.nextEditableTextFocus(),
+                              onEditingComplete: () => context.nextEditableTextFocus(),
                               validator: (value) {
-                                return value == null || value.length < 6
-                                    ? "비밀번호를 6 글자 이상으로 해주세요"
-                                    : null;
+                                return value == null || value.length < 6 ? "비밀번호를 6 글자 이상으로 해주세요" : null;
                               },
                             ),
                             const SizedBox(height: 8),
@@ -158,11 +151,8 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                                 _signUp();
                               },
                               validator: (value) {
-                                logger.i(
-                                    "$value == ${_tecPassword.text} = ${value == _tecPassword.text}");
-                                return value == _tecPassword.text
-                                    ? null
-                                    : "비밀번호가 서로 다릅니다";
+                                logger.i("$value == ${_tecPassword.text} = ${value == _tecPassword.text}");
+                                return value == _tecPassword.text ? null : "비밀번호가 서로 다릅니다";
                               },
                             ),
                             const SizedBox(height: 8),
@@ -172,9 +162,7 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                               showClear: true,
                               // onEditingComplete: () => context.nextEditableTextFocus(),
                               validator: (value) {
-                                return value == null || value.isEmpty
-                                    ? "닉네임을 확인해주세요"
-                                    : null;
+                                return value == null || value.isEmpty ? "닉네임을 확인해주세요" : null;
                               },
                             ),
                             const SizedBox(height: 24),
@@ -186,8 +174,7 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                                 DUButton(
                                     text: '입력하기',
                                     press: () {
-                                      context.push('/address',
-                                          extra: {'setAddress': setAddress});
+                                      context.push('/address', extra: {'setAddress': setAddress});
                                     },
                                     type: ButtonType.transparent),
                               ],
@@ -229,10 +216,18 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
       return;
     }
 
+    ModelRequestSignUp modelRequestSignUp = ModelRequestSignUp(
+      social: SocialType.email.value,
+      email: _tecEmail.text,
+      name: _tecNickname.text,
+      password: _tecPassword.text,
+      profileImage: '',
+      address: context.read<MeCubit>().me.address ?? '',
+      lat: context.read<MeCubit>().me.lat,
+      lng: context.read<MeCubit>().me.lng,
+    );
     // 1. signUp
-    await context
-        .read<SignUpCubit>()
-        .signUp(_tecEmail.text, _tecPassword.text, _tecNickname.text);
+    await context.read<SignUpCubit>().signUp(modelRequestSignUp.toMap());
   }
 
   setAddress(String address, double? lat, double? lng) {
@@ -240,9 +235,9 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
     _lat = lat;
     _lng = lng;
 
-    context.read<SingletonMeCubit>().me.lat = lat;
-    context.read<SingletonMeCubit>().me.lng = lng;
-    context.read<SingletonMeCubit>().me.address = address;
+    context.read<MeCubit>().me.lat = lat;
+    context.read<MeCubit>().me.lng = lng;
+    context.read<MeCubit>().me.address = address;
 
     setState(() {});
   }

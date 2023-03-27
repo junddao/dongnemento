@@ -5,7 +5,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:path/path.dart' as path;
 
 // import 'path'
 
@@ -23,14 +22,14 @@ class DUPhotoView extends StatefulWidget {
   final double? screenHeight;
 
   @override
-  _DUPhotoViewState createState() => _DUPhotoViewState();
+  State<DUPhotoView> createState() => _DUPhotoViewState();
 }
 
 class _DUPhotoViewState extends State<DUPhotoView> {
   double currentBannerIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return widget.imageUrls.length == 0
+    return widget.imageUrls.isEmpty
         ? Container(
             width: double.infinity,
             height: widget.screenHeight,
@@ -39,7 +38,7 @@ class _DUPhotoViewState extends State<DUPhotoView> {
             ),
             child: Center(child: Text('No Image', style: DUTextStyle.size14B.white)),
           )
-        : Container(
+        : SizedBox(
             width: double.infinity,
             height: widget.screenHeight,
             child: Stack(
@@ -50,8 +49,7 @@ class _DUPhotoViewState extends State<DUPhotoView> {
                       String filePath = widget.imageUrls[index];
                       return InkWell(
                         onTap: () {
-                          context.push(path.join(Routes.photoView, filePath));
-                          Navigator.of(context).pushNamed('DSPhotoViewer', arguments: filePath);
+                          context.push(Routes.photoView, extra: {'filePath': filePath});
                         },
                         child: CachedNetworkImage(
                           imageUrl: filePath,

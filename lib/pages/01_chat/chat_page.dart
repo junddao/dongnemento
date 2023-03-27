@@ -1,4 +1,3 @@
-import 'package:base_project/global/component/du_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -32,9 +31,10 @@ class _ChatPageViewState extends State<ChatPageView> {
     );
   }
 
-  DUAppBar _appBar() {
-    return DUAppBar(
+  AppBar _appBar() {
+    return AppBar(
       automaticallyImplyLeading: false,
+      titleSpacing: 16,
       centerTitle: false,
       title: const Text('채팅'),
     );

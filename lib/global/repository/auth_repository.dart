@@ -23,10 +23,10 @@ class AuthRepository {
 
   String apiUrl = Env.apiAuthUrl;
 
-  Future<ApiResponse<ModelSignIn>> signIn(String email, String password) async {
+  Future<ApiResponse<ModelSignIn>> signIn(Map<String, dynamic> input) async {
     late ModelResponseSignIn modelResponseSignIn;
     try {
-      ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn(email: email, password: password);
+      ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn.fromMap(input);
       String url = '$apiUrl/signin';
       Map<String, dynamic> response = await ApiService().post(url, modelRequestSignIn.toMap(), useToken: false);
       modelResponseSignIn = ModelResponseSignIn.fromMap(response);
@@ -42,17 +42,18 @@ class AuthRepository {
     }
   }
 
-  Future<ApiResponse<String>> kakaoSignIn(Map<String, dynamic> user) async {
-    late ModelResponseCommon modelResponseCommon;
+  Future<ApiResponse<ModelSignIn>> kakaoSignIn(Map<String, dynamic> user) async {
+    late ModelResponseSignIn modelResponseSignIn;
     try {
       String url = '$apiUrl/kakao';
       Map<String, dynamic> response = await ApiService().post(url, user, useToken: false);
-      modelResponseCommon = ModelResponseCommon.fromMap(response);
-      if (modelResponseCommon.success == true) {
-        final customTokenResponse = response['data'].first;
-        return ApiResponse.completed(customTokenResponse['fbCustomToken']);
+      modelResponseSignIn = ModelResponseSignIn.fromMap(response);
+      if (modelResponseSignIn.success == true) {
+        ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
+        await SecureStorage.instance.writeToken(modelSignIn.accessToken);
+        return ApiResponse.completed(modelSignIn);
       } else {
-        return ApiResponse.error(modelResponseCommon.error);
+        return ApiResponse.error(modelResponseSignIn.error);
       }
     } catch (e) {
       return ApiResponse.error(e.toString());

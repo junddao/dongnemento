@@ -1,13 +1,10 @@
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/bloc/auth/get_me/me_cubit.dart';
 import 'package:base_project/global/enum/authentication_status_type.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
 import 'package:base_project/global/style/constants.dart';
-import 'package:base_project/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
@@ -26,14 +23,13 @@ class _RootPageState extends State<RootPage> {
   _isLogin() {
     SecureStorage.instance.readToken().then((token) {
       if (token != null && token.isNotEmpty) {
+        context.read<MeCubit>().getMe();
         context.read<AuthenticationBloc>().add(
-              const AuthenticationStatusChanged(
-                  status: AuthenticationStatusType.authenticated),
+              const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated),
             );
       } else {
         context.read<AuthenticationBloc>().add(
-              const AuthenticationStatusChanged(
-                  status: AuthenticationStatusType.unauthenticated),
+              const AuthenticationStatusChanged(status: AuthenticationStatusType.unauthenticated),
             );
       }
     });

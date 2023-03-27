@@ -91,10 +91,10 @@ class DynamicLink {
   Future<String> getShortLink(String screenName, String id) async {
     String packageName = '';
 
-    if (Env.opMode == OpMode.dev) packageName = 'com.jtb.dongnemento.dev';
-    if (Env.opMode == OpMode.product) packageName = 'com.jtb.dongnemento';
+    if (Env.opMode == OpMode.dev) packageName = 'com.jj.dongnesosik.dev';
+    if (Env.opMode == OpMode.product) packageName = 'com.jj.dongnesosik';
 
-    String dynamicLinkPrefix = 'https://dongnemento.page.link';
+    String dynamicLinkPrefix = 'https://dongnesosik.page.link';
     final dynamicLinkParams = DynamicLinkParameters(
       uriPrefix: dynamicLinkPrefix,
       link: Uri.parse('$dynamicLinkPrefix$screenName?id=$id'),

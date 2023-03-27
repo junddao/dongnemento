@@ -1,4 +1,4 @@
-package com.jtb.dongnemento
+package com.jj.dongnesosik
 
 import io.flutter.embedding.android.FlutterActivity
 

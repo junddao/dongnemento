@@ -1,4 +1,3 @@
-import 'package:base_project/global/component/du_app_bar.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/pages/02_post/components/cell_post_item.dart';
@@ -35,9 +34,10 @@ class _ProductPageViewState extends State<ProductPageView> {
     );
   }
 
-  DUAppBar _appBar() {
-    return DUAppBar(
+  AppBar _appBar() {
+    return AppBar(
       automaticallyImplyLeading: false,
+      titleSpacing: 16,
       centerTitle: false,
       title: const Text('상품'),
     );
