@@ -1,33 +1,33 @@
-part of 'get_me_cubit.dart';
+part of 'me_cubit.dart';
 
-abstract class GetMeState extends Equatable {
-  const GetMeState();
+abstract class MeState extends Equatable {
+  const MeState();
 
   @override
   List<Object> get props => [];
 }
 
-class GetMeInitial extends GetMeState {
+class MeInitial extends MeState {
   @override
   List<Object> get props => [];
 }
 
-class GetMeLoading extends GetMeState {
+class MeLoading extends MeState {
   @override
   List<Object> get props => [];
 }
 
-class GetMeLoaded extends GetMeState {
+class MeLoaded extends MeState {
   final ModelUser? me;
 
-  const GetMeLoaded({required this.me});
+  const MeLoaded({required this.me});
   @override
   List<Object> get props => [me!];
 }
 
-class GetMeError extends GetMeState {
+class MeError extends MeState {
   final String errorMessage;
-  const GetMeError({
+  const MeError({
     this.errorMessage = '',
   }) : super();
   @override

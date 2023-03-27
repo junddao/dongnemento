@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
 
+import 'package:base_project/global/bloc/auth/get_me/me_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
 import 'package:base_project/global/bloc/map/location/location_cubit.dart';
-import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/model/pin/model_request_get_pin.dart';
 import 'package:base_project/global/model/pin/model_response_get_pin.dart';
 import 'package:base_project/global/style/constants.dart';
@@ -57,8 +57,8 @@ class _MapPageViewState extends State<MapPageView> {
 
   @override
   void initState() {
-    double lat = context.read<SingletonMeCubit>().me.lat ?? 0;
-    double lng = context.read<SingletonMeCubit>().me.lng ?? 0;
+    double lat = context.read<MeCubit>().me.lat ?? 0;
+    double lng = context.read<MeCubit>().me.lng ?? 0;
     _lastLocation = LatLng(lat, lng);
 
     ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
@@ -81,8 +81,8 @@ class _MapPageViewState extends State<MapPageView> {
   }
 
   Widget _floatingActionButton() {
-    double? lat = context.read<SingletonMeCubit>().me.lat;
-    double? lng = context.read<SingletonMeCubit>().me.lng;
+    double? lat = context.read<MeCubit>().me.lat;
+    double? lng = context.read<MeCubit>().me.lng;
     LatLng myLocation = LatLng(lat ?? 0, lng ?? 0);
     return Padding(
       padding: const EdgeInsets.only(top: 100.0),

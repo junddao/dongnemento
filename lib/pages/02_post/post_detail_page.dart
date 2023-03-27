@@ -16,10 +16,9 @@ import 'package:base_project/pages/common/error_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../global/bloc/singleton_me/singleton_me_cubit.dart';
+import '../../global/bloc/auth/get_me/me_cubit.dart';
 import '../../global/component/du_photo_view.dart';
 import '../../global/component/du_profile.dart';
 import '../../global/model/hate/model_request_set_pin_hate.dart';
@@ -159,8 +158,8 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
             return BlocConsumer<DeletePinCubit, DeletePinState>(
               listener: (context, state) {
                 if (state is DeletePinLoaded) {
-                  double lat = context.read<SingletonMeCubit>().me.lat ?? 0;
-                  double lng = context.read<SingletonMeCubit>().me.lng ?? 0;
+                  double lat = context.read<MeCubit>().me.lat ?? 0;
+                  double lng = context.read<MeCubit>().me.lng ?? 0;
 
                   ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
                     lat: lat,
@@ -326,7 +325,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                     const SizedBox(width: 6),
                                                     Text('${pin.hateCount ?? 0}', style: DUTextStyle.size10.grey1),
                                                     const Spacer(),
-                                                    GetIt.I.get<SingletonMeCubit>().me.id == pin.userId
+                                                    context.read<MeCubit>().me.id == pin.userId
                                                         ? TextButton(
                                                             onPressed: () {
                                                               context.read<DeletePinCubit>().deletePin(pin.id!);

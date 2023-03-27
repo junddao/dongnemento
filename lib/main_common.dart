@@ -1,9 +1,8 @@
 import 'package:base_project/env.dart';
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
-import 'package:base_project/global/bloc/auth/get_me/get_me_cubit.dart';
+import 'package:base_project/global/bloc/auth/get_me/me_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
 import 'package:base_project/global/bloc/map/location/location_cubit.dart';
-import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/theme/theme.dart';
 import 'package:base_project/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -66,11 +64,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   AuthenticationBloc authBloc = AuthenticationBloc();
-  SingletonMeCubit singletonMeCubit = SingletonMeCubit();
+  // SingletonMeCubit singletonMeCubit = SingletonMeCubit();
 
   @override
   void initState() {
-    GetIt.I.registerSingleton(singletonMeCubit);
     super.initState();
   }
 
@@ -84,14 +81,14 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => AppRouter(authBloc),
         ),
-        BlocProvider<SingletonMeCubit>(
-          create: (context) => singletonMeCubit,
-        ),
+        // BlocProvider<SingletonMeCubit>(
+        //   create: (context) => singletonMeCubit,
+        // ),
         BlocProvider(
           create: (context) => LocationCubit(),
         ),
         BlocProvider(
-          create: (context) => GetMeCubit(),
+          create: (context) => MeCubit(),
         ),
         BlocProvider(
           create: (context) => GetPinsCubit(),

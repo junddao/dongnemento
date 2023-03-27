@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
-import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
-import 'package:base_project/global/model/user/model_user.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/pages/00_etc/page_confirm.dart';
 import 'package:base_project/pages/00_map/map_page.dart';
@@ -14,6 +12,7 @@ import 'package:base_project/pages/common/address_page.dart';
 import 'package:base_project/pages/common/error_page.dart';
 import 'package:base_project/pages/login/login_page.dart';
 import 'package:base_project/pages/login/page_email_sign_up.dart';
+import 'package:base_project/pages/login/page_set_location.dart';
 import 'package:base_project/pages/root_page.dart';
 import 'package:base_project/pages/tab_page.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +33,7 @@ class Routes {
   static const address = '/address';
   static const confirm = '/confirm';
   static const photoView = '/photo_view';
+  static const introAddress = '/intro_address';
 
   // 2 depth
   static const signUp = 'sign_up';
@@ -59,17 +59,17 @@ class AppRouter extends Bloc {
       }
       prevAuthState = authBloc.state;
       if (authBloc.state is AuthenticationAuthenticated) {
-        context.read<SingletonMeCubit>().updateSingletonMe(authBloc.state.me!);
+        // context.read<SingletonMeCubit>().updateSingletonMe(authBloc.state.me!);
 
         // 최초 가입시 좌표값이 없어 주소 입력창으로 이동
         if (authBloc.state.me!.lat == null || authBloc.state.me!.lng == null) {
-          return Routes.address;
+          return Routes.introAddress;
         }
 
         logger.d('Authenticated');
         return Routes.map;
       } else if (authBloc.state is AuthenticationUnAuthenticated) {
-        context.read<SingletonMeCubit>().updateSingletonMe(ModelUser());
+        // context.read<SingletonMeCubit>().updateSingletonMe(ModelUser());
         logger.d('UnAuthenticated');
         return Routes.login;
       } else if (authBloc.state is AuthenticationUnknown) {
@@ -191,6 +191,14 @@ class AppRouter extends Bloc {
         },
       ),
       GoRoute(
+        path: Routes.introAddress,
+        pageBuilder: (context, state) {
+          return const MaterialPage(
+            child: PageSetLocation(),
+          );
+        },
+      ),
+      GoRoute(
         path: Routes.confirm,
         parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) {
@@ -210,8 +218,11 @@ class AppRouter extends Bloc {
       GoRoute(
         path: Routes.photoView,
         name: Routes.photoView,
+        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) {
-          String? filePath = state.params as String;
+          final queryParams = state.extra as Map<String, dynamic>;
+          String filePath = queryParams['filePath'] as String;
+
           return MaterialPage(
             child: DUPhotoViewer(filePath: filePath),
           );

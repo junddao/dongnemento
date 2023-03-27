@@ -1,7 +1,4 @@
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
-import 'package:base_project/global/bloc/auth/update_user/update_user_cubit.dart';
-import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
-import 'package:base_project/global/component/du_app_bar.dart';
 import 'package:base_project/global/component/du_loading.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
 import 'package:base_project/global/component/du_two_button_dialog.dart';
@@ -16,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../global/bloc/auth/get_me/me_cubit.dart';
 import '../../routes.dart';
 
 class MorePage extends StatefulWidget {
@@ -28,10 +26,7 @@ class MorePage extends StatefulWidget {
 class _MorePageState extends State<MorePage> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UpdateUserCubit(),
-      child: const MorePageView(),
-    );
+    return const MorePageView();
   }
 }
 
@@ -52,10 +47,10 @@ class _MorePageViewState extends State<MorePageView> {
 
   @override
   void initState() {
-    _textNameController.text = context.read<SingletonMeCubit>().me.name ?? '';
-    _address = context.read<SingletonMeCubit>().me.address ?? '';
-    _lat = context.read<SingletonMeCubit>().me.lat;
-    _lng = context.read<SingletonMeCubit>().me.lng;
+    _textNameController.text = context.read<MeCubit>().me.name ?? '';
+    _address = context.read<MeCubit>().me.address ?? '';
+    _lat = context.read<MeCubit>().me.lat;
+    _lng = context.read<MeCubit>().me.lng;
     super.initState();
   }
 
@@ -73,13 +68,15 @@ class _MorePageViewState extends State<MorePageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: _appBar(),
       body: _body(),
     );
   }
 
   _appBar() {
-    return DUAppBar(
+    return AppBar(
+      titleSpacing: 16,
       title: const Text('마이'),
       centerTitle: false,
       automaticallyImplyLeading: false,
@@ -119,9 +116,9 @@ class _MorePageViewState extends State<MorePageView> {
   Widget _body() {
     final FocusScopeNode node = FocusScope.of(context);
 
-    return BlocConsumer<UpdateUserCubit, UpdateUserState>(
+    return BlocConsumer<MeCubit, MeState>(
       listener: (context, state) {
-        if (state is UpdateUserLoaded) {
+        if (state is MeLoaded) {
           DUDialog.showOneButtonDialog(
             context: context,
             title: '성공',
@@ -130,7 +127,7 @@ class _MorePageViewState extends State<MorePageView> {
         }
       },
       builder: (context, state) {
-        if (state is UpdateUserLoading) {
+        if (state is MeLoading) {
           return const DULoading();
         }
 
@@ -169,7 +166,7 @@ class _MorePageViewState extends State<MorePageView> {
                                 children: [
                                   TextSpan(text: '안녕하세요\n', style: DUTextStyle.size18.grey1),
                                   TextSpan(
-                                      text: context.watch<SingletonMeCubit>().me.name ?? '이름없음',
+                                      text: context.watch<MeCubit>().me.name ?? '이름없음',
                                       style: DUTextStyle.size18.black),
                                   TextSpan(text: '님!', style: DUTextStyle.size18.grey1),
                                 ],
@@ -177,13 +174,13 @@ class _MorePageViewState extends State<MorePageView> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 20),
-                            Text(context.watch<SingletonMeCubit>().me.email ?? ''),
+                            Text(context.watch<MeCubit>().me.email ?? ''),
                           ],
                         ),
                       ],
                     ),
                     const SizedBox(height: 40),
-                    Text('이름 수정하기', style: DUTextStyle.size18B),
+                    const Text('이름 수정하기', style: DUTextStyle.size18B),
                     const SizedBox(height: 4),
                     DUTextFormField(
                       controller: _textNameController,
@@ -203,7 +200,7 @@ class _MorePageViewState extends State<MorePageView> {
                       },
                     ),
                     const SizedBox(height: 40),
-                    Text('주소 변경하기', style: DUTextStyle.size18B),
+                    const Text('주소 변경하기', style: DUTextStyle.size18B),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -222,19 +219,16 @@ class _MorePageViewState extends State<MorePageView> {
                         text: '수정하기',
                         press: () async {
                           ModelUser updatedMe = context
-                              .read<SingletonMeCubit>()
+                              .read<MeCubit>()
                               .me
                               .copyWith(address: _address, lat: _lat, lng: _lng, name: _textNameController.text);
 
-                          // singletonMe update
-                          context.read<SingletonMeCubit>().updateSingletonMe(updatedMe);
-
                           // server 정보 update
-                          await context.read<UpdateUserCubit>().updateUser(updatedMe.toMap());
+                          await context.read<MeCubit>().updateUser(updatedMe.toMap());
                         },
                         type: ButtonType.normal,
                         width: SizeConfig.screenWidth),
-                    const SizedBox(height: 24),
+                    // const SizedBox(height: 24),
                   ],
                 ),
               ),

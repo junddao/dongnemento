@@ -1,6 +1,6 @@
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/bloc/auth/get_me/me_cubit.dart';
 import 'package:base_project/global/bloc/auth/sign_up/sign_up_cubit.dart';
-import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
 import 'package:base_project/global/enum/authentication_status_type.dart';
 import 'package:base_project/global/enum/social_type.dart';
@@ -12,7 +12,6 @@ import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/global/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 class PageEmailSignUp extends StatefulWidget {
@@ -223,9 +222,9 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
       name: _tecNickname.text,
       password: _tecPassword.text,
       profileImage: '',
-      address: GetIt.I.get<SingletonMeCubit>().me.address ?? '',
-      lat: GetIt.I.get<SingletonMeCubit>().me.lat,
-      lng: GetIt.I.get<SingletonMeCubit>().me.lng,
+      address: context.read<MeCubit>().me.address ?? '',
+      lat: context.read<MeCubit>().me.lat,
+      lng: context.read<MeCubit>().me.lng,
     );
     // 1. signUp
     await context.read<SignUpCubit>().signUp(modelRequestSignUp.toMap());
@@ -236,9 +235,9 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
     _lat = lat;
     _lng = lng;
 
-    context.read<SingletonMeCubit>().me.lat = lat;
-    context.read<SingletonMeCubit>().me.lng = lng;
-    context.read<SingletonMeCubit>().me.address = address;
+    context.read<MeCubit>().me.lat = lat;
+    context.read<MeCubit>().me.lng = lng;
+    context.read<MeCubit>().me.address = address;
 
     setState(() {});
   }
