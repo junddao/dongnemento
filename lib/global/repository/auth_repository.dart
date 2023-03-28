@@ -60,6 +60,24 @@ class AuthRepository {
     }
   }
 
+  Future<ApiResponse<ModelSignIn>> appleSignIn(Map<String, dynamic> idToken) async {
+    late ModelResponseSignIn modelResponseSignIn;
+    try {
+      String url = '$apiUrl/apple';
+      Map<String, dynamic> response = await ApiService().post(url, idToken, useToken: false);
+      modelResponseSignIn = ModelResponseSignIn.fromMap(response);
+      if (modelResponseSignIn.success == true) {
+        ModelSignIn modelSignIn = modelResponseSignIn.data!.first;
+        await SecureStorage.instance.writeToken(modelSignIn.accessToken);
+        return ApiResponse.completed(modelSignIn);
+      } else {
+        return ApiResponse.error(modelResponseSignIn.error);
+      }
+    } catch (e) {
+      return ApiResponse.error(e.toString());
+    }
+  }
+
   Future<ApiResponse<ModelResponseSignIn>> getToken(String email) async {
     late ModelResponseSignIn modelResponseSignIn;
 
@@ -75,24 +93,6 @@ class AuthRepository {
         return ApiResponse.completed(modelResponseSignIn);
       } else {
         return ApiResponse.error(modelResponseSignIn.error);
-      }
-    } catch (e) {
-      return ApiResponse.error(e.toString());
-    }
-  }
-
-  Future<ApiResponse<String>> appleSignIn(Map<String, dynamic> user) async {
-    late ModelResponseCommon modelResponseCommon;
-    try {
-      String url = '$apiUrl/apple';
-
-      Map<String, dynamic> response = await ApiService().post(url, user, useToken: false);
-      modelResponseCommon = ModelResponseCommon.fromMap(response);
-      if (modelResponseCommon.success == true) {
-        final customTokenResponse = response['data'].first;
-        return ApiResponse.completed(customTokenResponse['fbCustomToken']);
-      } else {
-        return ApiResponse.error(modelResponseCommon.error);
       }
     } catch (e) {
       return ApiResponse.error(e.toString());

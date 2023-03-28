@@ -50,7 +50,7 @@ class _HomePageViewState extends State<HomePageView> {
 
   Widget minChild() {
     return AppBar(
-      title: const Text('3분 컨설팅 요청은 동네멘토!'),
+      title: const Text('3분 컨설팅 요청은 동네소식!'),
     );
   }
 

@@ -21,9 +21,9 @@ class _RootPageState extends State<RootPage> {
   }
 
   _isLogin() {
-    SecureStorage.instance.readToken().then((token) {
+    SecureStorage.instance.readToken().then((token) async {
       if (token != null && token.isNotEmpty) {
-        context.read<MeCubit>().getMe();
+        await context.read<MeCubit>().getMe();
         context.read<AuthenticationBloc>().add(
               const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated),
             );

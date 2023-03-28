@@ -78,9 +78,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         case SocialType.kakao:
           responseModelSignIn = await kakaoLogin(event.input);
           break;
-        // case SocialType.apple:
-        //   result = await appleLogin();
-        //   break;
+        case SocialType.apple:
+          responseModelSignIn = await appleLogin(event.input);
+          break;
         default:
       }
 
@@ -136,13 +136,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
     return result;
   }
-  // Future<ModelResponseSignIn> appleLogin() async {
-  //  late ModelResponseSignIn result;
-  //   try {
-  //     result = await AuthRepository.instance.signIn(email, password);
-  //   } catch (e) {
-  //     result = ModelResponseSignIn(success: false, error: e.toString());
-  //   }
-  //   return result;
-  // }
+
+  Future<ApiResponse<ModelSignIn>> appleLogin(Map<String, dynamic> input) async {
+    late ApiResponse<ModelSignIn> result;
+
+    result = await AuthRepository.instance.appleSignIn(input);
+
+    return result;
+  }
 }

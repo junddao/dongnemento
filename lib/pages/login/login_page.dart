@@ -6,18 +6,19 @@ import 'package:base_project/global/component/du_two_button_dialog.dart';
 import 'package:base_project/global/enum/authentication_status_type.dart';
 import 'package:base_project/global/enum/social_type.dart';
 import 'package:base_project/global/model/user/model_request_sign_in.dart';
+import 'package:base_project/global/service/login_service_apple.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../global/component/loading_indicator.dart';
+import '../../global/model/user/model_request_apple_sign_in.dart';
 import '../../global/model/user/model_request_kakao_sign_in.dart';
 import '../../global/service/login_service_kakao.dart';
 
@@ -64,7 +65,7 @@ class _LoginPageViewState extends State<LoginPageView> {
         child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
             if (state is AuthenticationError) {
-              SchedulerBinding.instance.addPostFrameCallback((_) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
                 DUDialog.showOneButtonDialog(context: context, title: '로그인에 실패했어요', subTitle: '다시 시도해주세요. 🙂')
                     .then((value) {
                   context.read<AuthenticationBloc>().add(
@@ -95,7 +96,7 @@ class _LoginPageViewState extends State<LoginPageView> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 100.0),
-                    Text('동네멘토', style: DUTextStyle.size24B.grey0),
+                    Text('동네소식', style: DUTextStyle.size24B.grey0),
                     _buildEmailLogin(),
                     _buildKakaoLogin(),
                     Platform.isIOS ? const SizedBox(height: 20.0) : const SizedBox.shrink(),
@@ -245,31 +246,27 @@ class _LoginPageViewState extends State<LoginPageView> {
     Size size = MediaQuery.of(context).size;
     return InkWell(
       onTap: () async {
-        // bool result = await context.read<AuthProvider>().appleLogin();
-        bool result = true;
+        final loading = await showLoadingIndicator(context);
+        LoginServiceApple().login().then((idToken) async {
+          Navigator.pop(loading);
+          //  existUser 확인
+          if (idToken == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('로그인을 실패했어요. 다시 시도해 주세요.'),
+              ),
+            );
+            return;
+          }
 
-        if (result == true) {
-          Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('로그인 실패')));
-        }
-
-        // result = await context.read<UserProvider>().getMe();
-        if (!result) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('유저 정보를 가져오지∞ 못했습니다. 다시 시도해 주세요.'),
-            ),
+          ModelRequestAppleSignIn modelRequestAppleSignIn = ModelRequestAppleSignIn(
+            idToken: idToken,
           );
-          return;
-        }
-
-        if (result == true) {
-          Navigator.of(context).pushNamedAndRemoveUntil('PageTabs', (route) => false);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('로그인 실패')));
-          return;
-        }
+          context.read<AuthenticationBloc>().add(AuthenticationSignIn(
+                socialType: SocialType.apple,
+                input: modelRequestAppleSignIn.toMap(),
+              ));
+        });
       },
       child: Container(
         width: size.width - 40,
