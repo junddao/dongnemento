@@ -30,6 +30,16 @@ class _PageSetLocationState extends State<PageSetLocation> {
   AppBar _appBar() {
     return AppBar(
       // title: Text('시작 위치 지정'),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back_ios),
+        onPressed: () {
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go(Routes.login);
+          }
+        },
+      ),
       centerTitle: true,
       elevation: 0,
     );

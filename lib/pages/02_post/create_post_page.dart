@@ -19,6 +19,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:images_picker/images_picker.dart';
 
 import '../../global/bloc/auth/get_me/me_cubit.dart';
+import '../../routes.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({Key? key}) : super(key: key);
@@ -300,7 +301,8 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
           const SizedBox(height: 16),
           InkWell(
             onTap: () {
-              Navigator.of(context).pushNamed('PageSelectLocation');
+              LatLng location = LatLng(state.postLocation!.lat!, state.postLocation!.lng!);
+              context.push(Routes.selectLocation, extra: {'location': location});
             },
             child: Row(
               children: [

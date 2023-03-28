@@ -18,8 +18,10 @@ import 'package:base_project/pages/tab_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'global/component/du_photo_viewer.dart';
+import 'pages/02_post/page_select_location.dart';
 
 class Routes {
   // 1 depth
@@ -31,6 +33,7 @@ class Routes {
   static const more = '/more';
   static const error = '/error';
   static const address = '/address';
+  static const selectLocation = '/select_location';
   static const confirm = '/confirm';
   static const photoView = '/photo_view';
   static const introAddress = '/intro_address';
@@ -186,6 +189,19 @@ class AppRouter extends Bloc {
           return MaterialPage(
             child: AddressPage(
               setAddress: setAddress,
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.selectLocation,
+        parentNavigatorKey: rootNavigatorKey,
+        pageBuilder: (context, state) {
+          final extra = state.extra! as Map<String, dynamic>;
+          LatLng location = extra['location'] as LatLng;
+          return MaterialPage(
+            child: PageSelectLocation(
+              location: location,
             ),
           );
         },

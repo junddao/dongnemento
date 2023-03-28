@@ -20,6 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:path/path.dart' as path;
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -344,7 +345,7 @@ class _MapPageViewState extends State<MapPageView> {
                     // context.pop();
                     context.read<LocationCubit>().setPostLocation(location).then((value) {
                       Navigator.pop(context, true);
-                      context.go('/map/post');
+                      context.go(path.join(Routes.map, Routes.post));
                     });
                   },
                 ),
