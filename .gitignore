@@ -60,6 +60,7 @@ lib/firebase_options_dev.dart
 /ios/config/
 /ios/firebase_app_id_file.json
 /ios/GoogleService-Info.plist
+/ios/Runner/GoogleService-Info.plist
 
 # fvm
 .fvm/
