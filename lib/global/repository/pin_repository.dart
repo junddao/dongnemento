@@ -35,7 +35,8 @@ class PinRepository {
   Future<ApiResponse<ModelResponseGetPin>> getPins(ModelRequestGetPin requestGetPin) async {
     late ModelResponseGetPin modelResponseGetPin;
     try {
-      Map<String, dynamic> response = await ApiService().post('$apiUrl/get/pins', requestGetPin.toMap());
+      Map<String, dynamic> response =
+          await ApiService().get('$apiUrl/get/pins/${requestGetPin.lat}/${requestGetPin.lng}/${requestGetPin.range}');
       modelResponseGetPin = ModelResponseGetPin.fromMap(response);
       if (modelResponseGetPin.success == true) {
         return ApiResponse.completed(modelResponseGetPin);

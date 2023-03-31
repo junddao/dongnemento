@@ -2,6 +2,8 @@ import 'package:base_project/global/style/du_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../routes.dart';
+
 class TabPage extends StatelessWidget {
   const TabPage({Key? key, required this.child}) : super(key: key);
   final Widget child;
@@ -80,7 +82,7 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
       backgroundColor: DUColors.white02,
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.maps_home_work_outlined),
+          icon: Icon(Icons.map_outlined),
           label: '지도',
         ),
         BottomNavigationBarItem(
@@ -102,14 +104,14 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
   int _calculateSelectedIndex(BuildContext context) {
     final GoRouter route = GoRouter.of(context);
     final String location = route.location;
-    if (location == '/map') {
+    if (location == Routes.map) {
       _selectedPage = 0;
     }
 
-    if (location == '/product') {
+    if (location == Routes.favoritePost) {
       _selectedPage = 1;
     }
-    if (location == '/more') {
+    if (location == Routes.more) {
       _selectedPage = 2;
     }
     return _selectedPage;
@@ -118,13 +120,13 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       case 0:
-        GoRouter.of(context).go('/map');
+        GoRouter.of(context).go(Routes.map);
         break;
       case 1:
-        GoRouter.of(context).go('/product');
+        GoRouter.of(context).go(Routes.favoritePost);
         break;
       case 2:
-        GoRouter.of(context).go('/more');
+        GoRouter.of(context).go(Routes.more);
         break;
     }
   }

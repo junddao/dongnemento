@@ -29,7 +29,7 @@ class Routes {
   // static const home = '/home';
   static const map = '/map';
   static const login = '/login';
-  static const product = '/product';
+  static const favoritePost = '/favorite_post';
   static const more = '/more';
   static const error = '/error';
   static const address = '/address';
@@ -146,7 +146,7 @@ class AppRouter extends Bloc {
             ],
           ),
           GoRoute(
-            path: Routes.product,
+            path: Routes.favoritePost,
             pageBuilder: (context, state) {
               return const MaterialPage(child: FavoritePostListPage());
             },

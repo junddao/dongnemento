@@ -1,19 +1,19 @@
 import 'package:base_project/global/style/du_text_styles.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+import '../../../global/model/pin/model_response_get_pin.dart';
 
 class CellPostItem extends StatelessWidget {
   const CellPostItem({
     Key? key,
     this.id,
-    required this.title,
-    required this.description,
-    this.itemIndex,
+    required this.pin,
     required this.press,
   }) : super(key: key);
 
-  final String? title, description;
   final int? id;
-  final int? itemIndex;
+  final ResponsePin pin;
   final Function press;
 
   final textStyleTitle = DUTextStyle.size14;
@@ -21,68 +21,70 @@ class CellPostItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: InkWell(
-        onTap: () {
-          press();
-        },
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
-              // child: Image(image: NetworkImage(product.images[0]),
-              child: Container(
-                width: 105,
-                height: 105,
-                child: Image.asset('assets/images/sample_image.png'),
-              ),
+    return InkWell(
+      onTap: () {
+        press();
+      },
+      child: Row(
+        children: [
+          CachedNetworkImage(
+            imageUrl: pin.images?.first ?? "",
+            fit: BoxFit.cover,
+            placeholder: (context, url) => const Center(
+              child: CircularProgressIndicator(),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Stack(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: Text(
-                          title ?? "",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: DUTextStyle.size16M,
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 60,
-                                child: Text(
-                                  "견적번호",
-                                  style: textStyleTitle,
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  "$id",
-                                  overflow: TextOverflow.ellipsis,
-                                  style: textStyleBody,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 4),
-                        ],
-                      ),
-                    ],
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+            imageBuilder: (context, imageProvider) {
+              return Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
                   ),
-                ],
-              ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Stack(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      pin.title ?? "",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: DUTextStyle.size16M,
+                    ),
+                    const SizedBox(height: 15),
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.favorite, color: Colors.red, size: 12),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                '${pin.likeCount ?? 0}',
+                                overflow: TextOverflow.ellipsis,
+                                style: textStyleBody,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
