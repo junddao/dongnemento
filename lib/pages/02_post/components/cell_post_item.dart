@@ -7,12 +7,10 @@ import '../../../global/model/pin/model_response_get_pin.dart';
 class CellPostItem extends StatelessWidget {
   const CellPostItem({
     Key? key,
-    this.id,
     required this.pin,
     required this.press,
   }) : super(key: key);
 
-  final int? id;
   final ResponsePin pin;
   final Function press;
 

@@ -44,13 +44,13 @@ class ModelResponseGetPin {
 }
 
 class ResponsePin {
-  String? id;
+  String id;
   double? lat;
   double? lng;
   String? title;
   String? body;
   List<String>? images;
-  String? userId;
+  String userId;
   String? userName;
   String? userProfileImage;
   int? likeCount;
@@ -60,13 +60,13 @@ class ResponsePin {
   String? createdAt;
   String? updatedAt;
   ResponsePin({
-    this.id,
+    required this.id,
     this.lat,
     this.lng,
     this.title,
     this.body,
     this.images,
-    this.userId,
+    required this.userId,
     this.userName,
     this.userProfileImage,
     this.likeCount,

@@ -203,7 +203,7 @@ class _MapPageViewState extends State<MapPageView> {
     for (var pin in pins) {
       customIcon = await createCustomMarkerBitmap(pin.title!);
       final marker = Marker(
-          markerId: MarkerId(pin.id!),
+          markerId: MarkerId(pin.id),
           position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
           icon: customIcon!,
           onTap: () {
@@ -381,7 +381,7 @@ class _MapPageViewState extends State<MapPageView> {
 
   void onTapMarker(String pinId, String userId) {
     // 상세 핀 페이지로 이동
-    context.go('/map/post/$pinId/$userId');
+    context.go(path.join(Routes.map, Routes.post, pinId, userId));
   }
 
   // BitmapDescriptor? customIcon;
@@ -391,11 +391,11 @@ class _MapPageViewState extends State<MapPageView> {
     for (var pin in pins) {
       BitmapDescriptor? customIcon = await createCustomMarkerBitmap(pin.title!);
       final marker = Marker(
-          markerId: MarkerId(pin.id ?? DateTime.now().toString()),
+          markerId: MarkerId(pin.id),
           position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
           icon: customIcon,
           onTap: () {
-            onTapMarker(pin.id!, pin.userId!);
+            onTapMarker(pin.id, pin.userId!);
           });
       markers.add(marker);
     }

@@ -5,12 +5,14 @@ import 'package:base_project/pages/02_post/components/cell_post_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path/path.dart' as path;
 
 import '../../global/bloc/auth/get_me/me_cubit.dart';
 import '../../global/bloc/map/get_pins/get_pins_cubit.dart';
 import '../../global/component/du_two_button_dialog.dart';
 import '../../global/model/pin/model_request_get_pin.dart';
 import '../../global/model/pin/model_response_get_pin.dart';
+import '../../routes.dart';
 
 class FavoritePostListPage extends StatefulWidget {
   const FavoritePostListPage({super.key});
@@ -89,10 +91,9 @@ class _ProductPageViewState extends State<ProductPageView> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return CellPostItem(
-                        id: index,
                         pin: pins[index],
                         press: () {
-                          onProduct(index);
+                          onProduct(pins[index].id, pins[index].userId!);
                         },
                       );
                     },
@@ -111,10 +112,7 @@ class _ProductPageViewState extends State<ProductPageView> {
     );
   }
 
-  void onProduct(int id) {
-    print(id);
-    context.go(
-      '/product/details/$id',
-    );
+  void onProduct(String pinId, String userId) {
+    context.go(path.join(Routes.map, Routes.post, pinId, userId));
   }
 }
