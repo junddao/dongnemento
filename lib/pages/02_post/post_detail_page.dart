@@ -17,17 +17,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:like_button/like_button.dart';
 
 import '../../global/bloc/auth/get_me/me_cubit.dart';
 import '../../global/component/du_photo_view.dart';
 import '../../global/component/du_profile.dart';
-import '../../global/model/hate/model_request_set_pin_hate.dart';
 import '../../global/model/like/model_request_set_pin_like.dart';
 import '../../global/model/pin/model_request_get_pin.dart';
 import '../../global/model/report/model_request_report.dart';
 import '../../global/model/user/model_request_block.dart';
 import '../../global/style/du_button.dart';
-import '../../global/style/du_colors.dart';
 import '../../routes.dart';
 
 class PagePostDetail extends StatefulWidget {
@@ -263,67 +262,20 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                 const SizedBox(height: 16),
                                                 Row(
                                                   children: [
-                                                    pin.isLiked == false
-                                                        ? InkWell(
-                                                            child: const Icon(
-                                                              Icons.thumb_up_outlined,
-                                                              size: 18,
-                                                            ),
-                                                            onTap: () {
-                                                              ModelRequestSetPinLike modelRequestSetPinLike =
-                                                                  ModelRequestSetPinLike(pinId: pin.id ?? '');
-                                                              context
-                                                                  .read<GetPinCubit>()
-                                                                  .setPinLike(modelRequestSetPinLike, true);
-                                                            },
-                                                          )
-                                                        : InkWell(
-                                                            child: const Icon(
-                                                              Icons.thumb_up,
-                                                              color: DUColors.tomato,
-                                                              size: 18,
-                                                            ),
-                                                            onTap: () {
-                                                              ModelRequestSetPinLike modelRequestSetPinLike =
-                                                                  ModelRequestSetPinLike(pinId: pin.id ?? '');
-                                                              context
-                                                                  .read<GetPinCubit>()
-                                                                  .setPinLike(modelRequestSetPinLike, false);
-                                                            },
-                                                          ),
-                                                    const SizedBox(width: 6),
-                                                    Text('${pin.likeCount ?? 0}', style: DUTextStyle.size10.grey1),
-                                                    const SizedBox(width: 12),
-                                                    pin.isHated == false
-                                                        ? InkWell(
-                                                            child: const Icon(
-                                                              Icons.thumb_down_outlined,
-                                                              size: 18,
-                                                            ),
-                                                            onTap: () {
-                                                              ModelRequestSetPinHate modelRequestSetPinHate =
-                                                                  ModelRequestSetPinHate(pinId: pin.id ?? '');
-                                                              context
-                                                                  .read<GetPinCubit>()
-                                                                  .setPinHate(modelRequestSetPinHate, true);
-                                                            },
-                                                          )
-                                                        : InkWell(
-                                                            child: const Icon(
-                                                              Icons.thumb_down,
-                                                              color: DUColors.facebook_blue,
-                                                              size: 18,
-                                                            ),
-                                                            onTap: () {
-                                                              ModelRequestSetPinHate modelRequestSetPinHate =
-                                                                  ModelRequestSetPinHate(pinId: pin.id ?? '');
-                                                              context
-                                                                  .read<GetPinCubit>()
-                                                                  .setPinHate(modelRequestSetPinHate, false);
-                                                            },
-                                                          ),
-                                                    const SizedBox(width: 6),
-                                                    Text('${pin.hateCount ?? 0}', style: DUTextStyle.size10.grey1),
+                                                    LikeButton(
+                                                      size: 18,
+                                                      isLiked: pin.isLiked,
+                                                      likeCountPadding: const EdgeInsets.only(left: 8),
+                                                      likeCount: pin.likeCount ?? 0,
+                                                      onTap: ((isLiked) async {
+                                                        ModelRequestSetPinLike modelRequestSetPinLike =
+                                                            ModelRequestSetPinLike(pinId: pin.id ?? '');
+                                                        context
+                                                            .read<GetPinCubit>()
+                                                            .setPinLike(modelRequestSetPinLike, !isLiked);
+                                                        return !isLiked;
+                                                      }),
+                                                    ),
                                                     const Spacer(),
                                                     context.read<MeCubit>().me.id == pin.userId
                                                         ? TextButton(
