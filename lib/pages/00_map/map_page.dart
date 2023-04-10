@@ -201,7 +201,9 @@ class _MapPageViewState extends State<MapPageView> {
 
   Future<void> addPinMarker(List<ResponsePin> pins) async {
     for (var pin in pins) {
-      customIcon = await createCustomMarkerBitmap(pin.title!);
+      Color pinColor = DUColors.tomato;
+
+      customIcon = await createCustomMarkerBitmap(pin.title!, pinColor);
       final marker = Marker(
           markerId: MarkerId(pin.id),
           position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
@@ -215,12 +217,12 @@ class _MapPageViewState extends State<MapPageView> {
     }
   }
 
-  Future<BitmapDescriptor> createCustomMarkerBitmap(String title) async {
+  Future<BitmapDescriptor> createCustomMarkerBitmap(String title, pinColor) async {
     // final Size size = Size(150, 150);
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
 
-    final Paint tagPaint = Paint()..color = DUColors.tomato;
+    final Paint tagPaint = Paint()..color = pinColor;
 
     // Add tag text
     TextPainter textPainter = TextPainter(textDirection: TextDirection.ltr);
@@ -389,13 +391,15 @@ class _MapPageViewState extends State<MapPageView> {
   _drawPin(List<ResponsePin> pins) async {
     List<Marker> markers = [];
     for (var pin in pins) {
-      BitmapDescriptor? customIcon = await createCustomMarkerBitmap(pin.title!);
+      Color pinColor = DUColors.tomato;
+      // if (pin.isBlocked ?? false) pinColor = DUColors.tomato_10;
+      BitmapDescriptor? customIcon = await createCustomMarkerBitmap(pin.title ?? '', pinColor);
       final marker = Marker(
           markerId: MarkerId(pin.id),
           position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
           icon: customIcon,
           onTap: () {
-            onTapMarker(pin.id, pin.userId!);
+            onTapMarker(pin.id, pin.userId);
           });
       markers.add(marker);
     }

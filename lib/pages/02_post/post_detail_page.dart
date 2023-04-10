@@ -6,6 +6,7 @@ import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
 import 'package:base_project/global/bloc/reply/create_pin_reply/create_pin_reply_cubit.dart';
 import 'package:base_project/global/bloc/reply/get_pin_replies/get_pin_replies_cubit.dart';
 import 'package:base_project/global/bloc/report/cubit/create_report_cubit.dart';
+import 'package:base_project/global/component/du_loading.dart';
 import 'package:base_project/global/model/pin/model_request_create_pin_reply.dart';
 import 'package:base_project/global/model/pin/model_response_get_pin.dart';
 import 'package:base_project/global/model/reply/model_response_pin_replies.dart';
@@ -120,38 +121,50 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
         }
         if (state is GetUserLoaded) {
           if (state.user.isBlocked == true) {
-            return Padding(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Expanded(child: Center(child: Text('차단된 사용자 입니다.\n\n모든 사용자의 글은 차단됩니다.'))),
-                  Row(
+            return BlocConsumer<BlockUserCubit, BlockUserState>(
+              listener: (context, state) {
+                if (state is BlockUserLoaded) {
+                  context.read<GetUserCubit>().getUser(widget.userId);
+                }
+              },
+              builder: (context, state) {
+                if (state is BlockUserLoading) {
+                  return const DULoading();
+                }
+                return Padding(
+                  padding: const EdgeInsets.all(kDefaultPadding),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: DUButton(
-                            width: double.infinity,
-                            // type: ButtonType.dark,
-                            text: '나가기',
-                            press: () {
-                              context.pop();
-                            }),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: DUButton(
-                            width: double.infinity,
-                            text: '차단해제',
-                            press: () {
-                              ModelRequestBlock modelRequestBlock =
-                                  ModelRequestBlock(userId: widget.id, isBlocked: false);
-                              context.read<BlockUserCubit>().blockUser(modelRequestBlock);
-                            }),
+                      const Expanded(child: Center(child: Text('차단된 사용자 입니다.\n\n모든 사용자의 글은 차단됩니다.'))),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: DUButton(
+                                width: double.infinity,
+                                // type: ButtonType.dark,
+                                text: '나가기',
+                                press: () {
+                                  context.pop();
+                                }),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: DUButton(
+                                width: double.infinity,
+                                text: '차단해제',
+                                press: () {
+                                  ModelRequestBlock modelRequestBlock =
+                                      ModelRequestBlock(userId: widget.id, isBlocked: false);
+                                  context.read<BlockUserCubit>().blockUser(modelRequestBlock);
+                                }),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                );
+              },
             );
           } else {
             return BlocConsumer<DeletePinCubit, DeletePinState>(
@@ -516,7 +529,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
         context.read<CreateReportCubit>().createReport(modelRequestReport);
       }
       if (value == 1) {
-        ModelRequestBlock modelRequestBlock = ModelRequestBlock(userId: pin.userId!, isBlocked: true);
+        ModelRequestBlock modelRequestBlock = ModelRequestBlock(userId: pin.userId, isBlocked: true);
         context.read<BlockUserCubit>().blockUser(modelRequestBlock);
       }
     });

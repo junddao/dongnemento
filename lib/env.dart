@@ -17,10 +17,10 @@ const _prodApiReportUrl = '$_prodApiBaseUrl$_apiReport';
 
 // const _devApiBaseUrl = 'http://192.168.1.82:17008'; // 06
 // const _devApiBaseUrl = 'http://192.168.1.47:17008'; // 05
-const _devApiBaseUrl = 'http://43.200.119.214'; // aws
+// const _devApiBaseUrl = 'http://43.200.119.214'; // aws
 // const _devApiBaseUrl = 'http://192.168.2.40:17008'; // theego
 
-// const _devApiBaseUrl = 'http://192.168.0.100:17008'; // home
+const _devApiBaseUrl = 'http://192.168.0.100:17008'; // home
 
 const _devApiAuthUrl = '$_devApiBaseUrl$_apiAuth';
 const _devApiMapUrl = '$_devApiBaseUrl$_apiMap';
