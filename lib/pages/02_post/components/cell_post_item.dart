@@ -1,4 +1,5 @@
 import 'package:base_project/global/style/du_text_styles.dart';
+import 'package:base_project/global/util/extension/extension.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -57,20 +58,27 @@ class CellPostItem extends StatelessWidget {
                       pin.title ?? "",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: DUTextStyle.size16M,
+                      style: DUTextStyle.size16B,
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 8),
+                    Text(
+                      pin.userName ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: DUTextStyle.size12.grey2,
+                    ),
+                    const SizedBox(height: 8),
                     Column(
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.favorite, color: Colors.red, size: 12),
-                            const SizedBox(width: 8),
+                            const Icon(Icons.favorite, color: Colors.red, size: 10),
+                            const SizedBox(width: 4),
                             Expanded(
                               child: Text(
                                 '${pin.likeCount ?? 0}',
                                 overflow: TextOverflow.ellipsis,
-                                style: textStyleBody,
+                                style: DUTextStyle.size12,
                               ),
                             ),
                           ],

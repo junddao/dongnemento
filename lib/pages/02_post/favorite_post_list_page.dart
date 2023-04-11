@@ -93,7 +93,7 @@ class _ProductPageViewState extends State<ProductPageView> {
                       return CellPostItem(
                         pin: pins[index],
                         press: () {
-                          onProduct(pins[index].id, pins[index].userId!);
+                          onProduct(pins[index].id, pins[index].userId);
                         },
                       );
                     },
@@ -113,6 +113,6 @@ class _ProductPageViewState extends State<ProductPageView> {
   }
 
   void onProduct(String pinId, String userId) {
-    context.go(path.join(Routes.map, Routes.post, pinId, userId));
+    context.push(path.join(Routes.map, Routes.post, pinId, userId));
   }
 }

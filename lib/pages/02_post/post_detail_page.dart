@@ -99,7 +99,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
     return AppBar(
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios),
-        color: Colors.white,
+        color: Colors.black,
         onPressed: () {
           context.pop();
         },
@@ -137,30 +137,14 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Expanded(child: Center(child: Text('차단된 사용자 입니다.\n\n모든 사용자의 글은 차단됩니다.'))),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: DUButton(
-                                width: double.infinity,
-                                // type: ButtonType.dark,
-                                text: '나가기',
-                                press: () {
-                                  context.pop();
-                                }),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: DUButton(
-                                width: double.infinity,
-                                text: '차단해제',
-                                press: () {
-                                  ModelRequestBlock modelRequestBlock =
-                                      ModelRequestBlock(userId: widget.id, isBlocked: false);
-                                  context.read<BlockUserCubit>().blockUser(modelRequestBlock);
-                                }),
-                          ),
-                        ],
-                      ),
+                      DUButton(
+                          width: double.infinity,
+                          text: '차단해제',
+                          press: () {
+                            ModelRequestBlock modelRequestBlock =
+                                ModelRequestBlock(userId: widget.id, isBlocked: false);
+                            context.read<BlockUserCubit>().blockUser(modelRequestBlock);
+                          }),
                     ],
                   ),
                 );
@@ -525,7 +509,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
           )),
     ).then((value) {
       if (value == 0) {
-        ModelRequestReport modelRequestReport = ModelRequestReport(pinId: pin.id!);
+        ModelRequestReport modelRequestReport = ModelRequestReport(pinId: pin.id);
         context.read<CreateReportCubit>().createReport(modelRequestReport);
       }
       if (value == 1) {

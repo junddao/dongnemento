@@ -48,6 +48,8 @@ class ResponsePin {
   double? lat;
   double? lng;
   String? title;
+  bool? isUserBlocked;
+  int? replyCount;
   String? body;
   List<String>? images;
   String userId;
@@ -64,6 +66,8 @@ class ResponsePin {
     this.lat,
     this.lng,
     this.title,
+    this.isUserBlocked,
+    this.replyCount,
     this.body,
     this.images,
     required this.userId,
@@ -79,10 +83,12 @@ class ResponsePin {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      '_id': id,
+      'id': id,
       'lat': lat,
       'lng': lng,
       'title': title,
+      'isUserBlocked': isUserBlocked,
+      'replyCount': replyCount,
       'body': body,
       'images': images,
       'userId': userId,
@@ -99,10 +105,12 @@ class ResponsePin {
 
   factory ResponsePin.fromMap(Map<String, dynamic> map) {
     return ResponsePin(
-      id: map['_id'],
+      id: map['id'],
       lat: map['lat']?.toDouble(),
       lng: map['lng']?.toDouble(),
       title: map['title'],
+      isUserBlocked: map['isUserBlocked'],
+      replyCount: map['replyCount']?.toInt(),
       body: map['body'],
       images: map['images'] != null ? List<String>.from(map['images']) : null,
       userId: map['userId'],
@@ -126,6 +134,8 @@ class ResponsePin {
     double? lat,
     double? lng,
     String? title,
+    bool? isUserBlocked,
+    int? replyCount,
     String? body,
     List<String>? images,
     String? userId,
@@ -143,6 +153,8 @@ class ResponsePin {
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       title: title ?? this.title,
+      isUserBlocked: isUserBlocked ?? this.isUserBlocked,
+      replyCount: replyCount ?? this.replyCount,
       body: body ?? this.body,
       images: images ?? this.images,
       userId: userId ?? this.userId,

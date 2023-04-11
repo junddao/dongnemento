@@ -73,7 +73,7 @@ class PinReplies {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      '_id': id,
+      'id': id,
       'pinId': pinId,
       'userId': userId,
       'userName': userName,
@@ -90,7 +90,7 @@ class PinReplies {
 
   factory PinReplies.fromMap(Map<String, dynamic> map) {
     return PinReplies(
-      id: map['_id'],
+      id: map['id'],
       pinId: map['pinId'],
       userId: map['userId'],
       userName: map['userName'],

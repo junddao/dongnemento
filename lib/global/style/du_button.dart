@@ -107,8 +107,7 @@ class DUButton extends StatelessWidget {
           onPressed: press as void Function()?,
           child: Text(
             text,
-            style: DUTextStyle.size12.copyWith(
-                color: textColor, fontSize: fontSize, fontWeight: fontWeight),
+            style: DUTextStyle.size12.copyWith(color: textColor, fontSize: fontSize, fontWeight: fontWeight),
             overflow: TextOverflow.ellipsis,
           ),
         ),
