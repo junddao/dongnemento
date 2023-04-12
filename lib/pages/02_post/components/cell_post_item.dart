@@ -3,6 +3,7 @@ import 'package:base_project/global/util/extension/extension.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../../../global/component/du_default_image_widget.dart';
 import '../../../global/model/pin/model_response_get_pin.dart';
 
 class CellPostItem extends StatelessWidget {
@@ -32,7 +33,10 @@ class CellPostItem extends StatelessWidget {
             placeholder: (context, url) => const Center(
               child: CircularProgressIndicator(),
             ),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            errorWidget: (context, url, error) => const DUDefaultImageWidget(
+              height: 80,
+              width: 80,
+            ),
             imageBuilder: (context, imageProvider) {
               return Container(
                 width: 80,
@@ -62,7 +66,7 @@ class CellPostItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      pin.userName ?? '',
+                      pin.body ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: DUTextStyle.size12.grey2,
