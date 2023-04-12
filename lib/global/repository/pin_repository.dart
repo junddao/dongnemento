@@ -62,6 +62,20 @@ class PinRepository {
       return ApiResponse.error(e.toString());
     }
   }
+  // Future<ApiResponse<ModelResponseGetPin>> getPin(String id) async {
+  //   late ModelResponseGetPin modelResponseGetPin;
+  //   try {
+  //     Map<String, dynamic> response = await ApiService().get('$apiUrl/get/$id');
+  //     modelResponseGetPin = ModelResponseGetPin.fromMap(response);
+  //     if (modelResponseGetPin.success == true) {
+  //       return ApiResponse.completed(modelResponseGetPin);
+  //     } else {
+  //       return ApiResponse.error(modelResponseGetPin.error);
+  //     }
+  //   } catch (e) {
+  //     return ApiResponse.error(e.toString());
+  //   }
+  // }
 
   Future<ApiResponse<bool>> deletePin(String id) async {
     late ModelResponseCommon modelResponseCommon;

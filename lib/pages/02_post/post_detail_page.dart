@@ -8,7 +8,6 @@ import 'package:base_project/global/bloc/reply/get_pin_replies/get_pin_replies_c
 import 'package:base_project/global/bloc/report/cubit/create_report_cubit.dart';
 import 'package:base_project/global/component/du_loading.dart';
 import 'package:base_project/global/model/pin/model_request_create_pin_reply.dart';
-import 'package:base_project/global/model/pin/model_response_get_pin.dart';
 import 'package:base_project/global/model/reply/model_response_pin_replies.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
@@ -25,6 +24,7 @@ import '../../global/component/du_photo_view.dart';
 import '../../global/component/du_profile.dart';
 import '../../global/model/like/model_request_set_pin_like.dart';
 import '../../global/model/pin/model_request_get_pin.dart';
+import '../../global/model/pin/model_response_pin.dart';
 import '../../global/model/report/model_request_report.dart';
 import '../../global/model/user/model_request_block.dart';
 import '../../global/style/du_button.dart';
@@ -190,7 +190,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                       return ErrorPage(exception: state.errorMessage);
                     }
                     if (state is GetPinLoaded) {
-                      ResponsePin pin = state.result.data!.first;
+                      ModelResponsePin pin = state.result;
 
                       return BlocConsumer<CreateReportCubit, CreateReportState>(
                         listener: (context, state) {
@@ -266,10 +266,10 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                       likeCount: pin.likeCount ?? 0,
                                                       onTap: ((isLiked) async {
                                                         ModelRequestSetPinLike modelRequestSetPinLike =
-                                                            ModelRequestSetPinLike(pinId: pin.id ?? '');
-                                                        context
-                                                            .read<GetPinCubit>()
-                                                            .setPinLike(modelRequestSetPinLike, !isLiked);
+                                                            ModelRequestSetPinLike(pinId: pin.id);
+                                                        // context
+                                                        //     .read<GetPinCubit>()
+                                                        //     .setPinLike(modelRequestSetPinLike, !isLiked);
                                                         return !isLiked;
                                                       }),
                                                     ),
@@ -345,7 +345,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
     );
   }
 
-  Widget _buildUserProfile(ResponsePin pin) {
+  Widget _buildUserProfile(ModelResponsePin pin) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: DUProfile(
@@ -411,7 +411,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
     );
   }
 
-  Widget _buildMessageComposer(ResponsePin pin) {
+  Widget _buildMessageComposer(ModelResponsePin pin) {
     return SafeArea(
       top: false,
       child: Column(
@@ -481,7 +481,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
     );
   }
 
-  Future<void> _showModalForReport(ResponsePin pin) async {
+  Future<void> _showModalForReport(ModelResponsePin pin) async {
     return await showCupertinoModalPopup<int>(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
