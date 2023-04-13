@@ -18,9 +18,7 @@ class GetPinCubit extends Cubit<GetPinState> {
       emit(GetPinLoading());
 
       final dio = Dio(); // Provide a dio instance
-      // dio.options.headers["Demo-Header"] = "demo header";
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-
       DataResponse<ModelResponsePin> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).getPin(pinId);
 
       if (response.success == false) {
@@ -28,7 +26,7 @@ class GetPinCubit extends Cubit<GetPinState> {
           GetPinError(errorMessage: response.error ?? 'get pin error'),
         );
       } else {
-        emit(GetPinLoaded(result: response.data!));
+        emit(GetPinLoaded(result: response.data.first));
       }
     } catch (e) {
       emit(

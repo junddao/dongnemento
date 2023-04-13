@@ -10,8 +10,7 @@ import 'package:path/path.dart' as path;
 import '../../global/bloc/auth/get_me/me_cubit.dart';
 import '../../global/bloc/map/get_pins/get_pins_cubit.dart';
 import '../../global/component/du_two_button_dialog.dart';
-import '../../global/model/pin/model_request_get_pin.dart';
-import '../../global/model/pin/model_response_get_pin.dart';
+import '../../global/model/model.dart';
 import '../../routes.dart';
 
 class FavoritePostListPage extends StatefulWidget {
@@ -79,7 +78,7 @@ class _ProductPageViewState extends State<ProductPageView> {
           return const DULoading();
         }
         if (state is GetPinsLoaded) {
-          List<ResponsePin> pins = state.result.data ?? [];
+          List<ModelResponsePins> pins = state.result;
           return SingleChildScrollView(
             child: Padding(
               padding:

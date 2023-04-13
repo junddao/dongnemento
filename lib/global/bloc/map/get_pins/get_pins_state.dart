@@ -12,7 +12,7 @@ class GetPinsInitial extends GetPinsState {}
 class GetPinsLoading extends GetPinsState {}
 
 class GetPinsLoaded extends GetPinsState {
-  final ModelResponseGetPin result;
+  final List<ModelResponsePins> result;
 
   const GetPinsLoaded({required this.result});
   @override

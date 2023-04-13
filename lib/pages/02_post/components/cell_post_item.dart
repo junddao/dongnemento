@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../global/component/du_default_image_widget.dart';
-import '../../../global/model/pin/model_response_get_pin.dart';
+import '../../../global/model/model.dart';
 
 class CellPostItem extends StatelessWidget {
   const CellPostItem({
@@ -13,7 +13,7 @@ class CellPostItem extends StatelessWidget {
     required this.press,
   }) : super(key: key);
 
-  final ResponsePin pin;
+  final ModelResponsePins pin;
   final Function press;
 
   final textStyleTitle = DUTextStyle.size14;

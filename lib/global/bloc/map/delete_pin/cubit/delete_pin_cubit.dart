@@ -1,8 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../model/common/api_response.dart';
-import '../../../../repository/pin_repository.dart';
+import '../../../../../env.dart';
+import '../../../../model/model.dart';
+import '../../../../repository/rest_client.dart';
+import '../../../../repository/token_interceptor.dart';
 
 part 'delete_pin_state.dart';
 
@@ -13,13 +16,16 @@ class DeletePinCubit extends Cubit<DeletePinState> {
     try {
       emit(DeletePinLoading());
 
-      ApiResponse<bool> response = await PinRepository.instance.deletePin(id);
-      if (response.status == ResponseStatus.error) {
+      final dio = Dio(); // Provide a dio instance
+      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+      DataResponse<bool> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).deletePin(id);
+
+      if (response.success == false) {
         emit(
-          DeletePinError(errorMessage: response.message ?? 'create pin error'),
+          DeletePinError(errorMessage: response.error ?? 'create pin error'),
         );
       } else {
-        emit(DeletePinLoaded(result: response.data!));
+        emit(DeletePinLoaded(result: response.data.first));
       }
     } catch (e) {
       emit(

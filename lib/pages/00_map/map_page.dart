@@ -5,8 +5,6 @@ import 'dart:ui' as ui;
 import 'package:base_project/global/bloc/auth/get_me/me_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
 import 'package:base_project/global/bloc/map/location/location_cubit.dart';
-import 'package:base_project/global/model/pin/model_request_get_pin.dart';
-import 'package:base_project/global/model/pin/model_response_get_pin.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_colors.dart';
@@ -21,6 +19,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:path/path.dart' as path;
+
+import '../../global/model/model.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -45,7 +45,7 @@ class MapPageView extends StatefulWidget {
 
 class _MapPageViewState extends State<MapPageView> {
   List<Marker> _pinMarkers = [];
-  List<ResponsePin> pins = [];
+  List<ModelResponsePins> pins = [];
   final List<Marker> _temporaryMaker = [];
   late LatLng _lastLocation;
   int? range = 3000;
@@ -107,7 +107,7 @@ class _MapPageViewState extends State<MapPageView> {
         return BlocBuilder<GetPinsCubit, GetPinsState>(
           builder: (context, getPinsState) {
             if (getPinsState is GetPinsLoaded) {
-              pins = getPinsState.result.data ?? [];
+              pins = getPinsState.result;
               // _pinMarkers = getPinsState.markers;
               // _drawPin(pins);
             }
@@ -199,7 +199,7 @@ class _MapPageViewState extends State<MapPageView> {
     context.read<GetPinsCubit>().getPins(modelRequestGetPin);
   }
 
-  Future<void> addPinMarker(List<ResponsePin> pins) async {
+  Future<void> addPinMarker(List<ModelResponsePins> pins) async {
     for (var pin in pins) {
       Color pinColor = DUColors.tomato;
 
@@ -388,7 +388,7 @@ class _MapPageViewState extends State<MapPageView> {
 
   // BitmapDescriptor? customIcon;
 
-  _drawPin(List<ResponsePin> pins) async {
+  _drawPin(List<ModelResponsePins> pins) async {
     List<Marker> markers = [];
     for (var pin in pins) {
       Color pinColor = DUColors.tomato;

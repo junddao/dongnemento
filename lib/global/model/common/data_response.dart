@@ -4,7 +4,7 @@ part 'data_response.g.dart';
 
 @JsonSerializable(explicitToJson: true, genericArgumentFactories: true)
 class DataResponse<T> {
-  final T? data;
+  final List<T> data;
   bool success;
   String? error;
 

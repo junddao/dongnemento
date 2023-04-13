@@ -1,10 +1,12 @@
-import 'package:base_project/global/model/common/api_response.dart';
-import 'package:base_project/global/model/pin/model_request_get_pin.dart';
-import 'package:base_project/global/model/pin/model_response_get_pin.dart';
-import 'package:base_project/global/repository/pin_repository.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../../../env.dart';
+import '../../../model/model.dart';
+import '../../../repository/rest_client.dart';
+import '../../../repository/token_interceptor.dart';
 
 part 'get_pins_state.dart';
 
@@ -15,14 +17,19 @@ class GetPinsCubit extends Cubit<GetPinsState> {
     try {
       emit(GetPinsLoading());
 
-      ApiResponse<ModelResponseGetPin> response = await PinRepository.instance.getPins(modelRequestGetPin);
+      final dio = Dio(); // Provide a dio instance
+      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+      DataResponse<ModelResponsePins> response =
+          await RestClient(dio, baseUrl: Env.apiBaseUrl).getPins(modelRequestGetPin.toMap());
 
-      if (response.status == ResponseStatus.error) {
+      // ApiResponse<ModelResponseGetPin> response = await PinRepository.instance.getPins(modelRequestGetPin);
+
+      if (response.success == false) {
         emit(
-          GetPinsError(errorMessage: response.message ?? 'get pin error'),
+          GetPinsError(errorMessage: response.error ?? 'get pin error'),
         );
       } else {
-        emit(GetPinsLoaded(result: response.data!));
+        emit(GetPinsLoaded(result: response.data));
       }
     } catch (e) {
       emit(

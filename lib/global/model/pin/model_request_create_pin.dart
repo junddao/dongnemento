@@ -1,22 +1,34 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'model_request_create_pin.g.dart';
+
+@JsonSerializable()
 class ModelRequestCreatePin {
-  double? lat;
-  double? lng;
-  String? title;
+  double lat;
+  double lng;
+  String title;
   String? body;
   List<String>? images;
-
   ModelRequestCreatePin({
-    this.lat,
-    this.lng,
-    this.title,
+    required this.lat,
+    required this.lng,
+    required this.title,
     this.body,
     this.images,
   });
 
+  factory ModelRequestCreatePin.fromMap(Map<String, dynamic> map) {
+    return ModelRequestCreatePin(
+      lat: map['lat'],
+      lng: map['lng'],
+      title: map['title'],
+      body: map['body'],
+      images: List<String>.from(map['images']),
+    );
+  }
+
   Map<String, dynamic> toMap() {
-    return {
+    return <String, dynamic>{
       'lat': lat,
       'lng': lng,
       'title': title,
@@ -24,18 +36,4 @@ class ModelRequestCreatePin {
       'images': images,
     };
   }
-
-  factory ModelRequestCreatePin.fromMap(Map<String, dynamic> map) {
-    return ModelRequestCreatePin(
-      lat: map['lat'] != null ? map['lat'] : null,
-      lng: map['lng'] != null ? map['lng'] : null,
-      title: map['title'] != null ? map['title'] : null,
-      body: map['body'] != null ? map['body'] : null,
-      images: map['images'] != null ? List<String>.from(map['images']) : null,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ModelRequestCreatePin.fromJson(String source) => ModelRequestCreatePin.fromMap(json.decode(source));
 }
