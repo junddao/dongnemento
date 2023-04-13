@@ -1,5 +1,8 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'model_request_pin_reply.g.dart';
+
+@JsonSerializable()
 class ModelRequestPinReply {
   String pinId;
   String? targetReplyId;
@@ -10,35 +13,6 @@ class ModelRequestPinReply {
     required this.reply,
   });
 
-  ModelRequestPinReply copyWith({
-    String? pinId,
-    String? targetReplyId,
-    String? reply,
-  }) {
-    return ModelRequestPinReply(
-      pinId: pinId ?? this.pinId,
-      targetReplyId: targetReplyId ?? this.targetReplyId,
-      reply: reply ?? this.reply,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'pinId': pinId,
-      'targetReplyId': targetReplyId,
-      'reply': reply,
-    };
-  }
-
-  factory ModelRequestPinReply.fromMap(Map<String, dynamic> map) {
-    return ModelRequestPinReply(
-      pinId: map['pinId'],
-      targetReplyId: map['targetReplyId'],
-      reply: map['reply'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ModelRequestPinReply.fromJson(String source) => ModelRequestPinReply.fromMap(json.decode(source));
+  factory ModelRequestPinReply.fromJson(Map<String, dynamic> json) => _$ModelRequestPinReplyFromJson(json);
+  Map<String, dynamic> toJson() => _$ModelRequestPinReplyToJson(this);
 }

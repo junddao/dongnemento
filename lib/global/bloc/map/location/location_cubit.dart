@@ -1,11 +1,9 @@
-import 'package:base_project/global/enum/cubit_status.dart';
-import 'package:base_project/global/enum/cubit_status.dart';
-import 'package:base_project/global/model/etc/model_response_kakao_location.dart';
-import 'package:base_project/global/model/post/model_response_set_post.dart';
 import 'package:base_project/global/repository/map_repository.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../../model/model.dart';
 
 part 'location_state.dart';
 
@@ -25,8 +23,7 @@ class LocationCubit extends Cubit<LocationState> {
     );
     emit(LocationLoading());
 
-    String address = await getKakaoAddressByLocation(
-        postLocation.longitude, postLocation.latitude);
+    String address = await getKakaoAddressByLocation(postLocation.longitude, postLocation.latitude);
 
     emit(LocationLoaded(
       postLocation: newPost.copyWith(address: address),
@@ -47,8 +44,7 @@ class LocationCubit extends Cubit<LocationState> {
     );
     emit(LocationLoading());
 
-    String address = await getKakaoAddressByLocation(
-        temporaryLocation.longitude, temporaryLocation.latitude);
+    String address = await getKakaoAddressByLocation(temporaryLocation.longitude, temporaryLocation.latitude);
 
     emit(LocationLoaded(
       postLocation: prevState.postLocation,

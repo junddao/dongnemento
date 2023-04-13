@@ -1,5 +1,8 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'model_response_set_post.g.dart';
+
+@JsonSerializable()
 class ModelLocation {
   String? address;
   double? lat;
@@ -10,26 +13,8 @@ class ModelLocation {
     this.lng,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'address': address,
-      'lat': lat,
-      'lng': lng,
-    };
-  }
-
-  factory ModelLocation.fromMap(Map<String, dynamic> map) {
-    return ModelLocation(
-      address: map['address'],
-      lat: map['lat']?.toDouble(),
-      lng: map['lng']?.toDouble(),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ModelLocation.fromJson(String source) =>
-      ModelLocation.fromMap(json.decode(source));
+  factory ModelLocation.fromJson(Map<String, dynamic> json) => _$ModelLocationFromJson(json);
+  Map<String, dynamic> toJson() => _$ModelLocationToJson(this);
 
   ModelLocation copyWith({
     String? address,

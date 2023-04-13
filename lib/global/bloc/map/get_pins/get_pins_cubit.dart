@@ -20,7 +20,7 @@ class GetPinsCubit extends Cubit<GetPinsState> {
       final dio = Dio(); // Provide a dio instance
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
       DataResponse<ModelResponsePins> response =
-          await RestClient(dio, baseUrl: Env.apiBaseUrl).getPins(modelRequestGetPin.toMap());
+          await RestClient(dio, baseUrl: Env.apiBaseUrl).getPins(modelRequestGetPin.toJson());
 
       // ApiResponse<ModelResponseGetPin> response = await PinRepository.instance.getPins(modelRequestGetPin);
 

@@ -3,8 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../model/common/data_response.dart';
-import '../../../model/pin/model_response_pin.dart';
+import '../../../model/model.dart';
 import '../../../repository/rest_client.dart';
 import '../../../repository/token_interceptor.dart';
 
@@ -34,103 +33,82 @@ class GetPinCubit extends Cubit<GetPinState> {
       );
     }
   }
-  // Future<void> getPin(String pinId) async {
-  //   try {
-  //     emit(GetPinLoading());
 
-  //     ApiResponse<ModelResponseGetPin> response = await PinRepository.instance.getPin(pinId);
+  Future<void> setPinLike(ModelRequestSetPinLike modelRequestSetPinLike, bool isLiked) async {
+    try {
+      // emit(SetPinLikeLoading());
 
-  //     if (response.status == ResponseStatus.error) {
-  //       emit(
-  //         GetPinError(errorMessage: response.message ?? 'get pin error'),
-  //       );
-  //     } else {
-  //       emit(GetPinLoaded(result: response.data!));
-  //     }
-  //   } catch (e) {
-  //     emit(
-  //       GetPinError(
-  //         errorMessage: e.toString(),
-  //       ),
-  //     );
-  //   }
-  // }
+      final dio = Dio(); // Provide a dio instance
+      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+      DataResponse<bool> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).setPinLike(modelRequestSetPinLike);
 
-  // Future<void> setPinLike(ModelRequestSetPinLike modelRequestSetPinLike, bool isLiked) async {
-  //   try {
-  //     // emit(SetPinLikeLoading());
+      if (response.success == true) {
+        if (state is GetPinLoaded) {
+          ModelResponsePin prevResult = (state as GetPinLoaded).result;
+          late ModelResponsePin newPin;
+          if (isLiked) {
+            newPin = prevResult.copyWith(
+              isLiked: true,
+              likeCount: (prevResult.likeCount ?? 0) + 1,
+            );
+          } else {
+            newPin = prevResult.copyWith(
+              isLiked: false,
+              likeCount: (prevResult.likeCount ?? 0) - 1,
+            );
+          }
 
-  //     ApiResponse<bool> response = await LikeRepository.instance.setPinLike(modelRequestSetPinLike);
-  //     if (response.status == ResponseStatus.error) {
-  //       emit(
-  //         GetPinError(errorMessage: response.message ?? 'create pin like error'),
-  //       );
-  //     } else {
-  //       if (state is GetPinLoaded) {
-  //         ModelResponseGetPin prevResult = (state as GetPinLoaded).result;
-  //         late ResponsePin newPin;
-  //         if (isLiked) {
-  //           newPin = prevResult.data!.first.copyWith(
-  //             isLiked: true,
-  //             likeCount: (prevResult.data!.first.likeCount ?? 0) + 1,
-  //           );
-  //         } else {
-  //           newPin = prevResult.data!.first.copyWith(
-  //             isLiked: false,
-  //             likeCount: (prevResult.data!.first.likeCount ?? 0) - 1,
-  //           );
-  //         }
+          emit(GetPinLoaded(result: newPin));
+        }
+      } else {
+        emit(
+          GetPinError(errorMessage: response.error ?? 'create pin like error'),
+        );
+      }
+    } catch (e) {
+      emit(
+        GetPinError(
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
 
-  //         ModelResponseGetPin newResult = ModelResponseGetPin(success: true, data: [newPin]);
+  Future<void> setPinHate(ModelRequestSetPinHate modelRequestSetPinHate, bool isHated) async {
+    try {
+      final dio = Dio(); // Provide a dio instance
+      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+      DataResponse<bool> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).setPinHate(modelRequestSetPinHate);
 
-  //         emit(GetPinLoaded(result: newResult));
-  //       }
-  //     }
-  //   } catch (e) {
-  //     emit(
-  //       GetPinError(
-  //         errorMessage: e.toString(),
-  //       ),
-  //     );
-  //   }
-  // }
+      if (response.success == true) {
+        if (state is GetPinLoaded) {
+          ModelResponsePin prevResult = (state as GetPinLoaded).result;
+          late ModelResponsePin newPin;
+          if (isHated) {
+            newPin = prevResult.copyWith(
+              isHated: true,
+              hateCount: (prevResult.hateCount ?? 0) + 1,
+            );
+          } else {
+            newPin = prevResult.copyWith(
+              isHated: false,
+              hateCount: (prevResult.hateCount ?? 0) - 1,
+            );
+          }
 
-  // Future<void> setPinHate(ModelRequestSetPinHate modelRequestSetPinHate, bool isHated) async {
-  //   try {
-  //     // emit(SetPinLikeLoading());
-
-  //     ApiResponse<bool> response = await HateRepository.instance.setPinHate(modelRequestSetPinHate);
-  //     if (response.status == ResponseStatus.error) {
-  //       emit(
-  //         GetPinError(errorMessage: response.message ?? 'create pin hate error'),
-  //       );
-  //     } else {
-  //       if (state is GetPinLoaded) {
-  //         ModelResponseGetPin prevResult = (state as GetPinLoaded).result;
-  //         late ResponsePin newPin;
-  //         if (isHated) {
-  //           newPin = prevResult.data!.first.copyWith(
-  //             isHated: true,
-  //             hateCount: (prevResult.data!.first.hateCount ?? 0) + 1,
-  //           );
-  //         } else {
-  //           newPin = prevResult.data!.first.copyWith(
-  //             isHated: false,
-  //             hateCount: (prevResult.data!.first.hateCount ?? 0) - 1,
-  //           );
-  //         }
-
-  //         ModelResponseGetPin newResult = ModelResponseGetPin(success: true, data: [newPin]);
-
-  //         emit(GetPinLoaded(result: newResult));
-  //       }
-  //     }
-  //   } catch (e) {
-  //     emit(
-  //       GetPinError(
-  //         errorMessage: e.toString(),
-  //       ),
-  //     );
-  //   }
-  // }
+          emit(GetPinLoaded(result: newPin));
+        }
+      } else {
+        emit(
+          GetPinError(errorMessage: response.error ?? 'create pin hate error'),
+        );
+      }
+    } catch (e) {
+      emit(
+        GetPinError(
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
 }

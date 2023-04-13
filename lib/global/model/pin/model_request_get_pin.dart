@@ -1,5 +1,8 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'model_request_get_pin.g.dart';
+
+@JsonSerializable()
 class ModelRequestGetPin {
   double? lat;
   double? lng;
@@ -10,23 +13,6 @@ class ModelRequestGetPin {
     this.range = 2000,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'lat': lat,
-      'lng': lng,
-      'range': range,
-    };
-  }
-
-  factory ModelRequestGetPin.fromMap(Map<String, dynamic> map) {
-    return ModelRequestGetPin(
-      lat: map['lat'],
-      lng: map['lng'],
-      range: map['range'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ModelRequestGetPin.fromJson(String source) => ModelRequestGetPin.fromMap(json.decode(source));
+  factory ModelRequestGetPin.fromJson(Map<String, dynamic> json) => _$ModelRequestGetPinFromJson(json);
+  Map<String, dynamic> toJson() => _$ModelRequestGetPinToJson(this);
 }

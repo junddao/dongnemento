@@ -1,20 +1,13 @@
-import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
-import 'package:base_project/global/bloc/singleton_me/singleton_me_cubit.dart';
 import 'package:base_project/global/component/du_sized_box.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
 import 'package:base_project/global/component/du_title.dart';
 import 'package:base_project/global/model/etc/kakao_local_result.dart';
-import 'package:base_project/global/model/user/model_user.dart';
-import 'package:base_project/global/repository/api_service.dart';
 import 'package:base_project/global/repository/map_repository.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-
 import 'package:go_router/go_router.dart';
 
 class AddressPage extends StatefulWidget {
@@ -56,8 +49,7 @@ class _AddressPageState extends State<AddressPage> {
 
     // List<Map<String, dynamic>> items = [];
 
-    KakaoLocalResponseData results = await MapRepository.instance
-        .getKakaoAddressByKeyword(textController.text);
+    KakaoLocalResponseData results = await MapRepository.instance.getKakaoAddressByKeyword(textController.text);
 
     for (KakaoLocalResult result in results.documents) {
       data.add(result);
@@ -127,19 +119,12 @@ class _AddressPageState extends State<AddressPage> {
                   Expanded(
                     child: Text.rich(
                       TextSpan(
-                          text:
-                              '아래와 같은 조합으로 검색을 하시면 더욱 정확한 결과가 검색됩니다\n\n도로명 + 건물번호\n',
+                          text: '아래와 같은 조합으로 검색을 하시면 더욱 정확한 결과가 검색됩니다\n\n도로명 + 건물번호\n',
                           style: DUTextStyle.size14.grey0.h1_5,
                           children: [
-                            TextSpan(
-                                text: '예) 판교역로 221',
-                                style: const TextStyle().subBlue),
-                            TextSpan(
-                                text: '\n\n지역명(동/리) + 번지\n',
-                                style: const TextStyle().grey0),
-                            TextSpan(
-                                text: '예) 삼평동 672번지',
-                                style: const TextStyle().subBlue),
+                            TextSpan(text: '예) 판교역로 221', style: const TextStyle().subBlue),
+                            TextSpan(text: '\n\n지역명(동/리) + 번지\n', style: const TextStyle().grey0),
+                            TextSpan(text: '예) 삼평동 672번지', style: const TextStyle().subBlue),
                           ]),
                     ),
                   ),
@@ -157,9 +142,7 @@ class _AddressPageState extends State<AddressPage> {
               Expanded(
                 child: NotificationListener<ScrollNotification>(
                   onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels >=
-                            scrollInfo.metrics.maxScrollExtent &&
-                        hasMore) {
+                    if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent && hasMore) {
                       if (!isLoading) {
                         _loadMore();
                         return true;
@@ -180,8 +163,7 @@ class _AddressPageState extends State<AddressPage> {
                               const SizedBox(height: 4),
                               Text(
                                 item.address_name,
-                                style: DUTextStyle.size12
-                                    .copyWith(color: DUColors.grey1),
+                                style: DUTextStyle.size12.copyWith(color: DUColors.grey1),
                               ),
                             ],
                           ),
@@ -197,15 +179,12 @@ class _AddressPageState extends State<AddressPage> {
                         );
                       }
                       if (isLoading) {
-                        return const Align(
-                            alignment: Alignment.topCenter,
-                            child: RefreshProgressIndicator());
+                        return const Align(alignment: Alignment.topCenter, child: RefreshProgressIndicator());
                       }
 
                       return const SizedBox.shrink();
                     },
-                    separatorBuilder: (_, index) =>
-                        const Divider(color: DUColors.grey3),
+                    separatorBuilder: (_, index) => const Divider(color: DUColors.grey3),
                   ),
                 ),
               ),

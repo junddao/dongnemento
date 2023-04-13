@@ -1,8 +1,11 @@
-import 'package:base_project/global/model/common/api_response.dart';
-import 'package:base_project/global/model/pin/model_request_create_pin_reply.dart';
-import 'package:base_project/global/repository/reply_repository.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:base_project/env.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../model/model.dart';
+import '../../../repository/rest_client.dart';
+import '../../../repository/token_interceptor.dart';
 
 part 'create_pin_reply_state.dart';
 
@@ -13,13 +16,15 @@ class CreatePinReplyCubit extends Cubit<CreatePinReplyState> {
     try {
       emit(CreatePinReplyLoading());
 
-      ApiResponse<bool> response = await ReplyRepository.instance.createPinReply(requestCreatePinReply);
-      if (response.status == ResponseStatus.error) {
-        emit(
-          CreatePinReplyError(errorMessage: response.message ?? 'create pin reply error'),
-        );
+      final dio = Dio();
+      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+      DataResponse<bool> response =
+          await RestClient(dio, baseUrl: Env.apiBaseUrl).createPinReply(requestCreatePinReply);
+
+      if (response.success == true) {
+        emit(CreatePinReplyLoaded(result: response.data.first));
       } else {
-        emit(CreatePinReplyLoaded(result: response.data!));
+        emit(CreatePinReplyError(errorMessage: response.error ?? 'create pin reply error'));
       }
     } catch (e) {
       emit(

@@ -8,7 +8,7 @@ import 'package:base_project/global/bloc/reply/get_pin_replies/get_pin_replies_c
 import 'package:base_project/global/bloc/report/cubit/create_report_cubit.dart';
 import 'package:base_project/global/component/du_loading.dart';
 import 'package:base_project/global/model/pin/model_request_create_pin_reply.dart';
-import 'package:base_project/global/model/reply/model_response_pin_replies.dart';
+import 'package:base_project/global/model/reply/model_response_pin_reply.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
@@ -301,7 +301,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                     return false;
                                                   },
                                                   builder: (context, state) {
-                                                    List<PinReplies>? replies;
+                                                    List<ModelResponsePinReply>? replies;
                                                     // if (state is GetPinRepliesLoading) {
                                                     //   return const Center(
                                                     //     child: CircularProgressIndicator(),
@@ -313,7 +313,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                       );
                                                     }
                                                     if (state is GetPinRepliesLoaded) {
-                                                      replies = state.result.data?.reversed.toList() ?? [];
+                                                      replies = state.result.reversed.toList();
                                                     }
                                                     return _buildReviewList(replies ?? []);
                                                   },
@@ -359,7 +359,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
     );
   }
 
-  Widget _buildReviewList(List<PinReplies> replies) {
+  Widget _buildReviewList(List<ModelResponsePinReply> replies) {
     return replies.isEmpty
         ? emptyReview()
         : ListView.separated(
@@ -368,7 +368,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
             shrinkWrap: true,
             itemCount: replies.length,
             itemBuilder: (context, index) {
-              PinReplies reply = replies[index];
+              ModelResponsePinReply reply = replies[index];
               // var data = provider.responseGetPinReplyData![index];
               return InkWell(
                 onTap: () {

@@ -20,4 +20,19 @@ abstract class RestClient {
 
   @DELETE('/pin/delete/{id}')
   Future<DataResponse<bool>> deletePin(@Path("id") String id);
+
+  @POST('/reply/create')
+  Future<DataResponse<bool>> createPinReply(@Body() ModelRequestCreatePinReply modelRequestCreatePinReply);
+
+  @GET('/reply/get/replies/{id}')
+  Future<DataResponse<ModelResponsePinReply>> getPinReplies(@Path("id") String id);
+
+  @POST('/like/pin')
+  Future<DataResponse<bool>> setPinLike(@Body() ModelRequestSetPinLike modelRequestSetPinLike);
+
+  @POST('/hate/pin')
+  Future<DataResponse<bool>> setPinHate(@Body() ModelRequestSetPinHate modelRequestSetPinHate);
+
+  @POST('/report/create')
+  Future<DataResponse<bool>> createReport(@Body() ModelRequestReport modelRequestReport);
 }

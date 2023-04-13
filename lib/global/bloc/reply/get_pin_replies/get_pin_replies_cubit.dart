@@ -1,8 +1,11 @@
-import 'package:base_project/global/model/common/api_response.dart';
-import 'package:base_project/global/model/reply/model_response_pin_replies.dart';
-import 'package:base_project/global/repository/reply_repository.dart';
+import 'package:base_project/env.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../model/model.dart';
+import '../../../repository/rest_client.dart';
+import '../../../repository/token_interceptor.dart';
 
 part 'get_pin_replies_state.dart';
 
@@ -13,14 +16,15 @@ class GetPinRepliesCubit extends Cubit<GetPinRepliesState> {
     try {
       emit(GetPinRepliesLoading());
 
-      ApiResponse<ModelResponseGetPinReplies> response = await ReplyRepository.instance.getPinReplies(pinId);
+      final dio = Dio();
+      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+      DataResponse<ModelResponsePinReply> response =
+          await RestClient(dio, baseUrl: Env.apiBaseUrl).getPinReplies(pinId);
 
-      if (response.status == ResponseStatus.error) {
-        emit(
-          GetPinRepliesError(errorMessage: response.message ?? 'get pin replies error'),
-        );
+      if (response.success == true) {
+        emit(GetPinRepliesLoaded(result: response.data));
       } else {
-        emit(GetPinRepliesLoaded(result: response.data!));
+        emit(GetPinRepliesError(errorMessage: response.error ?? 'get pin replies error'));
       }
     } catch (e) {
       emit(

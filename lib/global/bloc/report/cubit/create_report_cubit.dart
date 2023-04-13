@@ -1,8 +1,11 @@
-import 'package:base_project/global/model/common/api_response.dart';
-import 'package:base_project/global/model/report/model_request_report.dart';
-import 'package:base_project/global/repository/report_repository.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../env.dart';
+import '../../../model/model.dart';
+import '../../../repository/rest_client.dart';
+import '../../../repository/token_interceptor.dart';
 
 part 'create_report_state.dart';
 
@@ -13,12 +16,14 @@ class CreateReportCubit extends Cubit<CreateReportState> {
     try {
       emit(CreateReportLoading());
 
-      ApiResponse<bool> response = await ReportRepository.instance.createReport(modelRequestReport);
+      final dio = Dio();
+      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+      DataResponse<bool> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).createReport(modelRequestReport);
 
-      if (response.status == ResponseStatus.error) {
-        emit(CreateReportError(errorMessage: response.message ?? 'report error'));
+      if (response.success == true) {
+        emit(CreateReportLoaded(result: response.data.first));
       } else {
-        emit(CreateReportLoaded(result: response.data!));
+        emit(CreateReportError(errorMessage: response.error ?? 'report error'));
       }
     } catch (e) {
       emit(CreateReportError(
