@@ -20,12 +20,10 @@ class DeletePinCubit extends Cubit<DeletePinState> {
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
       DataResponse<bool> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).deletePin(id);
 
-      if (response.success == false) {
-        emit(
-          DeletePinError(errorMessage: response.error ?? 'create pin error'),
-        );
-      } else {
+      if (response.success == true) {
         emit(DeletePinLoaded(result: response.data.first));
+      } else {
+        emit(DeletePinError(errorMessage: response.error ?? 'delete pin error'));
       }
     } catch (e) {
       emit(

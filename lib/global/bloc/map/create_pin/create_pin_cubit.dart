@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../env.dart';
+import '../../../util/simple_logger.dart';
 
 part 'create_pin_state.dart';
 
@@ -22,13 +23,12 @@ class CreatePinCubit extends Cubit<CreatePinState> {
       DataResponse<bool> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).createPin(requestCreatePin);
 
       if (response.success == true) {
-        emit(
-          CreatePinError(errorMessage: response.error ?? 'create pin error'),
-        );
-      } else {
         emit(CreatePinLoaded(result: response.data.first));
+      } else {
+        emit(CreatePinError(errorMessage: response.error ?? 'create pin error'));
       }
     } catch (e) {
+      logger.d(e);
       emit(
         CreatePinError(
           errorMessage: e.toString(),

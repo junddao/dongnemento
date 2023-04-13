@@ -17,23 +17,6 @@ class ModelRequestCreatePin {
     this.images,
   });
 
-  factory ModelRequestCreatePin.fromMap(Map<String, dynamic> map) {
-    return ModelRequestCreatePin(
-      lat: map['lat'],
-      lng: map['lng'],
-      title: map['title'],
-      body: map['body'],
-      images: List<String>.from(map['images']),
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'lat': lat,
-      'lng': lng,
-      'title': title,
-      'body': body,
-      'images': images,
-    };
-  }
+  factory ModelRequestCreatePin.fromJson(Map<String, dynamic> json) => _$ModelRequestCreatePinFromJson(json);
+  Map<String, dynamic> toJson() => _$ModelRequestCreatePinToJson(this);
 }

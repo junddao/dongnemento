@@ -23,7 +23,8 @@ class _RestClient implements RestClient {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = modelRequestCreatePin;
+    final _data = <String, dynamic>{};
+    _data.addAll(modelRequestCreatePin.toJson());
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<DataResponse<bool>>(Options(
       method: 'POST',

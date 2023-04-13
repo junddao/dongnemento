@@ -1,7 +1,6 @@
 import 'package:base_project/env.dart';
 import 'package:base_project/global/model/common/api_response.dart';
 import 'package:base_project/global/model/common/model_response_common.dart';
-import 'package:base_project/global/model/pin/model_request_create_pin.dart';
 import 'package:base_project/global/repository/api_service.dart';
 
 class PinRepository {
@@ -15,20 +14,20 @@ class PinRepository {
 
   String apiUrl = Env.apiPinUrl;
 
-  Future<ApiResponse<bool>> createPin(ModelRequestCreatePin requestCreatePin) async {
-    late ModelResponseCommon modelResponseCommon;
-    try {
-      Map<String, dynamic> response = await ApiService().post('$apiUrl/create', requestCreatePin.toMap());
-      modelResponseCommon = ModelResponseCommon.fromMap(response);
-      if (modelResponseCommon.success == true) {
-        return ApiResponse.completed(true);
-      } else {
-        return ApiResponse.error(modelResponseCommon.error);
-      }
-    } catch (e) {
-      return ApiResponse.error(e.toString());
-    }
-  }
+  // Future<ApiResponse<bool>> createPin(ModelRequestCreatePin requestCreatePin) async {
+  //   late ModelResponseCommon modelResponseCommon;
+  //   try {
+  //     Map<String, dynamic> response = await ApiService().post('$apiUrl/create', requestCreatePin);
+  //     modelResponseCommon = ModelResponseCommon.fromMap(response);
+  //     if (modelResponseCommon.success == true) {
+  //       return ApiResponse.completed(true);
+  //     } else {
+  //       return ApiResponse.error(modelResponseCommon.error);
+  //     }
+  //   } catch (e) {
+  //     return ApiResponse.error(e.toString());
+  //   }
+  // }
 
   // Future<ApiResponse<ModelResponseGetPin>> getPins(ModelRequestGetPin requestGetPin) async {
   //   late ModelResponseGetPin modelResponseGetPin;

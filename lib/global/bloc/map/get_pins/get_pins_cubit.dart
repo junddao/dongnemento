@@ -24,12 +24,10 @@ class GetPinsCubit extends Cubit<GetPinsState> {
 
       // ApiResponse<ModelResponseGetPin> response = await PinRepository.instance.getPins(modelRequestGetPin);
 
-      if (response.success == false) {
-        emit(
-          GetPinsError(errorMessage: response.error ?? 'get pin error'),
-        );
-      } else {
+      if (response.success == true) {
         emit(GetPinsLoaded(result: response.data));
+      } else {
+        emit(GetPinsError(errorMessage: response.error ?? 'get pin error'));
       }
     } catch (e) {
       emit(
