@@ -12,9 +12,7 @@ class _RestClient implements RestClient {
   _RestClient(
     this._dio, {
     this.baseUrl,
-  }) {
-    baseUrl ??= 'http://192.168.2.40:17008';
-  }
+  });
 
   final Dio _dio;
 
@@ -34,7 +32,7 @@ class _RestClient implements RestClient {
     )
             .compose(
               _dio.options,
-              '/pin/${id}',
+              '/pin/get/${id}',
               queryParameters: queryParameters,
               data: _data,
             )

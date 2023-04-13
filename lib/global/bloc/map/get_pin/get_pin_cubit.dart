@@ -1,3 +1,4 @@
+import 'package:base_project/env.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,7 @@ class GetPinCubit extends Cubit<GetPinState> {
       // dio.options.headers["Demo-Header"] = "demo header";
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
 
-      DataResponse<ModelResponsePin> response = await RestClient(dio).getPin(pinId);
+      DataResponse<ModelResponsePin> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).getPin(pinId);
 
       if (response.success == false) {
         emit(

@@ -14,9 +14,10 @@ class TokenInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     try {
-      options.headers['Authorization'] = 'Bearer ${await getAccessTokenFromStorage()}';
-      // handler.next(options);
-      super.onRequest(options, handler);
+      final token = await getAccessTokenFromStorage();
+      options.headers['Authorization'] = 'Bearer $token';
+      handler.next(options);
+      // super.onRequest(options, handler);
     } on DioError catch (e) {
       // if (e.response?.statusCode == 401) {
       //   // Access Token 만료 시 Refresh Token으로 갱신
