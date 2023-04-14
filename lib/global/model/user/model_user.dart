@@ -14,6 +14,7 @@ class ModelUser {
   double? lat;
   double? lng;
   String? address;
+  List<String>? blockedUserIds;
   String? createdAt;
   String? updatedAt;
   //  String smsEnabled
@@ -33,6 +34,7 @@ class ModelUser {
     this.lat,
     this.lng,
     this.address,
+    this.blockedUserIds,
     this.createdAt,
     this.updatedAt,
   });
@@ -51,6 +53,7 @@ class ModelUser {
       'lat': lat,
       'lng': lng,
       'address': address,
+      'blockedUserIds': blockedUserIds,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };
@@ -70,6 +73,7 @@ class ModelUser {
       lat: map['lat']?.toDouble(),
       lng: map['lng']?.toDouble(),
       address: map['address'],
+      blockedUserIds: map['blockedUserIds'] != null ? List<String>.from(map['blockedUserIds']) : null,
       createdAt: map['createdAt'],
       updatedAt: map['updatedAt'],
     );
@@ -92,6 +96,7 @@ class ModelUser {
     double? lat,
     double? lng,
     String? address,
+    List<String>? blockedUserIds,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -108,6 +113,7 @@ class ModelUser {
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       address: address ?? this.address,
+      blockedUserIds: blockedUserIds ?? this.blockedUserIds,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

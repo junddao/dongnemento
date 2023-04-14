@@ -6,7 +6,9 @@ part of 'model_response_pin_reply.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ModelResponsePinReply _$ModelResponsePinReplyFromJson(Map<String, dynamic> json) => ModelResponsePinReply(
+ModelResponsePinReply _$ModelResponsePinReplyFromJson(
+        Map<String, dynamic> json) =>
+    ModelResponsePinReply(
       id: json['id'] as String,
       pinId: json['pinId'] as String,
       userId: json['userId'] as String,
@@ -21,7 +23,9 @@ ModelResponsePinReply _$ModelResponsePinReplyFromJson(Map<String, dynamic> json)
       updatedAt: json['updatedAt'] as String,
     );
 
-Map<String, dynamic> _$ModelResponsePinReplyToJson(ModelResponsePinReply instance) => <String, dynamic>{
+Map<String, dynamic> _$ModelResponsePinReplyToJson(
+        ModelResponsePinReply instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'pinId': instance.pinId,
       'userId': instance.userId,
