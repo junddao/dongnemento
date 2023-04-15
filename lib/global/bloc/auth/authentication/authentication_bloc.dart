@@ -43,6 +43,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         break;
       case AuthenticationStatusType.authenticated:
         ApiResponse<ModelUser> responseModelUser = await AuthRepository.instance.getMe();
+
         if (responseModelUser.status == ResponseStatus.error) {
           emit(
             AuthenticationError(errorMessage: responseModelUser.message ?? 'get me error'),

@@ -13,28 +13,14 @@ import '../../global/component/du_two_button_dialog.dart';
 import '../../global/model/model.dart';
 import '../../routes.dart';
 
-class FavoritePostListPage extends StatefulWidget {
-  const FavoritePostListPage({super.key});
+class MyPostPage extends StatefulWidget {
+  const MyPostPage({super.key});
 
   @override
-  State<FavoritePostListPage> createState() => _FavoritePostListPageState();
+  State<MyPostPage> createState() => _MyPostPageState();
 }
 
-class _FavoritePostListPageState extends State<FavoritePostListPage> {
-  @override
-  Widget build(BuildContext context) {
-    return const ProductPageView();
-  }
-}
-
-class ProductPageView extends StatefulWidget {
-  const ProductPageView({super.key});
-
-  @override
-  State<ProductPageView> createState() => _ProductPageViewState();
-}
-
-class _ProductPageViewState extends State<ProductPageView> {
+class _MyPostPageState extends State<MyPostPage> {
   @override
   void initState() {
     double lat = context.read<MeCubit>().me.lat ?? 0;
@@ -62,7 +48,7 @@ class _ProductPageViewState extends State<ProductPageView> {
       automaticallyImplyLeading: false,
       titleSpacing: 16,
       centerTitle: false,
-      title: const Text('주변 인기글'),
+      title: const Text('내가 쓴글'),
     );
   }
 

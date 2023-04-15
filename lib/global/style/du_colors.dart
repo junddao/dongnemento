@@ -190,7 +190,8 @@ class DUColors {
   static const black36 = Color(0xff242424);
   static const brownish_grey = Color(0xff6a6a6a);
   static const brown_grey = Color(0xff7a7a7a);
-  static const tomato_10 = Color(0x1ae73331);
+  // static const tomato_10 = Color(0x1ae73331);
+  static const tomato_10 = Color(0x3ae73331);
   static const black_three = Color(0xff161616);
   static const white_four = Color(0xfff8f8f8);
   static const salmon = Color(0xfff87474);

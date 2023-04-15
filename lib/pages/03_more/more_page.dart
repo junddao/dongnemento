@@ -77,7 +77,7 @@ class _MorePageViewState extends State<MorePageView> {
   _appBar() {
     return AppBar(
       titleSpacing: 16,
-      title: const Text('마이'),
+      title: const Text('내정보'),
       centerTitle: false,
       automaticallyImplyLeading: false,
       actions: [

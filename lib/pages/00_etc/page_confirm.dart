@@ -30,7 +30,6 @@ class _PageConfirmState extends State<PageConfirm> {
           type: ButtonType.normal,
           press: () {
             context.go(Routes.map);
-            Navigator.of(context).pushNamedAndRemoveUntil('PageMap', (route) => false);
           },
         ),
       ),

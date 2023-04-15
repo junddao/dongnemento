@@ -392,11 +392,11 @@ class _MapPageViewState extends State<MapPageView> {
     List<Marker> markers = [];
     for (var pin in pins) {
       Color pinColor = DUColors.tomato;
-      if (pin.isUserBlocked ?? false) pinColor = DUColors.tomato_10;
+      if ((context.read<MeCubit>().me.blockedUserIds ?? []).contains(pin.userId)) pinColor = DUColors.tomato_10;
       BitmapDescriptor? customIcon = await createCustomMarkerBitmap(pin.title ?? '', pinColor);
       final marker = Marker(
           markerId: MarkerId(pin.id),
-          position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
+          position: LatLng(pin.lat, pin.lng),
           icon: customIcon,
           onTap: () {
             onTapMarker(pin.id, pin.userId);

@@ -20,7 +20,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'global/bloc/auth/get_me/me_cubit.dart';
 import 'global/component/du_photo_viewer.dart';
+import 'pages/02_post/my_post_page.dart';
 import 'pages/02_post/page_select_location.dart';
 
 class Routes {
@@ -30,6 +32,8 @@ class Routes {
   static const map = '/map';
   static const login = '/login';
   static const favoritePost = '/favorite_post';
+  static const myPost = '/my_post';
+
   static const more = '/more';
   static const error = '/error';
   static const address = '/address';
@@ -70,6 +74,7 @@ class AppRouter extends Bloc {
         }
 
         logger.d('Authenticated');
+        context.read<MeCubit>().setMe(authBloc.state.me!);
         return Routes.map;
       } else if (authBloc.state is AuthenticationUnAuthenticated) {
         // context.read<SingletonMeCubit>().updateSingletonMe(ModelUser());
@@ -149,6 +154,12 @@ class AppRouter extends Bloc {
             path: Routes.favoritePost,
             pageBuilder: (context, state) {
               return const MaterialPage(child: FavoritePostListPage());
+            },
+          ),
+          GoRoute(
+            path: Routes.myPost,
+            pageBuilder: (context, state) {
+              return const MaterialPage(child: MyPostPage());
             },
           ),
           GoRoute(

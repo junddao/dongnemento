@@ -90,8 +90,12 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
           label: '주변 인기글',
         ),
         BottomNavigationBarItem(
+          icon: Icon(Icons.favorite_sharp),
+          label: '내가 쓴글',
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.person_outline),
-          label: '더보기',
+          label: '내정보',
         ),
       ],
       selectedFontSize: 11,
@@ -107,12 +111,14 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
     if (location == Routes.map) {
       _selectedPage = 0;
     }
-
     if (location == Routes.favoritePost) {
       _selectedPage = 1;
     }
-    if (location == Routes.more) {
+    if (location == Routes.myPost) {
       _selectedPage = 2;
+    }
+    if (location == Routes.more) {
+      _selectedPage = 3;
     }
     return _selectedPage;
   }
@@ -126,6 +132,9 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
         GoRouter.of(context).go(Routes.favoritePost);
         break;
       case 2:
+        GoRouter.of(context).go(Routes.myPost);
+        break;
+      case 3:
         GoRouter.of(context).go(Routes.more);
         break;
     }

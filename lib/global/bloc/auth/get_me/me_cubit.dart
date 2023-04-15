@@ -28,6 +28,13 @@ class MeCubit extends Cubit<MeState> {
     emit(MeLoaded(me: response.data!));
   }
 
+  void setMe(ModelUser user) async {
+    emit(MeLoading());
+    me = user;
+    await SecureStorage.instance.writeMe(me);
+    emit(MeLoaded(me: me));
+  }
+
   Future<void> updateUser(Map<String, dynamic> map) async {
     emit(MeLoading());
 

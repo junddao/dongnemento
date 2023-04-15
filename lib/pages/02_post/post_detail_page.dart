@@ -87,6 +87,14 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
   final TextEditingController _tecMessage = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<MeCubit>().getMe();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
@@ -109,238 +117,247 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
   }
 
   Widget _body() {
-    return BlocBuilder<GetUserCubit, GetUserState>(
+    return BlocBuilder<MeCubit, MeState>(
       builder: (context, state) {
-        if (state is GetUserLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+        if (state is MeLoading) {
+          return const Center(child: CircularProgressIndicator());
         }
-        if (state is GetUserError) {
-          return ErrorPage(exception: state.errorMessage);
-        }
-        if (state is GetUserLoaded) {
-          if (state.user.isBlocked == true) {
-            return BlocConsumer<BlockUserCubit, BlockUserState>(
-              listener: (context, state) {
-                if (state is BlockUserLoaded) {
-                  context.read<GetUserCubit>().getUser(widget.userId);
-                }
-              },
-              builder: (context, state) {
-                if (state is BlockUserLoading) {
-                  return const DULoading();
-                }
-                return Padding(
-                  padding: const EdgeInsets.all(kDefaultPadding),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Expanded(child: Center(child: Text('차단된 사용자 입니다.\n\n모든 사용자의 글은 차단됩니다.'))),
-                      DUButton(
-                          width: double.infinity,
-                          text: '차단해제',
-                          press: () {
-                            ModelRequestBlock modelRequestBlock =
-                                ModelRequestBlock(userId: widget.id, isBlocked: false);
-                            context.read<BlockUserCubit>().blockUser(modelRequestBlock);
-                          }),
-                    ],
-                  ),
-                );
-              },
-            );
-          } else {
-            return BlocConsumer<DeletePinCubit, DeletePinState>(
-              listener: (context, state) {
-                if (state is DeletePinLoaded) {
-                  double lat = context.read<MeCubit>().me.lat ?? 0;
-                  double lng = context.read<MeCubit>().me.lng ?? 0;
-
-                  ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
-                    lat: lat,
-                    lng: lng,
-                  );
-                  context.read<GetPinsCubit>().getPins(modelRequestGetPin);
-                  context.pop();
-                  // context.pop();
-                }
-              },
-              builder: (context, state) {
-                if (state is DeletePinLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                if (state is DeletePinError) {
-                  return ErrorPage(exception: state.errorMessage);
-                }
-                final value = context.watch<CreatePinReplyCubit>();
-                if (value.state is CreatePinReplyLoaded) {
-                  context.read<GetPinRepliesCubit>().getPinReplies(widget.id);
-                }
-                return BlocBuilder<GetPinCubit, GetPinState>(
+        return BlocBuilder<GetUserCubit, GetUserState>(
+          builder: (context, state) {
+            if (state is GetUserLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (state is GetUserError) {
+              return ErrorPage(exception: state.errorMessage);
+            }
+            if (state is GetUserLoaded) {
+              if ((context.watch<MeCubit>().me.blockedUserIds ?? []).contains(widget.userId)) {
+                return BlocConsumer<BlockUserCubit, BlockUserState>(
+                  listener: (context, state) {
+                    if (state is BlockUserLoaded) {
+                      context.read<MeCubit>().getMe();
+                    }
+                  },
                   builder: (context, state) {
-                    if (state is GetPinLoading) {
+                    if (state is BlockUserLoading) {
+                      return const DULoading();
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.all(kDefaultPadding),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Expanded(child: Center(child: Text('차단된 사용자 입니다.\n\n모든 사용자의 글은 차단됩니다.'))),
+                          DUButton(
+                              width: double.infinity,
+                              text: '차단해제',
+                              press: () {
+                                ModelRequestBlock modelRequestBlock =
+                                    ModelRequestBlock(userId: widget.userId, isBlocked: false);
+                                context.read<BlockUserCubit>().blockUser(modelRequestBlock);
+                              }),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return BlocConsumer<DeletePinCubit, DeletePinState>(
+                  listener: (context, state) {
+                    if (state is DeletePinLoaded) {
+                      double lat = context.read<MeCubit>().me.lat ?? 0;
+                      double lng = context.read<MeCubit>().me.lng ?? 0;
+
+                      ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+                        lat: lat,
+                        lng: lng,
+                      );
+                      context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+                      context.pop();
+                      // context.pop();
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is DeletePinLoading) {
                       return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }
-                    if (state is GetPinError) {
+                    if (state is DeletePinError) {
                       return ErrorPage(exception: state.errorMessage);
                     }
-                    if (state is GetPinLoaded) {
-                      ModelResponsePin pin = state.result;
+                    final value = context.watch<CreatePinReplyCubit>();
+                    if (value.state is CreatePinReplyLoaded) {
+                      context.read<GetPinRepliesCubit>().getPinReplies(widget.id);
+                    }
+                    return BlocBuilder<GetPinCubit, GetPinState>(
+                      builder: (context, state) {
+                        if (state is GetPinLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (state is GetPinError) {
+                          return ErrorPage(exception: state.errorMessage);
+                        }
+                        if (state is GetPinLoaded) {
+                          ModelResponsePin pin = state.result;
 
-                      return BlocConsumer<CreateReportCubit, CreateReportState>(
-                        listener: (context, state) {
-                          if (state is CreateReportLoaded) {
-                            context.push(Routes.confirm, extra: {
-                              'title': '신고하기',
-                              'contents1': '신고가 정상적으로 접수되었습니다.',
-                              'contents2': '다수의 사용자가 해당글을 신고할 경우\n해당 글은 삭제처리 됩니다.'
-                            });
-                          }
-                        },
-                        builder: (context, state) {
-                          if (state is CreateReportLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          if (state is CreateReportError) {
-                            return ErrorPage(exception: state.errorMessage);
-                          }
-
-                          return BlocConsumer<BlockUserCubit, BlockUserState>(
+                          return BlocConsumer<CreateReportCubit, CreateReportState>(
                             listener: (context, state) {
-                              if (state is BlockUserLoaded) {
+                              if (state is CreateReportLoaded) {
                                 context.push(Routes.confirm, extra: {
-                                  'title': '차단하기',
-                                  'contents1': '해당 유저가 정상적으로 차단되었습니다.',
-                                  'contents2': '해당 유저의 글들은 blind 처리 됩니다.'
+                                  'title': '신고하기',
+                                  'contents1': '신고가 정상적으로 접수되었습니다.',
+                                  'contents2': '다수의 사용자가 해당글을 신고할 경우\n해당 글은 삭제처리 됩니다.'
                                 });
                               }
                             },
                             builder: (context, state) {
-                              if (state is BlockUserLoading) {
+                              if (state is CreateReportLoading) {
                                 return const Center(
                                   child: CircularProgressIndicator(),
                                 );
                               }
-                              if (state is BlockUserError) {
+                              if (state is CreateReportError) {
                                 return ErrorPage(exception: state.errorMessage);
                               }
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          DUPhotoView(
-                                            imageUrls: [...pin.images ?? []],
-                                            screenHeight: (SizeConfig.screenHeight * 0.4),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                _buildUserProfile(pin),
-                                                const Divider(height: 8),
-                                                Text(pin.title!, style: DUTextStyle.size18B),
-                                                const SizedBox(height: 20),
-                                                Text(pin.body ?? '글이 없어요.'),
-                                                const SizedBox(height: 16),
-                                                Row(
+
+                              return BlocConsumer<BlockUserCubit, BlockUserState>(
+                                listener: (context, state) {
+                                  if (state is BlockUserLoaded) {
+                                    context.read<MeCubit>().getMe();
+                                    context.push(Routes.confirm, extra: {
+                                      'title': '차단하기',
+                                      'contents1': '해당 유저가 정상적으로 차단되었습니다.',
+                                      'contents2': '해당 유저의 글들은 blind 처리 됩니다.'
+                                    });
+                                  }
+                                },
+                                builder: (context, state) {
+                                  if (state is BlockUserLoading) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                  if (state is BlockUserError) {
+                                    return ErrorPage(exception: state.errorMessage);
+                                  }
+                                  return Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: SingleChildScrollView(
+                                          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              DUPhotoView(
+                                                imageUrls: [...pin.images ?? []],
+                                                screenHeight: (SizeConfig.screenHeight * 0.4),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    LikeButton(
-                                                      size: 18,
-                                                      isLiked: pin.isLiked,
-                                                      likeCountPadding: const EdgeInsets.only(left: 8),
-                                                      likeCount: pin.likeCount ?? 0,
-                                                      onTap: ((isLiked) async {
-                                                        ModelRequestSetPinLike modelRequestSetPinLike =
-                                                            ModelRequestSetPinLike(pinId: pin.id);
-                                                        // context
-                                                        //     .read<GetPinCubit>()
-                                                        //     .setPinLike(modelRequestSetPinLike, !isLiked);
-                                                        return !isLiked;
-                                                      }),
+                                                    _buildUserProfile(pin),
+                                                    const Divider(height: 8),
+                                                    Text(pin.title!, style: DUTextStyle.size18B),
+                                                    const SizedBox(height: 20),
+                                                    Text(pin.body ?? '글이 없어요.'),
+                                                    const SizedBox(height: 16),
+                                                    Row(
+                                                      children: [
+                                                        LikeButton(
+                                                          size: 18,
+                                                          isLiked: pin.isLiked,
+                                                          likeCountPadding: const EdgeInsets.only(left: 8),
+                                                          likeCount: pin.likeCount ?? 0,
+                                                          onTap: ((isLiked) async {
+                                                            ModelRequestSetPinLike modelRequestSetPinLike =
+                                                                ModelRequestSetPinLike(pinId: pin.id);
+                                                            // context
+                                                            //     .read<GetPinCubit>()
+                                                            //     .setPinLike(modelRequestSetPinLike, !isLiked);
+                                                            return !isLiked;
+                                                          }),
+                                                        ),
+                                                        const Spacer(),
+                                                        context.read<MeCubit>().me.id == pin.userId
+                                                            ? TextButton(
+                                                                onPressed: () {
+                                                                  context.read<DeletePinCubit>().deletePin(pin.id!);
+                                                                },
+                                                                child: Text('삭제하기', style: DUTextStyle.size12B.tomato),
+                                                              )
+                                                            : TextButton(
+                                                                onPressed: () async {
+                                                                  _showModalForReport(pin);
+                                                                },
+                                                                child: Text('신고하기', style: DUTextStyle.size12B.tomato),
+                                                              ),
+                                                      ],
                                                     ),
-                                                    const Spacer(),
-                                                    context.read<MeCubit>().me.id == pin.userId
-                                                        ? TextButton(
-                                                            onPressed: () {
-                                                              context.read<DeletePinCubit>().deletePin(pin.id!);
-                                                            },
-                                                            child: Text('삭제하기', style: DUTextStyle.size12B.tomato),
-                                                          )
-                                                        : TextButton(
-                                                            onPressed: () async {
-                                                              _showModalForReport(pin);
-                                                            },
-                                                            child: Text('신고하기', style: DUTextStyle.size12B.tomato),
-                                                          ),
+                                                    const SizedBox(height: 16),
+                                                    const Divider(
+                                                      thickness: 1,
+                                                    ),
+                                                    BlocBuilder<GetPinRepliesCubit, GetPinRepliesState>(
+                                                      buildWhen: (previous, current) {
+                                                        if (previous != current) {
+                                                          return true;
+                                                        }
+                                                        return false;
+                                                      },
+                                                      builder: (context, state) {
+                                                        List<ModelResponsePinReply>? replies;
+                                                        // if (state is GetPinRepliesLoading) {
+                                                        //   return const Center(
+                                                        //     child: CircularProgressIndicator(),
+                                                        //   );
+                                                        // }
+                                                        if (state is GetPinRepliesError) {
+                                                          return const Center(
+                                                            child: Text('댓글을 가져오지 못했습니다.'),
+                                                          );
+                                                        }
+                                                        if (state is GetPinRepliesLoaded) {
+                                                          replies = state.result.reversed.toList();
+                                                        }
+                                                        return _buildReviewList(replies ?? []);
+                                                      },
+                                                    ),
                                                   ],
                                                 ),
-                                                const SizedBox(height: 16),
-                                                const Divider(
-                                                  thickness: 1,
-                                                ),
-                                                BlocBuilder<GetPinRepliesCubit, GetPinRepliesState>(
-                                                  buildWhen: (previous, current) {
-                                                    if (previous != current) {
-                                                      return true;
-                                                    }
-                                                    return false;
-                                                  },
-                                                  builder: (context, state) {
-                                                    List<ModelResponsePinReply>? replies;
-                                                    // if (state is GetPinRepliesLoading) {
-                                                    //   return const Center(
-                                                    //     child: CircularProgressIndicator(),
-                                                    //   );
-                                                    // }
-                                                    if (state is GetPinRepliesError) {
-                                                      return const Center(
-                                                        child: Text('댓글을 가져오지 못했습니다.'),
-                                                      );
-                                                    }
-                                                    if (state is GetPinRepliesLoaded) {
-                                                      replies = state.result.reversed.toList();
-                                                    }
-                                                    return _buildReviewList(replies ?? []);
-                                                  },
-                                                ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  _buildMessageComposer(pin),
-                                ],
+                                      _buildMessageComposer(pin),
+                                    ],
+                                  );
+                                },
                               );
                             },
                           );
-                        },
-                      );
-                    }
-                    return Container();
+                        }
+                        return Container();
+                      },
+                    );
                   },
                 );
-              },
-            );
-          }
-        }
-        return Container();
+              }
+            }
+            return Container();
+          },
+        );
       },
     );
   }
