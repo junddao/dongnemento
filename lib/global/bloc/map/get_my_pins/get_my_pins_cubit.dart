@@ -12,13 +12,13 @@ part 'get_my_pins_state.dart';
 class GetMyPinsCubit extends Cubit<GetMyPinsState> {
   GetMyPinsCubit() : super(GetMyPinsInitial());
 
-  Future<void> getMyPins(ModelUser me) async {
+  Future<void> getMyPins() async {
     try {
       emit(GetMyPinsLoading());
 
       final dio = Dio(); // Provide a dio instance
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-      DataResponse<ModelResponsePins> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).getPins(me.toJson());
+      DataResponse<ModelResponsePins> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).getMyPins();
 
       // ApiResponse<ModelResponseGetPin> response = await PinRepository.instance.getPins(modelRequestGetPin);
 

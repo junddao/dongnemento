@@ -48,6 +48,9 @@ abstract class RestClient {
   @GET('/pin/get/pins')
   Future<DataResponse<ModelResponsePins>> getPins(@Queries() Map<String, dynamic> queries);
 
+  @GET('/pin/get/my/pins')
+  Future<DataResponse<ModelResponsePins>> getMyPins();
+
   @DELETE('/pin/delete/{id}')
   Future<DataResponse<bool>> deletePin(@Path("id") String id);
 

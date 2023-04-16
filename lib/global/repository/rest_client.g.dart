@@ -340,6 +340,32 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<DataResponse<ModelResponsePins>> getMyPins() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<DataResponse<ModelResponsePins>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/pin/get/my/pins',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DataResponse<ModelResponsePins>.fromJson(
+      _result.data!,
+      (json) => ModelResponsePins.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
+  @override
   Future<DataResponse<bool>> deletePin(id) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

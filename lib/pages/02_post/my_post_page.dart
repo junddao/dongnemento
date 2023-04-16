@@ -7,8 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path/path.dart' as path;
 
-import '../../global/bloc/auth/get_me/me_cubit.dart';
-import '../../global/bloc/map/get_pins/get_pins_cubit.dart';
+import '../../global/bloc/map/get_my_pins/get_my_pins_cubit.dart';
 import '../../global/component/du_two_button_dialog.dart';
 import '../../global/model/model.dart';
 import '../../routes.dart';
@@ -22,16 +21,28 @@ class MyPostPage extends StatefulWidget {
 
 class _MyPostPageState extends State<MyPostPage> {
   @override
-  void initState() {
-    double lat = context.read<MeCubit>().me.lat ?? 0;
-    double lng = context.read<MeCubit>().me.lng ?? 0;
-
-    ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
-      lat: lat,
-      lng: lng,
-      range: 3000,
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<GetMyPinsCubit>(
+          create: (context) => GetMyPinsCubit()..getMyPins(),
+        ),
+      ],
+      child: const MyPostView(),
     );
-    context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+  }
+}
+
+class MyPostView extends StatefulWidget {
+  const MyPostView({super.key});
+
+  @override
+  State<MyPostView> createState() => _MyPostViewState();
+}
+
+class _MyPostViewState extends State<MyPostView> {
+  @override
+  void initState() {
     super.initState();
   }
 
@@ -53,17 +64,17 @@ class _MyPostPageState extends State<MyPostPage> {
   }
 
   Widget _body() {
-    return BlocConsumer<GetPinsCubit, GetPinsState>(
+    return BlocConsumer<GetMyPinsCubit, GetMyPinsState>(
       listener: (context, state) {
-        if (state is GetPinsError) {
+        if (state is GetMyPinsError) {
           DUDialog.showOneButtonDialog(context: context, title: '핀 정보를 가져오지 못했어요. 😂', subTitle: '다시 시도해주세요.');
         }
       },
       builder: (context, state) {
-        if (state is GetPinsLoading) {
+        if (state is GetMyPinsLoading) {
           return const DULoading();
         }
-        if (state is GetPinsLoaded) {
+        if (state is GetMyPinsLoaded) {
           List<ModelResponsePins> pins = state.result;
           return SingleChildScrollView(
             child: Padding(
