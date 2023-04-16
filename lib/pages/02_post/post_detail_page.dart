@@ -282,9 +282,9 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                           onTap: ((isLiked) async {
                                                             ModelRequestSetPinLike modelRequestSetPinLike =
                                                                 ModelRequestSetPinLike(pinId: pin.id);
-                                                            // context
-                                                            //     .read<GetPinCubit>()
-                                                            //     .setPinLike(modelRequestSetPinLike, !isLiked);
+                                                            context
+                                                                .read<GetPinCubit>()
+                                                                .setPinLike(modelRequestSetPinLike, !isLiked);
                                                             return !isLiked;
                                                           }),
                                                         ),
@@ -475,6 +475,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                             child: const Icon(Icons.send),
                           ),
                           onTap: () {
+                            if (_tecMessage.text.isEmpty) return;
                             // 리플 생성
                             ModelRequestCreatePinReply requestCreatePinReply = ModelRequestCreatePinReply(
                               pinId: pin.id,

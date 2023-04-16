@@ -151,7 +151,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<DataResponse<ModelGetToken>> appleLogin(Map<String, dynamic> input) async {
     final dio = Dio(); // Provide a dio instance
     dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).kakaoSignIn(input);
+    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).appleSignIn(input);
 
     return response;
   }

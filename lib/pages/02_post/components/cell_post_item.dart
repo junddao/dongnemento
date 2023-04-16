@@ -87,15 +87,16 @@ class CellPostItem extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
+                                    Text(pin.userName, style: DUTextStyle.size12M),
+                                    const Spacer(),
                                     const Icon(Icons.favorite, color: DUColors.tomato, size: 10),
                                     const SizedBox(width: 4),
-                                    Expanded(
-                                      child: Text(
-                                        '${pin.likeCount ?? 0}',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: DUTextStyle.size12.grey1,
-                                      ),
+                                    Text(
+                                      '${pin.likeCount ?? 0}',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: DUTextStyle.size12.grey1,
                                     ),
+                                    const SizedBox(width: 12),
                                     const Icon(Icons.message, color: DUColors.grey1, size: 12),
                                     const SizedBox(width: 4),
                                     Text('${pin.replyCount}', style: DUTextStyle.size12.grey1),
