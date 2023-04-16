@@ -1,5 +1,8 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'model_request_block.g.dart';
+
+@JsonSerializable()
 class ModelRequestBlock {
   String userId;
   bool isBlocked;
@@ -8,31 +11,6 @@ class ModelRequestBlock {
     required this.isBlocked,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'userId': userId,
-      'isBlocked': isBlocked,
-    };
-  }
-
-  factory ModelRequestBlock.fromMap(Map<String, dynamic> map) {
-    return ModelRequestBlock(
-      userId: map['userId'],
-      isBlocked: map['isBlocked'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ModelRequestBlock.fromJson(String source) => ModelRequestBlock.fromMap(json.decode(source));
-
-  ModelRequestBlock copyWith({
-    String? userId,
-    bool? isBlocked,
-  }) {
-    return ModelRequestBlock(
-      userId: userId ?? this.userId,
-      isBlocked: isBlocked ?? this.isBlocked,
-    );
-  }
+  factory ModelRequestBlock.fromJson(Map<String, dynamic> json) => _$ModelRequestBlockFromJson(json);
+  Map<String, dynamic> toJson() => _$ModelRequestBlockToJson(this);
 }

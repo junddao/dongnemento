@@ -1,13 +1,15 @@
 import 'package:base_project/global/enum/authentication_status_type.dart';
 import 'package:base_project/global/enum/social_type.dart';
-import 'package:base_project/global/model/common/api_response.dart';
-import 'package:base_project/global/model/user/model_response_sign_in.dart';
-import 'package:base_project/global/model/user/model_user.dart';
-import 'package:base_project/global/repository/auth_repository.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../env.dart';
+import '../../../model/model.dart';
+import '../../../repository/rest_client.dart';
+import '../../../repository/token_interceptor.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -42,14 +44,16 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         emit(const AuthenticationUnAuthenticated());
         break;
       case AuthenticationStatusType.authenticated:
-        ApiResponse<ModelUser> responseModelUser = await AuthRepository.instance.getMe();
+        final dio = Dio(); // Provide a dio instance
+        dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+        DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: Env.apiBaseUrl).getMe();
 
-        if (responseModelUser.status == ResponseStatus.error) {
+        if (responseModelUser.success == false) {
           emit(
-            AuthenticationError(errorMessage: responseModelUser.message ?? 'get me error'),
+            AuthenticationError(errorMessage: responseModelUser.error ?? 'get me error'),
           );
         } else {
-          ModelUser me = responseModelUser.data ?? ModelUser();
+          ModelUser me = responseModelUser.data.first;
 
           emit(AuthenticationAuthenticated(me: me));
         }
@@ -69,7 +73,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         const AuthenticationLoading(),
       );
 
-      late ApiResponse<ModelSignIn> responseModelSignIn;
+      late DataResponse<ModelGetToken> responseModelSignIn;
 
       //signIn
       switch (event.socialType) {
@@ -85,20 +89,26 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         default:
       }
 
-      if (responseModelSignIn.status == ResponseStatus.error) {
+      if (responseModelSignIn.success == false) {
         emit(
-          AuthenticationError(errorMessage: responseModelSignIn.message ?? 'sign in error'),
+          AuthenticationError(errorMessage: responseModelSignIn.error ?? 'sign in error'),
         );
+      } else {
+        ModelGetToken modelGetToken = responseModelSignIn.data.first;
+        await SecureStorage.instance.writeToken(modelGetToken.accessToken);
       }
 
       //get me
-      ApiResponse<ModelUser> responseModelUser = await AuthRepository.instance.getMe();
-      if (responseModelUser.status == ResponseStatus.error) {
+      final dio = Dio(); // Provide a dio instance
+      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+      DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: Env.apiBaseUrl).getMe();
+
+      if (responseModelUser.success == false) {
         emit(
-          AuthenticationError(errorMessage: responseModelUser.message ?? 'get me error'),
+          AuthenticationError(errorMessage: responseModelUser.error ?? 'get me error'),
         );
       }
-      ModelUser? me = responseModelUser.data!;
+      ModelUser? me = responseModelUser.data.first;
       // SecureStorage.instance.writeMe(me);
       emit(AuthenticationAuthenticated(me: me));
     } catch (e) {
@@ -122,27 +132,27 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
   }
 
-  Future<ApiResponse<ModelSignIn>> emailLogin(Map<String, dynamic> input) async {
-    late ApiResponse<ModelSignIn> result;
+  Future<DataResponse<ModelGetToken>> emailLogin(Map<String, dynamic> input) async {
+    final dio = Dio(); // Provide a dio instance
+    dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).signIn(input);
 
-    result = await AuthRepository.instance.signIn(input);
-
-    return result;
+    return response;
   }
 
-  Future<ApiResponse<ModelSignIn>> kakaoLogin(Map<String, dynamic> input) async {
-    late ApiResponse<ModelSignIn> result;
+  Future<DataResponse<ModelGetToken>> kakaoLogin(Map<String, dynamic> input) async {
+    final dio = Dio(); // Provide a dio instance
+    dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).kakaoSignIn(input);
 
-    result = await AuthRepository.instance.kakaoSignIn(input);
-
-    return result;
+    return response;
   }
 
-  Future<ApiResponse<ModelSignIn>> appleLogin(Map<String, dynamic> input) async {
-    late ApiResponse<ModelSignIn> result;
+  Future<DataResponse<ModelGetToken>> appleLogin(Map<String, dynamic> input) async {
+    final dio = Dio(); // Provide a dio instance
+    dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).kakaoSignIn(input);
 
-    result = await AuthRepository.instance.appleSignIn(input);
-
-    return result;
+    return response;
   }
 }

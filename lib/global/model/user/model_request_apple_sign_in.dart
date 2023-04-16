@@ -1,32 +1,14 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'model_request_apple_sign_in.g.dart';
+
+@JsonSerializable()
 class ModelRequestAppleSignIn {
   String idToken;
   ModelRequestAppleSignIn({
     required this.idToken,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'idToken': idToken,
-    };
-  }
-
-  factory ModelRequestAppleSignIn.fromMap(Map<String, dynamic> map) {
-    return ModelRequestAppleSignIn(
-      idToken: map['idToken'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ModelRequestAppleSignIn.fromJson(String source) => ModelRequestAppleSignIn.fromMap(json.decode(source));
-
-  ModelRequestAppleSignIn copyWith({
-    String? idToken,
-  }) {
-    return ModelRequestAppleSignIn(
-      idToken: idToken ?? this.idToken,
-    );
-  }
+  factory ModelRequestAppleSignIn.fromJson(Map<String, dynamic> json) => _$ModelRequestAppleSignInFromJson(json);
+  Map<String, dynamic> toJson() => _$ModelRequestAppleSignInToJson(this);
 }

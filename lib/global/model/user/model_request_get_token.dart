@@ -1,24 +1,14 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'model_request_get_token.g.dart';
+
+@JsonSerializable()
 class ModelRequestGetToken {
   String email;
   ModelRequestGetToken({
     required this.email,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'email': email,
-    };
-  }
-
-  factory ModelRequestGetToken.fromMap(Map<String, dynamic> map) {
-    return ModelRequestGetToken(
-      email: map['email'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ModelRequestGetToken.fromJson(String source) => ModelRequestGetToken.fromMap(json.decode(source));
+  factory ModelRequestGetToken.fromJson(Map<String, dynamic> json) => _$ModelRequestGetTokenFromJson(json);
+  Map<String, dynamic> toJson() => _$ModelRequestGetTokenToJson(this);
 }

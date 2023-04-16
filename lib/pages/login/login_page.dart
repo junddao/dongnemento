@@ -185,7 +185,7 @@ class _LoginPageViewState extends State<LoginPageView> {
     );
     context
         .read<AuthenticationBloc>()
-        .add(AuthenticationSignIn(socialType: SocialType.email, input: modelRequestSignIn.toMap()));
+        .add(AuthenticationSignIn(socialType: SocialType.email, input: modelRequestSignIn.toJson()));
   }
 
   _buildKakaoLogin() {
@@ -211,7 +211,7 @@ class _LoginPageViewState extends State<LoginPageView> {
           );
           context.read<AuthenticationBloc>().add(AuthenticationSignIn(
                 socialType: SocialType.kakao,
-                input: modelRequestKakaoSignIn.toMap(),
+                input: modelRequestKakaoSignIn.toJson(),
               ));
         });
       },
@@ -264,7 +264,7 @@ class _LoginPageViewState extends State<LoginPageView> {
           );
           context.read<AuthenticationBloc>().add(AuthenticationSignIn(
                 socialType: SocialType.apple,
-                input: modelRequestAppleSignIn.toMap(),
+                input: modelRequestAppleSignIn.toJson(),
               ));
         });
       },

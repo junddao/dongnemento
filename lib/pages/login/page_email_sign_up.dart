@@ -71,6 +71,8 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
     return BlocConsumer<SignUpCubit, SignUpState>(
       listener: (context, state) {
         if (state is SignUpLoaded) {
+          context.read<MeCubit>().getMe();
+
           context
               .read<AuthenticationBloc>()
               .add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
@@ -227,7 +229,7 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
       lng: context.read<MeCubit>().me.lng,
     );
     // 1. signUp
-    await context.read<SignUpCubit>().signUp(modelRequestSignUp.toMap());
+    await context.read<SignUpCubit>().signUp(modelRequestSignUp);
   }
 
   setAddress(String address, double? lat, double? lng) {

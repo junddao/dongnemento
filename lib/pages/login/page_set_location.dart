@@ -98,7 +98,7 @@ class _PageSetLocationState extends State<PageSetLocation> {
     ModelUser updatedMe = context.read<MeCubit>().me.copyWith(address: address, lat: lat, lng: lng);
 
     // server 정보 update
-    await context.read<MeCubit>().updateUser(updatedMe.toMap());
+    await context.read<MeCubit>().updateUser(updatedMe);
     // updateMe 필요
     // context.read<GetMeCubit>().me.copyWith(address: address, lat: lat, lng: lng);
   }

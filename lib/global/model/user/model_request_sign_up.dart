@@ -1,5 +1,8 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'model_request_sign_up.g.dart';
+
+@JsonSerializable()
 class ModelRequestSignUp {
   String social;
   String email;
@@ -20,33 +23,6 @@ class ModelRequestSignUp {
     required this.address,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'social': social,
-      'email': email,
-      'name': name,
-      'password': password,
-      'profileImage': profileImage,
-      'lat': lat,
-      'lng': lng,
-      'address': address,
-    };
-  }
-
-  factory ModelRequestSignUp.fromMap(Map<String, dynamic> map) {
-    return ModelRequestSignUp(
-      social: map['social'],
-      email: map['email'],
-      name: map['name'],
-      password: map['password'],
-      profileImage: map['profileImage'],
-      lat: map['lat']?.toDouble(),
-      lng: map['lng']?.toDouble(),
-      address: map['address'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ModelRequestSignUp.fromJson(String source) => ModelRequestSignUp.fromMap(json.decode(source));
+  factory ModelRequestSignUp.fromJson(Map<String, dynamic> json) => _$ModelRequestSignUpFromJson(json);
+  Map<String, dynamic> toJson() => _$ModelRequestSignUpToJson(this);
 }

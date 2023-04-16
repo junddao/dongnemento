@@ -1,5 +1,8 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'model_request_sign_in.g.dart';
+
+@JsonSerializable()
 class ModelRequestSignIn {
   String email;
   String password;
@@ -8,21 +11,6 @@ class ModelRequestSignIn {
     required this.password,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'email': email,
-      'password': password,
-    };
-  }
-
-  factory ModelRequestSignIn.fromMap(Map<String, dynamic> map) {
-    return ModelRequestSignIn(
-      email: map['email'],
-      password: map['password'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ModelRequestSignIn.fromJson(String source) => ModelRequestSignIn.fromMap(json.decode(source));
+  factory ModelRequestSignIn.fromJson(Map<String, dynamic> json) => _$ModelRequestSignInFromJson(json);
+  Map<String, dynamic> toJson() => _$ModelRequestSignInToJson(this);
 }

@@ -19,6 +19,247 @@ class _RestClient implements RestClient {
   String? baseUrl;
 
   @override
+  Future<DataResponse<ModelUser>> getMe() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<DataResponse<ModelUser>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/user/me',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DataResponse<ModelUser>.fromJson(
+      _result.data!,
+      (json) => ModelUser.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
+  @override
+  Future<DataResponse<ModelUser>> getUser(id) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<DataResponse<ModelUser>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/user/get/${id}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DataResponse<ModelUser>.fromJson(
+      _result.data!,
+      (json) => ModelUser.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
+  @override
+  Future<DataResponse<bool>> signUp(modelRequestSignUp) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(modelRequestSignUp.toJson());
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<DataResponse<bool>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/user/signup',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DataResponse<bool>.fromJson(
+      _result.data!,
+      (json) => json as bool,
+    );
+    return value;
+  }
+
+  @override
+  Future<DataResponse<ModelGetToken>> signIn(modelRequestSignIn) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(modelRequestSignIn);
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<DataResponse<ModelGetToken>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/user/signin',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DataResponse<ModelGetToken>.fromJson(
+      _result.data!,
+      (json) => ModelGetToken.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
+  @override
+  Future<DataResponse<ModelGetToken>> kakaoSignIn(user) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(user);
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<DataResponse<ModelGetToken>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/user/kakao',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DataResponse<ModelGetToken>.fromJson(
+      _result.data!,
+      (json) => ModelGetToken.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
+  @override
+  Future<DataResponse<ModelGetToken>> appleSignIn(user) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(user);
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<DataResponse<ModelGetToken>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/user/apple',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DataResponse<ModelGetToken>.fromJson(
+      _result.data!,
+      (json) => ModelGetToken.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
+  @override
+  Future<DataResponse<ModelGetToken>> getToken(modelRequestGetToken) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(modelRequestGetToken.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<DataResponse<ModelGetToken>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/user/get/token',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DataResponse<ModelGetToken>.fromJson(
+      _result.data!,
+      (json) => ModelGetToken.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
+  @override
+  Future<DataResponse<ModelUser>> updateUser(modelUser) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(modelUser.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<DataResponse<ModelUser>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/user/update',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DataResponse<ModelUser>.fromJson(
+      _result.data!,
+      (json) => ModelUser.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
+  @override
+  Future<DataResponse<ModelUser>> blockUser(modelRequestBlock) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(modelRequestBlock.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<DataResponse<ModelUser>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/user/block',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DataResponse<ModelUser>.fromJson(
+      _result.data!,
+      (json) => ModelUser.fromJson(json as Map<String, dynamic>),
+    );
+    return value;
+  }
+
+  @override
   Future<DataResponse<bool>> createPin(modelRequestCreatePin) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

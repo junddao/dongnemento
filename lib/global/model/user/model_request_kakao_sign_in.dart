@@ -1,5 +1,8 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'model_request_kakao_sign_in.g.dart';
+
+@JsonSerializable()
 class ModelRequestKakaoSignIn {
   String name;
   String email;
@@ -10,23 +13,6 @@ class ModelRequestKakaoSignIn {
     required this.profileImage,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'email': email,
-      'profileImage': profileImage,
-    };
-  }
-
-  factory ModelRequestKakaoSignIn.fromMap(Map<String, dynamic> map) {
-    return ModelRequestKakaoSignIn(
-      name: map['name'],
-      email: map['email'],
-      profileImage: map['profileImage'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ModelRequestKakaoSignIn.fromJson(String source) => ModelRequestKakaoSignIn.fromMap(json.decode(source));
+  factory ModelRequestKakaoSignIn.fromJson(Map<String, dynamic> json) => _$ModelRequestKakaoSignInFromJson(json);
+  Map<String, dynamic> toJson() => _$ModelRequestKakaoSignInToJson(this);
 }

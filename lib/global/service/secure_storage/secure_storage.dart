@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:base_project/global/model/user/model_user.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -33,11 +35,12 @@ class SecureStorage {
 
   Future<ModelUser> readMe() async {
     String? meInfo = await _storage.read(key: _meKey);
-    return ModelUser.fromJson(meInfo!);
+
+    return ModelUser.fromJson(jsonDecode(meInfo!));
   }
 
   Future<void> writeMe(ModelUser me) async {
-    String meInfo = me.toJson();
+    String meInfo = jsonEncode(me.toJson());
     await _storage.write(key: _meKey, value: meInfo);
   }
 

@@ -1,5 +1,8 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'model_user.g.dart';
+
+@JsonSerializable()
 class ModelUser {
   String? id;
   String? email;
@@ -39,49 +42,8 @@ class ModelUser {
     this.updatedAt,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'email': email,
-      'name': name,
-      'introduce': introduce,
-      'profileImage': profileImage,
-      'password': password,
-      'isBlocked': isBlocked,
-      'social': social,
-      'pushEnabled': pushEnabled,
-      'lat': lat,
-      'lng': lng,
-      'address': address,
-      'blockedUserIds': blockedUserIds,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
-    };
-  }
-
-  factory ModelUser.fromMap(Map<String, dynamic> map) {
-    return ModelUser(
-      id: map['id'],
-      email: map['email'],
-      name: map['name'],
-      introduce: map['introduce'],
-      profileImage: map['profileImage'],
-      password: map['password'],
-      isBlocked: map['isBlocked'],
-      social: map['social'],
-      pushEnabled: map['pushEnabled'],
-      lat: map['lat']?.toDouble(),
-      lng: map['lng']?.toDouble(),
-      address: map['address'],
-      blockedUserIds: map['blockedUserIds'] != null ? List<String>.from(map['blockedUserIds']) : null,
-      createdAt: map['createdAt'],
-      updatedAt: map['updatedAt'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ModelUser.fromJson(String source) => ModelUser.fromMap(json.decode(source));
+  factory ModelUser.fromJson(Map<String, dynamic> json) => _$ModelUserFromJson(json);
+  Map<String, dynamic> toJson() => _$ModelUserToJson(this);
 
   ModelUser copyWith({
     String? id,

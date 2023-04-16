@@ -224,7 +224,7 @@ class _MorePageViewState extends State<MorePageView> {
                               .copyWith(address: _address, lat: _lat, lng: _lng, name: _textNameController.text);
 
                           // server 정보 update
-                          await context.read<MeCubit>().updateUser(updatedMe.toMap());
+                          await context.read<MeCubit>().updateUser(updatedMe);
                         },
                         type: ButtonType.normal,
                         width: SizeConfig.screenWidth),
