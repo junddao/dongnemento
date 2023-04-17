@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
 import 'package:base_project/global/component/du_loading.dart';
 import 'package:base_project/global/component/du_text_form_field.dart';
@@ -12,8 +14,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../global/bloc/auth/get_me/me_cubit.dart';
+import '../../global/bloc/file/file_cubit.dart';
 import '../../routes.dart';
 
 class MorePage extends StatefulWidget {
@@ -26,7 +30,14 @@ class MorePage extends StatefulWidget {
 class _MorePageState extends State<MorePage> {
   @override
   Widget build(BuildContext context) {
-    return const MorePageView();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => FileCubit(),
+        ),
+      ],
+      child: const MorePageView(),
+    );
   }
 }
 
@@ -40,6 +51,9 @@ class MorePageView extends StatefulWidget {
 class _MorePageViewState extends State<MorePageView> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _textNameController = TextEditingController();
+
+  final ImagePicker _picker = ImagePicker();
+  String? _imagePath;
 
   String _address = '';
   double? _lat;
@@ -154,7 +168,9 @@ class _MorePageViewState extends State<MorePageView> {
                     Row(
                       children: [
                         InkWell(
-                          onTap: () async {},
+                          onTap: () {
+                            _onImageButtonPressed();
+                          },
                           child: getProfileImage(),
                         ),
                         const SizedBox(width: 18),
@@ -239,46 +255,77 @@ class _MorePageViewState extends State<MorePageView> {
     );
   }
 
+  void _onImageButtonPressed() async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        context.read<FileCubit>().uploadImages([File(pickedFile.path)], 'profile');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('사진을 가져오지 못했습니다. 다시 시도해주세요.'),
+        ),
+      );
+    }
+  }
+
   Widget getProfileImage() {
-    return SizedBox(
-      height: 80,
-      width: 80,
-      child: Stack(
-        children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(300),
-              child: CachedNetworkImage(
-                imageUrl: defaultUser,
-                errorWidget: (context, url, error) => Image.network(defaultUser),
-                fit: BoxFit.cover,
-                height: 80,
-                width: 80,
-              )),
-          Positioned(
-            top: 60,
-            left: 60,
-            child: Container(
-              alignment: Alignment.center,
-              height: 20,
-              width: 20,
-              decoration: BoxDecoration(
-                  color: DUColors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(width: 1, color: DUColors.grey_06)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.camera_alt,
-                    color: DUColors.grey_06,
-                    size: 16,
+    return BlocConsumer<FileCubit, FileState>(
+      listener: ((context, state) {
+        if (state is FileError) {
+          DUDialog.showOneButtonDialog(context: context, title: '에러', subTitle: '사진 업로드에 실패했어요');
+        }
+      }),
+      builder: (context, state) {
+        if (state is FileLoading) {
+          return const DULoading();
+        }
+        if (state is FileLoaded) {
+          _imagePath = state.result.first;
+        }
+
+        return SizedBox(
+          height: 80,
+          width: 80,
+          child: Stack(
+            children: [
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(300),
+                  child: CachedNetworkImage(
+                    imageUrl: _imagePath ?? defaultUser,
+                    errorWidget: (context, url, error) => Image.network(defaultUser),
+                    fit: BoxFit.cover,
+                    height: 80,
+                    width: 80,
+                  )),
+              Positioned(
+                top: 60,
+                left: 60,
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 20,
+                  width: 20,
+                  decoration: BoxDecoration(
+                      color: DUColors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(width: 1, color: DUColors.grey_06)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(
+                        Icons.camera_alt,
+                        color: DUColors.grey_06,
+                        size: 16,
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

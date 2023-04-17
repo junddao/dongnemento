@@ -201,22 +201,31 @@ class ApiService {
     return response.data;
   }
 
-  Future<dynamic> postMultiPart(String url, List<File> files, String type) async {
+  Future<dynamic> postMultiPart(String url, List<File> files, String type, String dest) async {
     final token = await _getAuthorizationToken();
     logger.d(token);
 
     Response response;
     try {
       _multiPartHeaders['Authorization'] = 'Bearer $token';
-      var formData = FormData();
-      for (int i = 0; i < files.length; i++) {
-        formData.files.add(
-          MapEntry(
-            type,
-            await MultipartFile.fromFile(files[i].path),
-          ),
-        );
-      }
+
+      final List<MultipartFile> _files = files.map((img) => MultipartFile.fromFileSync(img.path)).toList();
+
+      FormData formData = FormData.fromMap({
+        type: _files,
+        'folder': dest,
+      });
+
+      // var formData = FormData();
+
+      // for (int i = 0; i < files.length; i++) {
+      //   formData.files.add(
+      //     MapEntry(
+      //       type,
+      //       await MultipartFile.fromFile(files[i].path),
+      //     ),
+      //   );
+      // }
 
       logger.d(url);
       response = await Dio().post(

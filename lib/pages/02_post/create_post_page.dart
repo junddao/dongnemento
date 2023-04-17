@@ -472,7 +472,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
     }).toList();
 
     if (files.isNotEmpty) {
-      context.read<FileCubit>().uploadImages(files);
+      context.read<FileCubit>().uploadImages(files, 'post');
     } else {
       _createPin();
     }
