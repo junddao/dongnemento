@@ -111,7 +111,17 @@ class _ProductPageViewState extends State<ProductPageView> {
     );
   }
 
-  void onProduct(String pinId, String userId) {
-    context.push(path.join(Routes.map, Routes.post, pinId, userId));
+  void onProduct(String pinId, String userId) async {
+    final result = await context.push<bool>(path.join(Routes.map, Routes.post, pinId, userId));
+
+    double lat = context.read<MeCubit>().me.lat ?? 0;
+    double lng = context.read<MeCubit>().me.lng ?? 0;
+
+    ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+      lat: lat,
+      lng: lng,
+      range: 3000,
+    );
+    context.read<GetPinsCubit>().getPins(modelRequestGetPin);
   }
 }

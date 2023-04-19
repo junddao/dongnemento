@@ -681,10 +681,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: b4bb06205ec607278b6fc23db238278417bca84a3905779cc68d1eb7afae37e2
+      sha256: "99c7fbd4f73da5268046374576af2f6fef970088038d626c5c689a359479af40"
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.0"
+    version: "6.5.7"
   google_maps_flutter:
     dependency: "direct main"
     description:

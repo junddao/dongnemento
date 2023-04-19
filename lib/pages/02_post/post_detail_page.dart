@@ -86,6 +86,8 @@ class PagePostDetailView extends StatefulWidget {
 class _PagePostDetailViewState extends State<PagePostDetailView> {
   final TextEditingController _tecMessage = TextEditingController();
 
+  bool isChanged = false;
+
   @override
   void initState() {
     super.initState();
@@ -109,7 +111,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
         icon: const Icon(Icons.arrow_back_ios),
         color: Colors.black,
         onPressed: () {
-          context.pop();
+          context.pop(isChanged);
         },
       ),
       backgroundColor: Colors.transparent,
@@ -192,16 +194,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                     if (value.state is CreatePinReplyLoaded) {
                       context.read<GetPinRepliesCubit>().getPinReplies(widget.id);
 
-                      //
-                      double lat = context.read<MeCubit>().me.lat ?? 0;
-                      double lng = context.read<MeCubit>().me.lng ?? 0;
-
-                      ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
-                        lat: lat,
-                        lng: lng,
-                        range: 3000,
-                      );
-                      context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+                      isChanged = true;
                     }
                     return BlocBuilder<GetPinCubit, GetPinState>(
                       builder: (context, state) {
@@ -215,15 +208,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                         }
                         if (state is GetPinLoaded) {
                           ModelResponsePin pin = state.result;
-
-                          double lat = context.read<MeCubit>().me.lat ?? 0;
-                          double lng = context.read<MeCubit>().me.lng ?? 0;
-                          ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
-                            lat: lat,
-                            lng: lng,
-                            range: 3000,
-                          );
-                          context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+                          isChanged = true;
 
                           return BlocConsumer<CreateReportCubit, CreateReportState>(
                             listener: (context, state) {

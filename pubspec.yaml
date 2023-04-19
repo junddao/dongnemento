@@ -49,7 +49,7 @@ dependencies:
   font_awesome_flutter: ^10.2.1
   freezed_annotation: ^2.1.0
   get_it: ^7.2.0
-  go_router: ^6.2.0
+  go_router: ^6.5.7
   google_maps_flutter: ^2.2.1
   graphql_flutter: ^5.1.0
   image_picker: ^0.8.7+3
