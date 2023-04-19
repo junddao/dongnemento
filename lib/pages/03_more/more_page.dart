@@ -65,6 +65,7 @@ class _MorePageViewState extends State<MorePageView> {
     _address = context.read<MeCubit>().me.address ?? '';
     _lat = context.read<MeCubit>().me.lat;
     _lng = context.read<MeCubit>().me.lng;
+    _imagePath = context.read<MeCubit>().me.profileImage;
     super.initState();
   }
 
@@ -234,10 +235,12 @@ class _MorePageViewState extends State<MorePageView> {
                     DUButton(
                         text: '수정하기',
                         press: () async {
-                          ModelUser updatedMe = context
-                              .read<MeCubit>()
-                              .me
-                              .copyWith(address: _address, lat: _lat, lng: _lng, name: _textNameController.text);
+                          ModelUser updatedMe = context.read<MeCubit>().me.copyWith(
+                              address: _address,
+                              lat: _lat,
+                              lng: _lng,
+                              name: _textNameController.text,
+                              profileImage: _imagePath);
 
                           // server 정보 update
                           await context.read<MeCubit>().updateUser(updatedMe);

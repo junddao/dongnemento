@@ -90,7 +90,7 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
           label: '주변 인기글',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite_sharp),
+          icon: Icon(Icons.my_library_books_outlined),
           label: '내가 쓴글',
         ),
         BottomNavigationBarItem(

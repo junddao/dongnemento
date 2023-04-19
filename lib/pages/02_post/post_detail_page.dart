@@ -191,6 +191,17 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                     final value = context.watch<CreatePinReplyCubit>();
                     if (value.state is CreatePinReplyLoaded) {
                       context.read<GetPinRepliesCubit>().getPinReplies(widget.id);
+
+                      //
+                      double lat = context.read<MeCubit>().me.lat ?? 0;
+                      double lng = context.read<MeCubit>().me.lng ?? 0;
+
+                      ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+                        lat: lat,
+                        lng: lng,
+                        range: 3000,
+                      );
+                      context.read<GetPinsCubit>().getPins(modelRequestGetPin);
                     }
                     return BlocBuilder<GetPinCubit, GetPinState>(
                       builder: (context, state) {
@@ -204,6 +215,15 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                         }
                         if (state is GetPinLoaded) {
                           ModelResponsePin pin = state.result;
+
+                          double lat = context.read<MeCubit>().me.lat ?? 0;
+                          double lng = context.read<MeCubit>().me.lng ?? 0;
+                          ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+                            lat: lat,
+                            lng: lng,
+                            range: 3000,
+                          );
+                          context.read<GetPinsCubit>().getPins(modelRequestGetPin);
 
                           return BlocConsumer<CreateReportCubit, CreateReportState>(
                             listener: (context, state) {
@@ -439,11 +459,6 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
             child: Row(
               children: [
-                InkWell(
-                  onTap: () {},
-                  child: const Icon(Icons.add_a_photo),
-                ),
-                const SizedBox(width: 10),
                 Expanded(
                   child: Container(
                     margin: const EdgeInsets.all(0),
