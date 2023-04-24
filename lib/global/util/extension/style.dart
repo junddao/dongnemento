@@ -111,6 +111,9 @@ extension TextStyleExtension on TextStyle {
   /// rgba(127, 218, 74, 1)
   TextStyle get right => copyWith(color: DUColors.right);
 
+  /// 0xffb9b6b6
+  TextStyle get pinkish_grey => copyWith(color: DUColors.pinkish_grey);
+
   /// 문자열 높이 조절
   ///
   /// height 1.0

@@ -5,6 +5,7 @@ import 'package:base_project/global/bloc/map/create_pin/create_pin_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
 import 'package:base_project/global/bloc/map/location/location_cubit.dart';
 import 'package:base_project/global/component/du_two_button_dialog.dart';
+import 'package:base_project/global/enum/category_type.dart';
 import 'package:base_project/global/model/pin/model_request_create_pin.dart';
 import 'package:base_project/global/model/pin/model_request_get_pin.dart';
 import 'package:base_project/global/style/constants.dart';
@@ -12,6 +13,7 @@ import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:base_project/pages/common/error_page.dart';
+import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -57,6 +59,9 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   final TextEditingController _bodyController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  final category = ValueNotifier<CategoryType>(CategoryType.daily);
+  double categoryScore = 40;
+
   List<String> imagePaths = [];
 
   LatLng? location;
@@ -77,7 +82,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: _body(),
+      body: SafeArea(child: _body()),
     );
   }
 
@@ -166,21 +171,25 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
                 physics: const ClampingScrollPhysics(),
                 keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
+                  padding: const EdgeInsets.symmetric(vertical: kDefaultVerticalPadding),
                   child: Form(
                     key: _formKey,
                     child: Column(
                       children: [
                         // 1. 제목
                         postTitle(),
-                        const SizedBox(height: 20),
+                        const Divider(thickness: 1),
                         // 2. 내용
                         postContents(),
-                        const SizedBox(height: 20),
+
+                        const Divider(thickness: 1),
                         // 3. 위치지정
+                        postCategory(),
+                        const Divider(thickness: 1),
+
                         postLocation(),
-                        const SizedBox(height: 20),
+
+                        const Divider(thickness: 1),
                         // 4. 이미지
                         postImages(),
                       ],
@@ -198,25 +207,14 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   postTitle() {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text('제목', style: DUTextStyle.size16M),
-            SizedBox(height: 40),
-          ],
-        ),
-        const SizedBox(height: 10),
         Container(
           height: 54,
           padding: const EdgeInsets.only(left: 16, right: 16, bottom: 4),
-          decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              border: Border.all(color: DUColors.pinkish_grey, width: 1)),
           child: TextFormField(
             controller: _titleController,
             decoration: InputDecoration(
               hintText: "제목을 입력해주세요.",
-              hintStyle: DUTextStyle.size16.grey3,
+              hintStyle: DUTextStyle.size16.grey2,
               labelStyle: const TextStyle(color: Colors.transparent),
               border: const UnderlineInputBorder(
                 borderSide: BorderSide.none,
@@ -234,25 +232,18 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   postContents() {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text('내용', style: DUTextStyle.size16M),
-          ],
-        ),
-        const SizedBox(height: 10),
         Container(
           height: 150,
           padding: const EdgeInsets.only(left: 16, right: 16, bottom: 4),
-          decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              border: Border.all(color: DUColors.pinkish_grey, width: 1)),
+          // decoration: BoxDecoration(
+          //     borderRadius: const BorderRadius.all(Radius.circular(8)),
+          //     border: Border.all(color: DUColors.pinkish_grey, width: 1)),
           child: TextFormField(
             maxLines: null,
             controller: _bodyController,
             decoration: InputDecoration(
               hintText: "내용을 입력해주세요.",
-              hintStyle: DUTextStyle.size16.grey3,
+              hintStyle: DUTextStyle.size16.grey2,
               labelStyle: const TextStyle(color: Colors.transparent),
               border: const UnderlineInputBorder(
                 borderSide: BorderSide.none,
@@ -267,6 +258,134 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
     );
   }
 
+  postCategory() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: kDefaultVerticalPadding),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            alignment: Alignment.centerLeft,
+            child: Row(
+              children: [
+                const Icon(Icons.category, color: DUColors.pinkish_grey),
+                const SizedBox(width: 4),
+                Text(
+                  '카테고리',
+                  style: DUTextStyle.size14.pinkish_grey,
+                ),
+              ],
+            ),
+          ),
+          ChipsChoice<CategoryType>.single(
+            value: category.value,
+            onChanged: (val) => setState(() => category.value = val),
+            choiceItems: C2Choice.listFrom<CategoryType, String>(
+              source: CategoryType.values.map((e) => e.title).toList(),
+              value: (i, v) => CategoryType.values[i],
+              label: (i, v) => v,
+            ),
+            choiceCheckmark: true,
+            wrapped: true,
+            choiceStyle: C2ChipStyle.outlined(
+              // borderWidth: 1,
+              color: DUColors.grey2,
+              selectedStyle: const C2ChipStyle(
+                foregroundStyle: DUTextStyle.size14M,
+                borderColor: DUColors.tomato,
+                foregroundColor: DUColors.tomato,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            alignment: Alignment.centerLeft,
+            child: Row(
+              children: [
+                const Icon(Icons.numbers, color: DUColors.pinkish_grey),
+                const SizedBox(width: 4),
+                Text(
+                  '관심점수',
+                  style: DUTextStyle.size14.pinkish_grey,
+                ),
+                const SizedBox(width: 4),
+                getScoreImage(),
+
+                // Text('${categoryScore.round()}', style: DUTextStyle.size16B.tomato),
+              ],
+            ),
+          ),
+          SliderTheme(
+            data: const SliderThemeData(
+              showValueIndicator: ShowValueIndicator.always,
+              valueIndicatorShape: PaddleSliderValueIndicatorShape(),
+            ),
+            child: Slider(
+              value: categoryScore,
+              label: categoryScore.round().toString(),
+              onChanged: (value) {
+                setState(() {
+                  categoryScore = value;
+                });
+              },
+              min: 0,
+              max: 100,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getScoreImage() {
+    if (categoryScore < 20) {
+      return Row(
+        children: [
+          Image.asset('assets/images/b3.png', height: 40),
+          const SizedBox(width: 4),
+          const Text('혼자여도 괜찮아요', style: DUTextStyle.size14, overflow: TextOverflow.ellipsis),
+        ],
+      );
+    } else if (categoryScore < 40) {
+      return Row(
+        children: [
+          Image.asset('assets/images/b2.png', height: 40),
+          const SizedBox(width: 4),
+          const Text('작은 관심이 필요해요', style: DUTextStyle.size14, overflow: TextOverflow.ellipsis),
+        ],
+      );
+    } else if (categoryScore < 60) {
+      return Row(
+        children: [
+          Image.asset('assets/images/b4.png', height: 40),
+          const SizedBox(width: 4),
+          const Text('함께하면 좋겠어요', style: DUTextStyle.size14B, overflow: TextOverflow.ellipsis),
+        ],
+      );
+    } else if (categoryScore < 80) {
+      return Row(
+        children: [
+          Image.asset('assets/images/b5.png', height: 40),
+          const SizedBox(width: 4),
+          const Text('관심이 많이..필요해요...', style: DUTextStyle.size16B, overflow: TextOverflow.ellipsis),
+        ],
+      );
+    } else {
+      return Row(
+        children: [
+          Image.asset('assets/images/b1.png', height: 40),
+          const SizedBox(width: 4),
+          const Text(
+            '미친듯이 원해요!!.',
+            style: DUTextStyle.size18B,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+    }
+  }
+
   postLocation() {
     return BlocBuilder<LocationCubit, LocationState>(
       builder: (context, state) {
@@ -277,43 +396,30 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
         if (state is LocationLoaded) {
           address = state.postLocation!.address;
         }
-        return Column(children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Text('장소', style: DUTextStyle.size16M),
-              const SizedBox(width: 8),
-              InkWell(
-                onTap: () {
-                  getMyLocation();
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: DUColors.greyish),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text('현재 위치로 선택', style: DUTextStyle.size12.grey0),
-                ),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
+          child: Column(children: [
+            InkWell(
+              onTap: () {
+                LatLng location = LatLng(state.postLocation!.lat!, state.postLocation!.lng!);
+                context.push(Routes.selectLocation, extra: {'location': location});
+              },
+              child: Row(
+                children: [
+                  const Icon(Icons.location_pin, color: DUColors.pinkish_grey),
+                  const SizedBox(width: 4),
+                  Expanded(
+                      child: Text(
+                    address ?? '위치 선택',
+                    maxLines: 2,
+                    style: DUTextStyle.size14M.tomato,
+                    overflow: TextOverflow.ellipsis,
+                  )),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          InkWell(
-            onTap: () {
-              LatLng location = LatLng(state.postLocation!.lat!, state.postLocation!.lng!);
-              context.push(Routes.selectLocation, extra: {'location': location});
-            },
-            child: Row(
-              children: [
-                const Icon(Icons.location_pin, color: DUColors.pinkish_grey),
-                const SizedBox(width: 10),
-                Text(address ?? '위치 선택', style: DUTextStyle.size14.grey0),
-              ],
             ),
-          ),
-          const SizedBox(height: 10),
-        ]);
+          ]),
+        );
       },
     );
   }
@@ -327,33 +433,38 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   }
 
   postImages() {
-    return Column(children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: const [
-          Text('사진', style: DUTextStyle.size16M),
-        ],
-      ),
-      const SizedBox(height: 10),
-      SizedBox(
-        height: 80,
-        width: double.infinity,
-        child: Row(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
+      child: Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            getAddPhotoBtn(),
-            Expanded(
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: imagePaths.length,
-                itemBuilder: (context, index) {
-                  return getImages(index);
-                },
-              ),
-            ),
+            const Icon(Icons.photo, color: DUColors.pinkish_grey),
+            const SizedBox(width: 4),
+            Text('사진', style: DUTextStyle.size14.pinkish_grey),
           ],
         ),
-      ),
-    ]);
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 80,
+          width: double.infinity,
+          child: Row(
+            children: [
+              getAddPhotoBtn(),
+              Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: imagePaths.length,
+                  itemBuilder: (context, index) {
+                    return getImages(index);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ]),
+    );
   }
 
   Widget getImages(index) {
@@ -489,6 +600,8 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
       lng: location!.longitude,
       title: _titleController.text,
       body: _bodyController.text,
+      category: category.value,
+      categoryScore: categoryScore.toInt(),
       images: imagePaths,
     );
 

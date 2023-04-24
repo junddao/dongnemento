@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../enum/category_type.dart';
+
 part 'model_response_pin.g.dart';
 
 @JsonSerializable()
@@ -12,6 +14,8 @@ class ModelResponsePin {
   int? replyCount;
   String? body;
   List<String>? images;
+  CategoryType category;
+  int categoryScore;
   String userId;
   String? userName;
   String? userProfileImage;
@@ -31,6 +35,8 @@ class ModelResponsePin {
     this.replyCount,
     this.body,
     this.images,
+    required this.category,
+    required this.categoryScore,
     required this.userId,
     this.userName,
     this.userProfileImage,
@@ -55,6 +61,8 @@ class ModelResponsePin {
     int? replyCount,
     String? body,
     List<String>? images,
+    CategoryType? category,
+    int? categoryScore,
     String? userId,
     String? userName,
     String? userProfileImage,
@@ -74,6 +82,8 @@ class ModelResponsePin {
       replyCount: replyCount ?? this.replyCount,
       body: body ?? this.body,
       images: images ?? this.images,
+      category: category ?? this.category,
+      categoryScore: categoryScore ?? this.categoryScore,
       userId: userId ?? this.userId,
       userName: userName ?? this.userName,
       userProfileImage: userProfileImage ?? this.userProfileImage,

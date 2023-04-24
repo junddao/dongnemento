@@ -14,7 +14,7 @@ const kDefaultCollapseHeight = 100.0;
 
 const kDefaultPadding = 24.0;
 const kDefaultVerticalPadding = 10.0;
-const kDefaultHorizontalPadding = 24.0;
+const kDefaultHorizontalPadding = 16.0;
 
 // default shadow
 const kDefaultShadow = BoxShadow(

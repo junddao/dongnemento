@@ -13,6 +13,8 @@ ModelResponsePins _$ModelResponsePinsFromJson(Map<String, dynamic> json) =>
       lng: (json['lng'] as num).toDouble(),
       userId: json['userId'] as String,
       userName: json['userName'] as String,
+      category: $enumDecode(_$CategoryTypeEnumMap, json['category']),
+      categoryScore: json['categoryScore'] as int,
       isUserBlocked: json['isUserBlocked'] as bool,
       likeCount: json['likeCount'] as int?,
       isLiked: json['isLiked'] as bool?,
@@ -32,6 +34,8 @@ Map<String, dynamic> _$ModelResponsePinsToJson(ModelResponsePins instance) =>
       'lng': instance.lng,
       'userId': instance.userId,
       'userName': instance.userName,
+      'category': _$CategoryTypeEnumMap[instance.category]!,
+      'categoryScore': instance.categoryScore,
       'isUserBlocked': instance.isUserBlocked,
       'likeCount': instance.likeCount,
       'isLiked': instance.isLiked,
@@ -42,3 +46,12 @@ Map<String, dynamic> _$ModelResponsePinsToJson(ModelResponsePins instance) =>
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
     };
+
+const _$CategoryTypeEnumMap = {
+  CategoryType.daily: 'DAILY',
+  CategoryType.meetup: 'MEETUP',
+  CategoryType.drink: 'DRINK',
+  CategoryType.eat: 'EAT',
+  CategoryType.trade: 'TRADE',
+  CategoryType.information: 'INFORMATION',
+};
