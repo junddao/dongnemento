@@ -241,7 +241,7 @@ class _RestClient implements RestClient {
     _data.addAll(modelRequestBlock.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<DataResponse<ModelUser>>(Options(
-      method: 'POST',
+      method: 'PUT',
       headers: _headers,
       extra: _extra,
     )

@@ -36,7 +36,7 @@ abstract class RestClient {
   @POST('/user/update')
   Future<DataResponse<ModelUser>> updateUser(@Body() ModelUser modelUser);
 
-  @POST('/user/block')
+  @PUT('/user/block')
   Future<DataResponse<ModelUser>> blockUser(@Body() ModelRequestBlock modelRequestBlock);
 
   @POST('/pin/create')
