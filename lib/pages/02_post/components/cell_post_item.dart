@@ -69,25 +69,38 @@ class CellPostItem extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              pin.title ?? "",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: DUTextStyle.size14B,
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: DUColors.tomato),
+                                  ),
+                                  child: Text('# ${pin.category.title}', style: DUTextStyle.size10.tomato),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  pin.title ?? "",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: DUTextStyle.size14B,
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 8),
                             Text(
                               pin.body ?? '',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: DUTextStyle.size12.grey2,
+                              style: DUTextStyle.size12,
                             ),
                             const SizedBox(height: 8),
                             Column(
                               children: [
                                 Row(
                                   children: [
-                                    Text(pin.userName, style: DUTextStyle.size12M),
+                                    Text(pin.userName, style: DUTextStyle.size12B),
                                     const Spacer(),
                                     const Icon(Icons.favorite, color: DUColors.tomato, size: 10),
                                     const SizedBox(width: 4),

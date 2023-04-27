@@ -310,9 +310,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
                   style: DUTextStyle.size14.pinkish_grey,
                 ),
                 const SizedBox(width: 4),
-                getScoreImage(),
-
-                // Text('${categoryScore.round()}', style: DUTextStyle.size16B.tomato),
+                Text('${categoryScore.round()}', style: DUTextStyle.size20B.tomato),
               ],
             ),
           ),
@@ -336,54 +334,6 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
         ],
       ),
     );
-  }
-
-  Widget getScoreImage() {
-    if (categoryScore < 20) {
-      return Row(
-        children: [
-          Image.asset('assets/images/b3.png', height: 40),
-          const SizedBox(width: 4),
-          const Text('혼자여도 괜찮아요', style: DUTextStyle.size14, overflow: TextOverflow.ellipsis),
-        ],
-      );
-    } else if (categoryScore < 40) {
-      return Row(
-        children: [
-          Image.asset('assets/images/b2.png', height: 40),
-          const SizedBox(width: 4),
-          const Text('작은 관심이 필요해요', style: DUTextStyle.size14, overflow: TextOverflow.ellipsis),
-        ],
-      );
-    } else if (categoryScore < 60) {
-      return Row(
-        children: [
-          Image.asset('assets/images/b4.png', height: 40),
-          const SizedBox(width: 4),
-          const Text('함께하면 좋겠어요', style: DUTextStyle.size14B, overflow: TextOverflow.ellipsis),
-        ],
-      );
-    } else if (categoryScore < 80) {
-      return Row(
-        children: [
-          Image.asset('assets/images/b5.png', height: 40),
-          const SizedBox(width: 4),
-          const Text('관심이 많이..필요해요...', style: DUTextStyle.size16B, overflow: TextOverflow.ellipsis),
-        ],
-      );
-    } else {
-      return Row(
-        children: [
-          Image.asset('assets/images/b1.png', height: 40),
-          const SizedBox(width: 4),
-          const Text(
-            '미친듯이 원해요!!.',
-            style: DUTextStyle.size18B,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      );
-    }
   }
 
   postLocation() {
@@ -412,7 +362,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
                       child: Text(
                     address ?? '위치 선택',
                     maxLines: 2,
-                    style: DUTextStyle.size14M.tomato,
+                    style: DUTextStyle.size14B.tomato,
                     overflow: TextOverflow.ellipsis,
                   )),
                 ],
@@ -422,14 +372,6 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
         );
       },
     );
-  }
-
-  getMyLocation() {
-    double lng = context.read<MeCubit>().me.lng!;
-    double lat = context.read<MeCubit>().me.lat!;
-    LatLng location = LatLng(lat, lng);
-
-    context.read<LocationCubit>().setPostLocation(location);
   }
 
   postImages() {

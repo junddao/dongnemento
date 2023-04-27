@@ -28,6 +28,7 @@ import '../../global/model/pin/model_response_pin.dart';
 import '../../global/model/report/model_request_report.dart';
 import '../../global/model/user/model_request_block.dart';
 import '../../global/style/du_button.dart';
+import '../../global/style/du_colors.dart';
 import '../../routes.dart';
 
 class PagePostDetail extends StatefulWidget {
@@ -274,9 +275,19 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                     _buildUserProfile(pin),
                                                     const Divider(height: 8),
                                                     Text(pin.title!, style: DUTextStyle.size18B),
-                                                    const SizedBox(height: 20),
+                                                    const SizedBox(height: 16),
                                                     Text(pin.body ?? '글이 없어요.'),
                                                     const SizedBox(height: 16),
+                                                    Container(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        border: Border.all(color: DUColors.tomato),
+                                                      ),
+                                                      child: Text('# ${pin.category.title}',
+                                                          style: DUTextStyle.size10.tomato),
+                                                    ),
+                                                    const SizedBox(height: 8),
                                                     Row(
                                                       children: [
                                                         LikeButton(

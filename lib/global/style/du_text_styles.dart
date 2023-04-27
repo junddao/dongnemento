@@ -174,7 +174,7 @@ class DUTextStyle {
   /// Size : 10
   static const size10B = TextStyle(
     fontWeight: FontWeight.w700,
-    fontSize: 20,
+    fontSize: 10,
   );
 
   /// Weight : Regular(400)

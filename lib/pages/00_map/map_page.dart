@@ -21,6 +21,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:path/path.dart' as path;
 
 import '../../global/model/model.dart';
+import '../../global/util/util.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -175,8 +176,6 @@ class _MapPageViewState extends State<MapPageView> {
     double lng = DataConvert.roundDouble(point.longitude, 6);
     LatLng location = LatLng(lat, lng);
 
-    print('handelTap');
-
     // 글을 남길 위치에 임시 마커를 박는다.
     _temporaryMaker.clear();
     addTemporaryMarker(0, location);
@@ -209,7 +208,7 @@ class _MapPageViewState extends State<MapPageView> {
       customIcon = await createCustomMarkerBitmap(pin.title!, pinColor);
       final marker = Marker(
           markerId: MarkerId(pin.id),
-          position: LatLng(pin.lat ?? 0, pin.lng ?? 0),
+          position: LatLng(pin.lat, pin.lng),
           icon: customIcon!,
           onTap: () {
             print('marker onTap()');
@@ -395,6 +394,8 @@ class _MapPageViewState extends State<MapPageView> {
     List<Marker> markers = [];
     for (var pin in pins) {
       Color pinColor = DUColors.tomato;
+      pinColor = setPinColor(pin);
+
       if ((context.read<MeCubit>().me.blockedUserIds ?? []).contains(pin.userId)) pinColor = DUColors.tomato_10;
       BitmapDescriptor? customIcon = await createCustomMarkerBitmap(pin.title ?? '', pinColor);
       final marker = Marker(
