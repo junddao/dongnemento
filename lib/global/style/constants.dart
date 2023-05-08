@@ -31,7 +31,8 @@ class SizeConfig {
   static Orientation? orientation;
 
   void init(BuildContext context) {
-    _mediaQueryData = MediaQuery.of(context);
+    // _mediaQueryData = MediaQuery.of(context);
+    _mediaQueryData = ((context.findAncestorWidgetOfExactType<MediaQuery>())!).data;
     screenWidth = _mediaQueryData.size.width;
     screenHeight = _mediaQueryData.size.height;
     orientation = _mediaQueryData.orientation;

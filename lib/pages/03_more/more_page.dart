@@ -55,16 +55,10 @@ class _MorePageViewState extends State<MorePageView> {
   final ImagePicker _picker = ImagePicker();
   String? _imagePath;
 
-  String _address = '';
-  double? _lat;
-  double? _lng;
-
   @override
   void initState() {
     _textNameController.text = context.read<MeCubit>().me.name ?? '';
-    _address = context.read<MeCubit>().me.address ?? '';
-    _lat = context.read<MeCubit>().me.lat;
-    _lng = context.read<MeCubit>().me.lng;
+
     _imagePath = context.read<MeCubit>().me.profileImage;
     super.initState();
   }
@@ -222,11 +216,11 @@ class _MorePageViewState extends State<MorePageView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // Text(context.watch<SingletonMeCubit>().me.address ?? ''),
-                        Text(_address),
+                        Text(context.watch<MeCubit>().me.address ?? ''),
                         DUButton(
                             text: '변경하기',
                             press: () {
-                              context.push(Routes.address, extra: {'setAddress': setAddress});
+                              context.push(Routes.address);
                             },
                             type: ButtonType.transparent),
                       ],
@@ -236,9 +230,9 @@ class _MorePageViewState extends State<MorePageView> {
                         text: '수정하기',
                         press: () async {
                           ModelUser updatedMe = context.read<MeCubit>().me.copyWith(
-                              address: _address,
-                              lat: _lat,
-                              lng: _lng,
+                              address: context.read<MeCubit>().me.address,
+                              lat: context.read<MeCubit>().me.lat,
+                              lng: context.read<MeCubit>().me.lng,
                               name: _textNameController.text,
                               profileImage: _imagePath);
 
@@ -334,12 +328,5 @@ class _MorePageViewState extends State<MorePageView> {
 
   void _logout() async {
     context.read<AuthenticationBloc>().add(AuthenticationSignOut());
-  }
-
-  setAddress(String address, double? lat, double? lng) {
-    _address = address;
-    _lat = lat;
-    _lng = lng;
-    setState(() {});
   }
 }

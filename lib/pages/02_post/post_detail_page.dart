@@ -308,7 +308,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                         context.read<MeCubit>().me.id == pin.userId
                                                             ? TextButton(
                                                                 onPressed: () {
-                                                                  context.read<DeletePinCubit>().deletePin(pin.id!);
+                                                                  context.read<DeletePinCubit>().deletePin(pin.id);
                                                                 },
                                                                 child: Text('삭제하기', style: DUTextStyle.size12B.tomato),
                                                               )

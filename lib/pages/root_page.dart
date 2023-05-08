@@ -37,13 +37,13 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       body: _body(),
     );
   }
 
   Widget _body() {
-    SizeConfig().init(context);
     return const Center(
       child: CircularProgressIndicator(),
     );

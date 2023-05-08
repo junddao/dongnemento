@@ -46,10 +46,6 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
   final TextEditingController _tecPasswordCheck = TextEditingController();
   final TextEditingController _tecNickname = TextEditingController();
 
-  String? _address;
-  double? _lat;
-  double? _lng;
-
   @override
   void dispose() {
     _tecEmail.dispose();
@@ -168,15 +164,15 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                               },
                             ),
                             const SizedBox(height: 24),
-                            Text('주소 입력하기', style: DUTextStyle.size18B),
+                            const Text('주소 입력하기', style: DUTextStyle.size18B),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(_address ?? '주소를 입력해주세요'),
+                                Text(context.watch<MeCubit>().me.address ?? '주소를 입력해주세요'),
                                 DUButton(
                                     text: '입력하기',
                                     press: () {
-                                      context.push('/address', extra: {'setAddress': setAddress});
+                                      context.push<String>('/address');
                                     },
                                     type: ButtonType.transparent),
                               ],
@@ -230,17 +226,5 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
     );
     // 1. signUp
     await context.read<SignUpCubit>().signUp(modelRequestSignUp);
-  }
-
-  setAddress(String address, double? lat, double? lng) {
-    _address = address;
-    _lat = lat;
-    _lng = lng;
-
-    context.read<MeCubit>().me.lat = lat;
-    context.read<MeCubit>().me.lng = lng;
-    context.read<MeCubit>().me.address = address;
-
-    setState(() {});
   }
 }

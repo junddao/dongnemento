@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/pages/00_etc/page_confirm.dart';
 import 'package:base_project/pages/00_map/map_page.dart';
@@ -61,6 +62,7 @@ class AppRouter extends Bloc {
 
   late final _goRouter = GoRouter(
     redirect: (context, state) async {
+      SizeConfig().init(context);
       if (prevAuthState == authBloc.state) {
         return null;
       }
@@ -88,8 +90,8 @@ class AppRouter extends Bloc {
       } else {
         logger.d('?? auth else 탑니다.');
       }
-
-      return null;
+      return Routes.login;
+      // return null;
     },
     navigatorKey: rootNavigatorKey,
     refreshListenable: GoRouterRefreshStream(authBloc.stream),
@@ -195,12 +197,8 @@ class AppRouter extends Bloc {
       GoRoute(
         path: Routes.address,
         pageBuilder: (context, state) {
-          final Map<String, Function> params = state.extra! as Map<String, Function>;
-          Function setAddress = params['setAddress'] as Function;
-          return MaterialPage(
-            child: AddressPage(
-              setAddress: setAddress,
-            ),
+          return const MaterialPage(
+            child: AddressPage(),
           );
         },
       ),

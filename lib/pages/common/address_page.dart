@@ -8,12 +8,13 @@ import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class AddressPage extends StatefulWidget {
-  const AddressPage({super.key, required this.setAddress});
+import '../../global/bloc/auth/get_me/me_cubit.dart';
 
-  final Function setAddress;
+class AddressPage extends StatefulWidget {
+  const AddressPage({super.key});
 
   @override
   State<AddressPage> createState() => _AddressPageState();
@@ -168,11 +169,9 @@ class _AddressPageState extends State<AddressPage> {
                             ],
                           ),
                           onTap: () {
-                            widget.setAddress(
-                              item.address_name,
-                              double.parse(item.y),
-                              double.parse(item.x),
-                            );
+                            context.read<MeCubit>().me.lat = double.parse(item.x);
+                            context.read<MeCubit>().me.lng = double.parse(item.y);
+                            context.read<MeCubit>().me.address = item.address_name;
 
                             context.pop();
                           },
