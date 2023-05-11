@@ -29,7 +29,6 @@ class MeCubit extends Cubit<MeState> {
     }
 
     me = response.data.first;
-    await SecureStorage.instance.writeMe(me);
 
     emit(MeLoaded(me: response.data.first));
   }
@@ -55,7 +54,6 @@ class MeCubit extends Cubit<MeState> {
     }
 
     me = response.data.first;
-    await SecureStorage.instance.writeMe(me);
 
     emit(MeLoaded(me: response.data.first));
   }

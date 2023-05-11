@@ -169,8 +169,8 @@ class _AddressPageState extends State<AddressPage> {
                             ],
                           ),
                           onTap: () {
-                            context.read<MeCubit>().me.lat = double.parse(item.x);
-                            context.read<MeCubit>().me.lng = double.parse(item.y);
+                            context.read<MeCubit>().me.lng = double.parse(item.x);
+                            context.read<MeCubit>().me.lat = double.parse(item.y);
                             context.read<MeCubit>().me.address = item.address_name;
 
                             context.pop();

@@ -47,12 +47,7 @@ class _PageSetLocationState extends State<PageSetLocation> {
 
   Widget _body() {
     SizeConfig().init(context);
-    return BlocConsumer<MeCubit, MeState>(
-      listener: (context, state) {
-        if (state is MeLoaded) {
-          context.push(Routes.map);
-        }
-      },
+    return BlocBuilder<MeCubit, MeState>(
       builder: (context, state) {
         if (state is MeLoading) {
           return const Center(child: CircularProgressIndicator());
@@ -79,8 +74,10 @@ class _PageSetLocationState extends State<PageSetLocation> {
                   ],
                 ),
                 DUButton(
-                  press: () {
-                    context.push(Routes.address, extra: {'setAddress': setAddress});
+                  press: () async {
+                    context.push(Routes.address).then((value) {
+                      context.push(Routes.map);
+                    });
                   },
                   text: '주소로 위치지정',
                   fontWeight: FontWeight.bold,
@@ -98,7 +95,7 @@ class _PageSetLocationState extends State<PageSetLocation> {
     ModelUser updatedMe = context.read<MeCubit>().me.copyWith(address: address, lat: lat, lng: lng);
 
     // server 정보 update
-    await context.read<MeCubit>().updateUser(updatedMe);
+
     // updateMe 필요
     // context.read<GetMeCubit>().me.copyWith(address: address, lat: lat, lng: lng);
   }
