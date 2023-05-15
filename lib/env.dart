@@ -6,7 +6,7 @@ enum OpMode {
   product,
 }
 
-const _prodApiBaseUrl = 'http://43.200.119.214';
+const _prodApiBaseUrl = 'http://43.200.119.214/prod';
 const _prodApiAuthUrl = '$_prodApiBaseUrl$_apiAuth';
 const _prodApiMapUrl = '$_prodApiBaseUrl$_apiMap';
 const _prodApiPinUrl = '$_prodApiBaseUrl$_apiPin';
@@ -17,8 +17,9 @@ const _prodApiReportUrl = '$_prodApiBaseUrl$_apiReport';
 
 // const _devApiBaseUrl = 'http://192.168.1.82:17008'; // 06
 // const _devApiBaseUrl = 'http://192.168.1.47:17008'; // 05
-// const _devApiBaseUrl = 'http://43.200.119.214'; // aws
-const _devApiBaseUrl = 'http://192.168.2.40:17009'; // theego
+// const _devApiBaseUrl = 'http://43.200.119.214/prod_api'; // aws
+const _devApiBaseUrl = 'http://43.200.119.214/dev'; // aws
+// const _devApiBaseUrl = 'http://192.168.2.40:17009'; // theego
 // const _devApiBaseUrl = 'http://192.168.0.100:17008'; // home
 
 const _devApiAuthUrl = '$_devApiBaseUrl$_apiAuth';
