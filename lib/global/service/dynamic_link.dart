@@ -92,7 +92,7 @@ class DynamicLink {
     String packageName = '';
 
     if (Env.opMode == OpMode.dev) packageName = 'com.jj.dongnesosik.dev';
-    if (Env.opMode == OpMode.product) packageName = 'com.jj.dongnesosik';
+    if (Env.opMode == OpMode.prod) packageName = 'com.jj.dongnesosik';
 
     String dynamicLinkPrefix = 'https://dongnesosik.page.link';
     final dynamicLinkParams = DynamicLinkParameters(

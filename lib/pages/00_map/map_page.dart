@@ -289,24 +289,6 @@ class _MapPageViewState extends State<MapPageView> {
       ..addPolygon(points, false)
       ..close();
 
-    // final tailPath = Path()
-    //   ..cubicTo(
-    //     tailStartPoint.x + (tailSize.width * 0.4),
-    //     tailStartPoint.y,
-    //     tailStartPoint.x + (tailSize.width * 0.6),
-    //     tailStartPoint.y + (tailSize.height * 0.2),
-    //     tailStartPoint.x + tailSize.width / 2, // 목적지 x
-    //     tailStartPoint.y + tailSize.height, // 목적지 y
-    //   )
-    //   ..cubicTo(
-    //     (tailStartPoint.x + tailSize.width / 2) + (tailSize.width * 0.2),
-    //     tailStartPoint.y + tailSize.height,
-    //     tailStartPoint.x + tailSize.width,
-    //     tailStartPoint.y + (tailSize.height * 0.3),
-    //     tailStartPoint.x + tailSize.width, // 목적지 x
-    //     tailStartPoint.y, // 목적지 y
-    //   );
-
     bubblePath.addPath(tailPath, Offset(0, 0));
 
     canvas.drawPath(bubblePath, tagPaint);

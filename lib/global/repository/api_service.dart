@@ -212,7 +212,7 @@ class ApiService {
       final List<MultipartFile> _files = files.map((img) => MultipartFile.fromFileSync(img.path)).toList();
 
       FormData formData = FormData.fromMap({
-        type: _files,
+        'file': _files,
         'folder': dest,
       });
 

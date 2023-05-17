@@ -20,6 +20,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:images_picker/images_picker.dart';
 
+import '../../env.dart';
 import '../../global/bloc/auth/get_me/me_cubit.dart';
 import '../../routes.dart';
 
@@ -525,7 +526,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
     }).toList();
 
     if (files.isNotEmpty) {
-      context.read<FileCubit>().uploadImages(files, 'post');
+      context.read<FileCubit>().uploadImages(files, '${Env.opMode.name}/post');
     } else {
       _createPin();
     }

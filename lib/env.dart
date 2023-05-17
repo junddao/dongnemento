@@ -3,7 +3,7 @@ import 'package:base_project/env/environment.dart';
 enum OpMode {
   unknown,
   dev,
-  product,
+  prod,
 }
 
 const _prodApiBaseUrl = 'http://43.200.119.214/prod';
@@ -72,7 +72,7 @@ class Env {
     if (Environment.buildType == BuildType.dev) {
       _mode = OpMode.dev;
     } else if (Environment.buildType == BuildType.prod) {
-      _mode = OpMode.product;
+      _mode = OpMode.prod;
     } else {
       _mode = OpMode.dev;
     }
@@ -84,7 +84,7 @@ class Env {
     _mode = mode;
 
     switch (mode) {
-      case OpMode.product: //운영 모드
+      case OpMode.prod: //운영 모드
         _apiBaseUrl = _prodApiBaseUrl;
         _apiAuthUrl = _prodApiAuthUrl;
         _apiMapUrl = _prodApiMapUrl;

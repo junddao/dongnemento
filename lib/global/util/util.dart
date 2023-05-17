@@ -53,6 +53,6 @@ Color setPinColor(ModelResponsePins pin) {
   if (pin.category == CategoryType.trade) {
     return DUColors.violet;
   } else {
-    return DUColors.brown_grey;
+    return DUColors.brownish_grey;
   }
 }
