@@ -15,10 +15,9 @@ import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 import 'firebase_options.dart' as firebase_option;
-import 'firebase_options_dev.dart' as firebase_option_dev;
 import 'global/service/dynamic_link.dart';
 
-void mainCommon() async {
+void main() async {
   KakaoSdk.init(nativeAppKey: '8548a68be13838496d1f23538f9f8ce7');
   //앱 세팅
   await platformSetup();
@@ -34,17 +33,11 @@ Future<void> platformSetup() async {
   // 기본설정
   Env();
 
-  if (Env.opMode == OpMode.dev) {
-    await Firebase.initializeApp(
-      name: 'dongnesosik_dev',
-      options: firebase_option_dev.DefaultFirebaseOptions.currentPlatform,
-    );
-  } else {
-    await Firebase.initializeApp(
-      name: 'dongnesosik',
-      options: firebase_option.DefaultFirebaseOptions.currentPlatform,
-    );
-  }
+  await Firebase.initializeApp(
+    name: 'dongnesosik',
+    options: firebase_option.DefaultFirebaseOptions.currentPlatform,
+  );
+
   // firebase 초기화
   // await FCMWrapper.instance.initialize();
 

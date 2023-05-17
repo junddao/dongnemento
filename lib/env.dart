@@ -1,4 +1,4 @@
-import 'package:base_project/env/environment.dart';
+import 'package:flutter/foundation.dart';
 
 enum OpMode {
   unknown,
@@ -69,12 +69,10 @@ class Env {
     return _instance!;
   }
   Env._internal() {
-    if (Environment.buildType == BuildType.dev) {
+    if (kDebugMode) {
       _mode = OpMode.dev;
-    } else if (Environment.buildType == BuildType.prod) {
-      _mode = OpMode.prod;
     } else {
-      _mode = OpMode.dev;
+      _mode = OpMode.prod;
     }
 
     changeMode(_mode);

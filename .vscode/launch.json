@@ -20,46 +20,6 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"
-    },
-    {
-      "name": "dev",
-      "type": "dart",
-      "request": "launch",
-      "program": "lib/env/dev.dart",
-      "args": [
-          "--flavor=dev"
-      ]
-    },
-    {
-        "name": "stage",
-        "type": "dart",
-        "request": "launch",
-        "program": "lib/env/stage.dart",
-        "args": [
-            "--flavor=stage"
-        ]
-    },
-    {
-        "name": "prod",
-        "type": "dart",
-        "request": "launch",
-        "program": "lib/env/prod.dart",
-        "args": [
-            "--flavor=prod"
-        ]
-    },
-    {
-        "name": "crediApp",
-        "request": "launch",
-        "type": "dart"
-    },
-    {
-        "name": "Flutter debug",
-        "request": "launch",
-        "type": "dart",
-        "args": [
-            "--dart-define=isDebug=true"
-        ]
     }
   ]
 }

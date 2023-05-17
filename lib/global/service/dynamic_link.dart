@@ -1,4 +1,3 @@
-import 'package:base_project/env.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:go_router/go_router.dart';
 
@@ -89,10 +88,7 @@ class DynamicLink {
   }
 
   Future<String> getShortLink(String screenName, String id) async {
-    String packageName = '';
-
-    if (Env.opMode == OpMode.dev) packageName = 'com.jj.dongnesosik.dev';
-    if (Env.opMode == OpMode.prod) packageName = 'com.jj.dongnesosik';
+    String packageName = 'com.jj.dongnesosik';
 
     String dynamicLinkPrefix = 'https://dongnesosik.page.link';
     final dynamicLinkParams = DynamicLinkParameters(
