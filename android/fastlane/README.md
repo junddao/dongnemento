@@ -15,21 +15,29 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Android
 
-### android fb_distribution
+### android beta
 
 ```sh
-[bundle exec] fastlane android fb_distribution
+[bundle exec] fastlane android beta
 ```
 
 firebase deploy
 
-### android ps_internal
+### android prod
 
 ```sh
-[bundle exec] fastlane android ps_internal
+[bundle exec] fastlane android prod
 ```
 
 playstore_internal
+
+### android flutter_build_android
+
+```sh
+[bundle exec] fastlane android flutter_build_android
+```
+
+
 
 ----
 

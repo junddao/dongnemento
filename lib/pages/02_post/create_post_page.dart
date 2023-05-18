@@ -16,11 +16,11 @@ import 'package:base_project/pages/common/error_page.dart';
 import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:images_picker/images_picker.dart';
 
-import '../../env.dart';
 import '../../global/bloc/auth/get_me/me_cubit.dart';
 import '../../routes.dart';
 
@@ -526,7 +526,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
     }).toList();
 
     if (files.isNotEmpty) {
-      context.read<FileCubit>().uploadImages(files, '${Env.opMode.name}/post');
+      context.read<FileCubit>().uploadImages(files, '${FlavorConfig.instance.name}/post');
     } else {
       _createPin();
     }

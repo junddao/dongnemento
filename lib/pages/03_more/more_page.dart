@@ -13,10 +13,10 @@ import 'package:base_project/global/util/extension/extension.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../env.dart';
 import '../../global/bloc/auth/get_me/me_cubit.dart';
 import '../../global/bloc/file/file_cubit.dart';
 import '../../routes.dart';
@@ -257,7 +257,7 @@ class _MorePageViewState extends State<MorePageView> {
     try {
       final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
-        context.read<FileCubit>().uploadImages([File(pickedFile.path)], '${Env.opMode.name}/profile');
+        context.read<FileCubit>().uploadImages([File(pickedFile.path)], '${FlavorConfig.instance.name}/profile');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

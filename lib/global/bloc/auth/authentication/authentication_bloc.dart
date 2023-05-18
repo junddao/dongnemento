@@ -6,10 +6,10 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../env.dart';
 import '../../../model/model.dart';
 import '../../../repository/rest_client.dart';
 import '../../../repository/token_interceptor.dart';
+import '../../../util/util.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -46,7 +46,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       case AuthenticationStatusType.authenticated:
         final dio = Dio(); // Provide a dio instance
         dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-        DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: Env.apiBaseUrl).getMe();
+        DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: endPoint).getMe();
 
         if (responseModelUser.success == false) {
           emit(
@@ -101,7 +101,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       //get me
       final dio = Dio(); // Provide a dio instance
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-      DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: Env.apiBaseUrl).getMe();
+      DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: endPoint).getMe();
 
       if (responseModelUser.success == false) {
         emit(
@@ -135,7 +135,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<DataResponse<ModelGetToken>> emailLogin(Map<String, dynamic> input) async {
     final dio = Dio(); // Provide a dio instance
     dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).signIn(input);
+    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: endPoint).signIn(input);
 
     return response;
   }
@@ -143,7 +143,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<DataResponse<ModelGetToken>> kakaoLogin(Map<String, dynamic> input) async {
     final dio = Dio(); // Provide a dio instance
     dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).kakaoSignIn(input);
+    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: endPoint).kakaoSignIn(input);
 
     return response;
   }
@@ -151,7 +151,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<DataResponse<ModelGetToken>> appleLogin(Map<String, dynamic> input) async {
     final dio = Dio(); // Provide a dio instance
     dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).appleSignIn(input);
+    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: endPoint).appleSignIn(input);
 
     return response;
   }

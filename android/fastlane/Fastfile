@@ -13,12 +13,15 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+#dev 빌드 : fastlane beta --env dev
+#prod 빌드 : fastlane release --env prod
+
 default_platform(:android)
 
 
 platform :android do
   desc "firebase deploy"
-  lane :fb_distribution do
+  lane :beta do
     sh("cd","..")
     sh("flutter", "build", "apk", "--flavor","prod", "-t", "lib/env/prod.dart")
 
@@ -30,14 +33,37 @@ platform :android do
 
 
   desc "playstore_internal"
-  lane :ps_internal do
-    sh("cd","..")
-    sh("flutter", "build", "appbundle", "--flavor","prod", "-t", "lib/env/prod.dart")
+  lane :prod do
+
+    # Build app
+    flutter_build_android
+
+    version = get_properties_value(
+      key: "flutter.versionName",
+      path: "local.properties"
+    )
+    build = get_properties_value(
+      key: "flutter.versionCode",
+      path: "local.properties"
+    )
 
     upload_to_play_store(
-      aab: "../build/app/outputs/bundle/prodRelease/app-prod-release.aab", 
+      aab: "../build/app/outputs/bundle/release/app-release.aab", 
       track: "internal"
     )
+  end
+
+  # Flutter build Android
+  lane :flutter_build_android do
+    puts "flutter clean"
+    sh("flutter clean")
+    
+    puts "cd .."
+    sh("cd", "..")
+
+    puts "Flutter build Android"
+
+    sh("flutter", "build", "appbundle", "-t", 'lib/main_prod.dart')
   end
 end
 

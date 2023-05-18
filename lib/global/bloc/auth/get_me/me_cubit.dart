@@ -2,11 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../env.dart';
 import '../../../model/model.dart';
 import '../../../repository/rest_client.dart';
 import '../../../repository/token_interceptor.dart';
 import '../../../service/secure_storage/secure_storage.dart';
+import '../../../util/util.dart';
 
 part 'me_state.dart';
 
@@ -20,7 +20,7 @@ class MeCubit extends Cubit<MeState> {
 
     final dio = Dio(); // Provide a dio instance
     dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-    DataResponse<ModelUser> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).getMe();
+    DataResponse<ModelUser> response = await RestClient(dio, baseUrl: endPoint).getMe();
 
     if (response.success == false) {
       emit(
@@ -45,7 +45,7 @@ class MeCubit extends Cubit<MeState> {
 
     final dio = Dio(); // Provide a dio instance
     dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-    DataResponse<ModelUser> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).updateUser(modelUser);
+    DataResponse<ModelUser> response = await RestClient(dio, baseUrl: endPoint).updateUser(modelUser);
 
     if (response.success == false) {
       emit(

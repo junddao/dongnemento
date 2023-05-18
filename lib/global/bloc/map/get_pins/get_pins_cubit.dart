@@ -3,10 +3,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../../env.dart';
 import '../../../model/model.dart';
 import '../../../repository/rest_client.dart';
 import '../../../repository/token_interceptor.dart';
+import '../../../util/util.dart';
 
 part 'get_pins_state.dart';
 
@@ -20,7 +20,7 @@ class GetPinsCubit extends Cubit<GetPinsState> {
       final dio = Dio(); // Provide a dio instance
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
       DataResponse<ModelResponsePins> response =
-          await RestClient(dio, baseUrl: Env.apiBaseUrl).getPins(modelRequestGetPin.toJson());
+          await RestClient(dio, baseUrl: endPoint).getPins(modelRequestGetPin.toJson());
 
       // ApiResponse<ModelResponseGetPin> response = await PinRepository.instance.getPins(modelRequestGetPin);
 

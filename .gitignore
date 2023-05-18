@@ -66,3 +66,6 @@ lib/firebase_options_dev.dart
 .fvm/
 
 # cache removed
+
+#fastlane
+/android/validate_play_store_json_key.json

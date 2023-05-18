@@ -1,4 +1,3 @@
-import 'package:base_project/env.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../model/model.dart';
 import '../../../repository/rest_client.dart';
 import '../../../repository/token_interceptor.dart';
+import '../../../util/util.dart';
 
 part 'get_pin_state.dart';
 
@@ -18,7 +18,7 @@ class GetPinCubit extends Cubit<GetPinState> {
 
       final dio = Dio(); // Provide a dio instance
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-      DataResponse<ModelResponsePin> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).getPin(pinId);
+      DataResponse<ModelResponsePin> response = await RestClient(dio, baseUrl: endPoint).getPin(pinId);
 
       if (response.success == true) {
         emit(GetPinLoaded(result: response.data.first));
@@ -40,7 +40,7 @@ class GetPinCubit extends Cubit<GetPinState> {
 
       final dio = Dio(); // Provide a dio instance
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-      DataResponse<bool> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).setPinLike(modelRequestSetPinLike);
+      DataResponse<bool> response = await RestClient(dio, baseUrl: endPoint).setPinLike(modelRequestSetPinLike);
 
       if (response.success == true) {
         if (state is GetPinLoaded) {
@@ -78,7 +78,7 @@ class GetPinCubit extends Cubit<GetPinState> {
     try {
       final dio = Dio(); // Provide a dio instance
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-      DataResponse<bool> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).setPinHate(modelRequestSetPinHate);
+      DataResponse<bool> response = await RestClient(dio, baseUrl: endPoint).setPinHate(modelRequestSetPinHate);
 
       if (response.success == true) {
         if (state is GetPinLoaded) {

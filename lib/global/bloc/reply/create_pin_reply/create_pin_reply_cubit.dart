@@ -1,4 +1,3 @@
-import 'package:base_project/env.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../model/model.dart';
 import '../../../repository/rest_client.dart';
 import '../../../repository/token_interceptor.dart';
+import '../../../util/util.dart';
 
 part 'create_pin_reply_state.dart';
 
@@ -18,8 +18,7 @@ class CreatePinReplyCubit extends Cubit<CreatePinReplyState> {
 
       final dio = Dio();
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-      DataResponse<bool> response =
-          await RestClient(dio, baseUrl: Env.apiBaseUrl).createPinReply(requestCreatePinReply);
+      DataResponse<bool> response = await RestClient(dio, baseUrl: endPoint).createPinReply(requestCreatePinReply);
 
       if (response.success == true) {
         emit(CreatePinReplyLoaded(result: response.data.first));

@@ -1,6 +1,7 @@
 // import 'package:logging/logging.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:intl/intl.dart';
 
 import '../enum/category_type.dart';
@@ -56,3 +57,6 @@ Color setPinColor(ModelResponsePins pin) {
     return DUColors.brownish_grey;
   }
 }
+
+/// api주소
+String get endPoint => FlavorConfig.instance.variables['EndPoint'];

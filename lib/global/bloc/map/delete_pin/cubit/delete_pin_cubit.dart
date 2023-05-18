@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../env.dart';
 import '../../../../model/model.dart';
 import '../../../../repository/rest_client.dart';
 import '../../../../repository/token_interceptor.dart';
+import '../../../../util/util.dart';
 
 part 'delete_pin_state.dart';
 
@@ -18,7 +18,7 @@ class DeletePinCubit extends Cubit<DeletePinState> {
 
       final dio = Dio(); // Provide a dio instance
       dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-      DataResponse<bool> response = await RestClient(dio, baseUrl: Env.apiBaseUrl).deletePin(id);
+      DataResponse<bool> response = await RestClient(dio, baseUrl: endPoint).deletePin(id);
 
       if (response.success == true) {
         emit(DeletePinLoaded(result: response.data.first));

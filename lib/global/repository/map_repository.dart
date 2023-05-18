@@ -1,4 +1,3 @@
-import 'package:base_project/env.dart';
 import 'package:base_project/global/model/etc/kakao_local_result.dart';
 import 'package:base_project/global/model/etc/model_response_kakao_location.dart';
 import 'package:base_project/global/repository/api_service.dart';
@@ -11,8 +10,6 @@ class MapRepository {
   }
 
   MapRepository._();
-
-  String apiUrl = Env.apiMapUrl;
 
   Future<KakaoLocalResponseData> getKakaoAddressByKeyword(String keyword, {int? page = 15}) async {
     late KakaoLocalResponseData kakaoLocalResponseData;

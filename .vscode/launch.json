@@ -10,6 +10,18 @@
       "type": "dart"
     },
     {
+      "name": "PROD-Flavor",
+      "program": "lib/main_prod.dart",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "DEV-Flavor",
+      "program": "lib/main_dev.dart",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
       "name": "dongnesosik (profile mode)",
       "request": "launch",
       "type": "dart",

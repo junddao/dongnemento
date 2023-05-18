@@ -1,4 +1,3 @@
-import 'package:base_project/env.dart';
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
 import 'package:base_project/global/bloc/auth/get_me/me_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
@@ -9,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +19,25 @@ import 'global/service/dynamic_link.dart';
 
 void main() async {
   KakaoSdk.init(nativeAppKey: '8548a68be13838496d1f23538f9f8ce7');
+
+  const isLiveMode = bool.fromEnvironment("flavor", defaultValue: false);
+
+  if (isLiveMode) {
+    FlavorConfig(
+      name: "prod",
+      variables: {
+        "EndPoint": "http://43.200.119.214/prod",
+      },
+    );
+  } else {
+    FlavorConfig(
+      name: "dev",
+      variables: {
+        "EndPoint": "http://43.200.119.214/dev",
+      },
+    );
+  }
+
   //앱 세팅
   await platformSetup();
 
@@ -29,9 +48,6 @@ void main() async {
 Future<void> platformSetup() async {
   // Flutter 엔진과 위젯의 바인딩 작업
   WidgetsFlutterBinding.ensureInitialized();
-
-  // 기본설정
-  Env();
 
   await Firebase.initializeApp(
     name: 'dongnesosik',
