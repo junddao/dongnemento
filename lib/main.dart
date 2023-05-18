@@ -8,42 +8,40 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 import 'firebase_options.dart' as firebase_option;
 import 'global/service/dynamic_link.dart';
 
-void main() async {
-  KakaoSdk.init(nativeAppKey: '8548a68be13838496d1f23538f9f8ce7');
+// void main() async {
+//   KakaoSdk.init(nativeAppKey: '8548a68be13838496d1f23538f9f8ce7');
 
-  const isLiveMode = bool.fromEnvironment("flavor", defaultValue: false);
+//   const isLiveMode = bool.fromEnvironment("flavor", defaultValue: false);
 
-  if (isLiveMode) {
-    FlavorConfig(
-      name: "prod",
-      variables: {
-        "EndPoint": "http://43.200.119.214/prod",
-      },
-    );
-  } else {
-    FlavorConfig(
-      name: "dev",
-      variables: {
-        "EndPoint": "http://43.200.119.214/dev",
-      },
-    );
-  }
+//   if (isLiveMode) {
+//     FlavorConfig(
+//       name: "prod",
+//       variables: {
+//         "EndPoint": "http://43.200.119.214/prod",
+//       },
+//     );
+//   } else {
+//     FlavorConfig(
+//       name: "dev",
+//       variables: {
+//         "EndPoint": "http://43.200.119.214/dev",
+//       },
+//     );
+//   }
 
-  //앱 세팅
-  await platformSetup();
+//   //앱 세팅
+//   await platformSetup();
 
-  //앱 실행
-  runApp(const MyApp());
-}
+//   //앱 실행
+//   runApp(const MyApp());
+// }
 
 Future<void> platformSetup() async {
   // Flutter 엔진과 위젯의 바인딩 작업
