@@ -19,7 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:images_picker/images_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../global/bloc/auth/get_me/me_cubit.dart';
 import '../../routes.dart';
@@ -63,9 +63,12 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   final category = ValueNotifier<CategoryType>(CategoryType.daily);
   double categoryScore = 40;
 
-  List<String> imagePaths = [];
+  // List<String> imagePaths = [];
 
   LatLng? location;
+
+  final ImagePicker _picker = ImagePicker();
+  final imagePaths = ValueNotifier(List<String>.empty());
 
   @override
   void initState() {
@@ -376,45 +379,50 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   }
 
   postImages() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
-      child: Column(children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Icon(Icons.photo, color: DUColors.pinkish_grey),
-            const SizedBox(width: 4),
-            Text('사진', style: DUTextStyle.size14.pinkish_grey),
-          ],
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 80,
-          width: double.infinity,
-          child: Row(
-            children: [
-              getAddPhotoBtn(),
-              Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: imagePaths.length,
-                  itemBuilder: (context, index) {
-                    return getImages(index);
-                  },
+    return ValueListenableBuilder<List<String>>(
+        valueListenable: imagePaths,
+        builder: (_, value, __) {
+          return Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
+            child: Column(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(Icons.photo, color: DUColors.pinkish_grey),
+                  const SizedBox(width: 4),
+                  Text('사진', style: DUTextStyle.size14.pinkish_grey),
+                ],
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 80,
+                width: double.infinity,
+                child: Row(
+                  children: [
+                    getAddPhotoBtn(),
+                    Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: value.length,
+                        itemBuilder: (context, index) {
+                          return getImages(index, value);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ]),
-    );
+            ]),
+          );
+        });
   }
 
-  Widget getImages(index) {
+  Widget getImages(index, List<String> value) {
     return RawMaterialButton(
       onPressed: () async {
-        imagePaths.removeAt(index);
-        setState(() {});
+        value.removeAt(index);
+        imagePaths.value = [...value];
       },
       child: Stack(
         children: [
@@ -423,7 +431,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.file(
-                File(imagePaths[index]),
+                File(value[index]),
                 width: 60,
                 height: 60,
                 fit: BoxFit.cover,
@@ -459,20 +467,10 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
     return InkWell(
       onTap: () async {
         try {
-          List<Media>? res = await ImagesPicker.pick(
-            count: 5,
-            pickType: PickType.image,
-          );
-          if (res == null) {
-            return;
+          final List<XFile?> pickedFiles = await _picker.pickMultiImage();
+          if (pickedFiles.isNotEmpty) {
+            imagePaths.value = pickedFiles.map((e) => e!.path).toList();
           }
-          imagePaths = res.map(
-            (e) {
-              return e.path;
-            },
-          ).toList();
-
-          setState(() {});
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -521,7 +519,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
       return;
     }
 
-    List<File> files = imagePaths.map((e) {
+    List<File> files = imagePaths.value.map((e) {
       return File(e);
     }).toList();
 

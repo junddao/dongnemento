@@ -10,7 +10,8 @@ void main() async {
   FlavorConfig(
     name: "dev",
     variables: {
-      "EndPoint": "http://43.200.119.214/dev",
+      "EndPoint": "http://10.0.2.2:17008/dev",
+      // "EndPoint": "http://43.200.119.214/dev",
     },
   );
 
