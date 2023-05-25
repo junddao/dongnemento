@@ -81,12 +81,12 @@ android {
     //     dev {
     //         dimension "app"
     //         applicationId "com.jj.dongnesosik.dev"
-    //         resValue "string", "app_name", "동네맨토(dev)"
+    //         resValue "string", "app_name", "동네소식(dev)"
     //     }
     //     prod {
     //         dimension "app"
     //         applicationId "com.jj.dongnesosik"
-    //         resValue "string", "app_name", "동네맨토"
+    //         resValue "string", "app_name", "동네소식"
     //     }
     // }
 }
