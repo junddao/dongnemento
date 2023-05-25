@@ -127,6 +127,7 @@ class _LoginPageViewState extends State<LoginPageView> {
               controller: _tecEmail,
               hintText: '이메일을 입력하세요.',
               textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.emailAddress,
               onChanged: (value) {},
               onEditingComplete: () => node.nextFocus(),
               validator: (val) {

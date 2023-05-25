@@ -302,39 +302,39 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
             ),
           ),
           const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            alignment: Alignment.centerLeft,
-            child: Row(
-              children: [
-                const Icon(Icons.numbers, color: DUColors.pinkish_grey),
-                const SizedBox(width: 4),
-                Text(
-                  '관심점수',
-                  style: DUTextStyle.size14.pinkish_grey,
-                ),
-                const SizedBox(width: 4),
-                Text('${categoryScore.round()}', style: DUTextStyle.size20B.tomato),
-              ],
-            ),
-          ),
-          SliderTheme(
-            data: const SliderThemeData(
-              showValueIndicator: ShowValueIndicator.always,
-              valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-            ),
-            child: Slider(
-              value: categoryScore,
-              label: categoryScore.round().toString(),
-              onChanged: (value) {
-                setState(() {
-                  categoryScore = value;
-                });
-              },
-              min: 0,
-              max: 100,
-            ),
-          ),
+          // Container(
+          //   padding: const EdgeInsets.symmetric(horizontal: 12),
+          //   alignment: Alignment.centerLeft,
+          //   child: Row(
+          //     children: [
+          //       const Icon(Icons.numbers, color: DUColors.pinkish_grey),
+          //       const SizedBox(width: 4),
+          //       Text(
+          //         '관심점수',
+          //         style: DUTextStyle.size14.pinkish_grey,
+          //       ),
+          //       const SizedBox(width: 4),
+          //       Text('${categoryScore.round()}', style: DUTextStyle.size20B.tomato),
+          //     ],
+          //   ),
+          // ),
+          // SliderTheme(
+          //   data: const SliderThemeData(
+          //     showValueIndicator: ShowValueIndicator.always,
+          //     valueIndicatorShape: PaddleSliderValueIndicatorShape(),
+          //   ),
+          //   child: Slider(
+          //     value: categoryScore,
+          //     label: categoryScore.round().toString(),
+          //     onChanged: (value) {
+          //       setState(() {
+          //         categoryScore = value;
+          //       });
+          //     },
+          //     min: 0,
+          //     max: 100,
+          //   ),
+          // ),
         ],
       ),
     );
