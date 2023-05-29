@@ -33,14 +33,7 @@ class MeCubit extends Cubit<MeState> {
     emit(MeLoaded(me: response.data.first));
   }
 
-  void setMe(ModelUser user) async {
-    emit(MeLoading());
-    me = user;
-    await SecureStorage.instance.writeMe(me);
-    emit(MeLoaded(me: me));
-  }
-
-  Future<void> updateUser(ModelUser modelUser) async {
+  Future<void> setMe(ModelUser modelUser) async {
     emit(MeLoading());
 
     final dio = Dio(); // Provide a dio instance
@@ -54,6 +47,7 @@ class MeCubit extends Cubit<MeState> {
     }
 
     me = response.data.first;
+    await SecureStorage.instance.writeMe(me);
 
     emit(MeLoaded(me: response.data.first));
   }

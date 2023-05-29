@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../global/bloc/auth/get_me/me_cubit.dart';
+import '../../global/service/secure_storage/secure_storage.dart';
 
 class AddressPage extends StatefulWidget {
   const AddressPage({super.key});
@@ -168,12 +169,17 @@ class _AddressPageState extends State<AddressPage> {
                               ),
                             ],
                           ),
-                          onTap: () {
+                          onTap: () async {
                             context.read<MeCubit>().me.lng = double.parse(item.x);
                             context.read<MeCubit>().me.lat = double.parse(item.y);
                             context.read<MeCubit>().me.address = item.address_name;
 
-                            context.pop();
+                            await SecureStorage.instance.writeMe(context.read<MeCubit>().me);
+                            context.read<MeCubit>().setMe(context.read<MeCubit>().me);
+
+                            if (mounted) {
+                              context.pop();
+                            }
                           },
                         );
                       }

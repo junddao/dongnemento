@@ -6,7 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../global/bloc/auth/get_me/me_cubit.dart';
-import '../../global/model/user/model_user.dart';
 import '../../global/style/constants.dart';
 import '../../global/style/du_button.dart';
 import '../common/error_page.dart';
@@ -75,8 +74,10 @@ class _PageSetLocationState extends State<PageSetLocation> {
                 ),
                 DUButton(
                   press: () async {
-                    context.push(Routes.address).then((value) {
-                      context.push(Routes.map);
+                    context.push(Routes.address).then((value) async {
+                      if (mounted) {
+                        context.push(Routes.map);
+                      }
                     });
                   },
                   text: '주소로 위치지정',
@@ -89,14 +90,5 @@ class _PageSetLocationState extends State<PageSetLocation> {
         );
       },
     );
-  }
-
-  setAddress(String address, double? lat, double? lng) async {
-    ModelUser updatedMe = context.read<MeCubit>().me.copyWith(address: address, lat: lat, lng: lng);
-
-    // server 정보 update
-
-    // updateMe 필요
-    // context.read<GetMeCubit>().me.copyWith(address: address, lat: lat, lng: lng);
   }
 }

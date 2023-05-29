@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
+import 'package:base_project/global/service/secure_storage/secure_storage.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/pages/00_etc/page_confirm.dart';
@@ -23,6 +24,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'global/bloc/auth/get_me/me_cubit.dart';
 import 'global/component/du_photo_viewer.dart';
+import 'global/enum/authentication_status_type.dart';
 import 'pages/02_post/my_post_page.dart';
 import 'pages/02_post/page_select_location.dart';
 
@@ -67,9 +69,14 @@ class AppRouter extends Bloc {
         return null;
       }
       prevAuthState = authBloc.state;
-      if (authBloc.state is AuthenticationAuthenticated) {
-        // context.read<SingletonMeCubit>().updateSingletonMe(authBloc.state.me!);
+      if (authBloc.state is AuthenticationInitial) {
+        var result = await SecureStorage.instance.readToken();
 
+        if (result != null) {
+          authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
+        }
+        return null;
+      } else if (authBloc.state is AuthenticationAuthenticated) {
         // 최초 가입시 좌표값이 없어 주소 입력창으로 이동
         if (authBloc.state.me!.lat == null || authBloc.state.me!.lng == null) {
           return Routes.introAddress;

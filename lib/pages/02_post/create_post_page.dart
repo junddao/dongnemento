@@ -467,7 +467,11 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
     return InkWell(
       onTap: () async {
         try {
-          final List<XFile?> pickedFiles = await _picker.pickMultiImage();
+          final List<XFile?> pickedFiles = await _picker.pickMultiImage(
+            imageQuality: 30,
+            // maxHeight: 1080,
+            // maxWidth: 1920,
+          );
           if (pickedFiles.isNotEmpty) {
             imagePaths.value = pickedFiles.map((e) => e!.path).toList();
           }
@@ -497,7 +501,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
               ),
               const SizedBox(height: 4),
               Text(
-                '1 / 5',
+                '${imagePaths.value.length} / 5',
                 style: DUTextStyle.size10.grey1,
               ),
             ],

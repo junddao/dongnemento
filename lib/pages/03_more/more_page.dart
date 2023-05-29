@@ -238,7 +238,7 @@ class _MorePageViewState extends State<MorePageView> {
                               profileImage: _imagePath);
 
                           // server 정보 update
-                          await context.read<MeCubit>().updateUser(updatedMe);
+                          await context.read<MeCubit>().setMe(updatedMe);
                         },
                         type: ButtonType.normal,
                         width: SizeConfig.screenWidth),
