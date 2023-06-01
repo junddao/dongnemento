@@ -6,6 +6,7 @@ import 'package:base_project/global/component/du_two_button_dialog.dart';
 import 'package:base_project/global/enum/authentication_status_type.dart';
 import 'package:base_project/global/enum/social_type.dart';
 import 'package:base_project/global/model/user/model_request_sign_in.dart';
+import 'package:base_project/global/service/firebase/firebase_fcm.dart';
 import 'package:base_project/global/service/login_service_apple.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
@@ -141,7 +142,7 @@ class _LoginPageViewState extends State<LoginPageView> {
               showSecure: true,
               isSecure: true,
               onChanged: (value) {},
-              onEditingComplete: () {
+              onEditingComplete: () async {
                 onLogin();
               },
               validator: (value) {
@@ -172,7 +173,7 @@ class _LoginPageViewState extends State<LoginPageView> {
     );
   }
 
-  onLogin() {
+  Future<void> onLogin() async {
     if (_formKey.currentState!.validate() == false) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -181,13 +182,18 @@ class _LoginPageViewState extends State<LoginPageView> {
       );
       return;
     }
+
+    String firebaseToken = await FCMWrapper.instance.getToken();
     ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn(
       email: _tecEmail.text,
       password: _tecPassword.text,
+      firebaseToken: firebaseToken,
     );
-    context
-        .read<AuthenticationBloc>()
-        .add(AuthenticationSignIn(socialType: SocialType.email, input: modelRequestSignIn.toJson()));
+    if (context.mounted) {
+      context
+          .read<AuthenticationBloc>()
+          .add(AuthenticationSignIn(socialType: SocialType.email, input: modelRequestSignIn.toJson()));
+    }
   }
 
   _buildKakaoLogin() {
@@ -205,16 +211,19 @@ class _LoginPageViewState extends State<LoginPageView> {
             );
             return;
           }
-
+          String firebaseToken = await FCMWrapper.instance.getToken();
           ModelRequestKakaoSignIn modelRequestKakaoSignIn = ModelRequestKakaoSignIn(
             email: user.kakaoAccount?.email ?? '',
             profileImage: user.kakaoAccount?.profile?.profileImageUrl ?? '',
             name: user.kakaoAccount?.profile?.nickname ?? '',
+            firebaseToken: firebaseToken,
           );
-          context.read<AuthenticationBloc>().add(AuthenticationSignIn(
-                socialType: SocialType.kakao,
-                input: modelRequestKakaoSignIn.toJson(),
-              ));
+          if (context.mounted) {
+            context.read<AuthenticationBloc>().add(AuthenticationSignIn(
+                  socialType: SocialType.kakao,
+                  input: modelRequestKakaoSignIn.toJson(),
+                ));
+          }
         });
       },
       child: Container(
@@ -260,14 +269,18 @@ class _LoginPageViewState extends State<LoginPageView> {
             );
             return;
           }
-
+          String firebaseToken = await FCMWrapper.instance.getToken();
           ModelRequestAppleSignIn modelRequestAppleSignIn = ModelRequestAppleSignIn(
             idToken: idToken,
+            firebaseToken: firebaseToken,
           );
-          context.read<AuthenticationBloc>().add(AuthenticationSignIn(
-                socialType: SocialType.apple,
-                input: modelRequestAppleSignIn.toJson(),
-              ));
+
+          if (context.mounted) {
+            context.read<AuthenticationBloc>().add(AuthenticationSignIn(
+                  socialType: SocialType.apple,
+                  input: modelRequestAppleSignIn.toJson(),
+                ));
+          }
         });
       },
       child: Container(

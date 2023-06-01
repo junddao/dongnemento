@@ -10,10 +10,12 @@ ModelRequestSignIn _$ModelRequestSignInFromJson(Map<String, dynamic> json) =>
     ModelRequestSignIn(
       email: json['email'] as String,
       password: json['password'] as String,
+      firebaseToken: json['firebaseToken'] as String,
     );
 
 Map<String, dynamic> _$ModelRequestSignInToJson(ModelRequestSignIn instance) =>
     <String, dynamic>{
       'email': instance.email,
       'password': instance.password,
+      'firebaseToken': instance.firebaseToken,
     };

@@ -16,6 +16,7 @@ ModelRequestSignUp _$ModelRequestSignUpFromJson(Map<String, dynamic> json) =>
       lat: (json['lat'] as num?)?.toDouble(),
       lng: (json['lng'] as num?)?.toDouble(),
       address: json['address'] as String?,
+      firebaseToken: json['firebaseToken'] as String,
     );
 
 Map<String, dynamic> _$ModelRequestSignUpToJson(ModelRequestSignUp instance) =>
@@ -28,4 +29,5 @@ Map<String, dynamic> _$ModelRequestSignUpToJson(ModelRequestSignUp instance) =>
       'lat': instance.lat,
       'lng': instance.lng,
       'address': instance.address,
+      'firebaseToken': instance.firebaseToken,
     };

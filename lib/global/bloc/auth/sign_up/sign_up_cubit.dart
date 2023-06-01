@@ -30,7 +30,8 @@ class SignUpCubit extends Cubit<SignUpState> {
 
       // firebase 유저 가져와서 서버에 로그인 합니다.
       ModelRequestSignUp user = modelRequestSignUp;
-      ModelRequestSignIn modelRequestSignIn = ModelRequestSignIn(email: user.email, password: user.password);
+      ModelRequestSignIn modelRequestSignIn =
+          ModelRequestSignIn(email: user.email, password: user.password, firebaseToken: user.firebaseToken);
 
       DataResponse<ModelGetToken> responseSignIn =
           await RestClient(dio, baseUrl: endPoint).signIn(modelRequestSignIn.toJson());

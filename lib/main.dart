@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 
 import 'firebase_options.dart' as firebase_option;
 import 'global/service/dynamic_link.dart';
+import 'global/service/firebase/firebase_fcm.dart';
 
 // void main() async {
 //   KakaoSdk.init(nativeAppKey: '8548a68be13838496d1f23538f9f8ce7');
@@ -53,7 +54,7 @@ Future<void> platformSetup() async {
   );
 
   // firebase 초기화
-  // await FCMWrapper.instance.initialize();
+  await FCMWrapper.instance.initialize();
 
   // 가로모드 제어
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);

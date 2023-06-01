@@ -12,6 +12,7 @@ class ModelRequestSignUp {
   double? lat;
   double? lng;
   String? address;
+  String firebaseToken;
   ModelRequestSignUp({
     required this.social,
     required this.email,
@@ -21,6 +22,7 @@ class ModelRequestSignUp {
     this.lat,
     this.lng,
     required this.address,
+    required this.firebaseToken,
   });
 
   factory ModelRequestSignUp.fromJson(Map<String, dynamic> json) => _$ModelRequestSignUpFromJson(json);

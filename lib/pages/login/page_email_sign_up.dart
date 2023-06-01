@@ -5,6 +5,7 @@ import 'package:base_project/global/component/du_text_form_field.dart';
 import 'package:base_project/global/enum/authentication_status_type.dart';
 import 'package:base_project/global/enum/social_type.dart';
 import 'package:base_project/global/model/user/model_request_sign_up.dart';
+import 'package:base_project/global/service/firebase/firebase_fcm.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_button.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
@@ -223,8 +224,11 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
       address: context.read<MeCubit>().me.address ?? '',
       lat: context.read<MeCubit>().me.lat,
       lng: context.read<MeCubit>().me.lng,
+      firebaseToken: await FCMWrapper.instance.getToken(),
     );
     // 1. signUp
-    await context.read<SignUpCubit>().signUp(modelRequestSignUp);
+    if (context.mounted) {
+      await context.read<SignUpCubit>().signUp(modelRequestSignUp);
+    }
   }
 }

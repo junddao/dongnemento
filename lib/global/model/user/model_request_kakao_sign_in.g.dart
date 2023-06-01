@@ -12,6 +12,7 @@ ModelRequestKakaoSignIn _$ModelRequestKakaoSignInFromJson(
       name: json['name'] as String,
       email: json['email'] as String,
       profileImage: json['profileImage'] as String,
+      firebaseToken: json['firebaseToken'] as String,
     );
 
 Map<String, dynamic> _$ModelRequestKakaoSignInToJson(
@@ -20,4 +21,5 @@ Map<String, dynamic> _$ModelRequestKakaoSignInToJson(
       'name': instance.name,
       'email': instance.email,
       'profileImage': instance.profileImage,
+      'firebaseToken': instance.firebaseToken,
     };
