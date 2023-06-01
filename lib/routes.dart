@@ -83,7 +83,7 @@ class AppRouter extends Bloc {
         }
 
         logger.d('Authenticated');
-        context.read<MeCubit>().setMe(authBloc.state.me!);
+        await context.read<MeCubit>().setMe(authBloc.state.me!);
         return Routes.map;
       } else if (authBloc.state is AuthenticationUnAuthenticated) {
         // context.read<SingletonMeCubit>().updateSingletonMe(ModelUser());

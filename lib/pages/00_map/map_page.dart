@@ -33,12 +33,17 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
-    return const MapPageView();
+    double lat = context.watch<MeCubit>().me.lat ?? 0;
+    double lng = context.watch<MeCubit>().me.lng ?? 0;
+
+    return MapPageView(lastLocation: LatLng(lat, lng));
   }
 }
 
 class MapPageView extends StatefulWidget {
-  const MapPageView({super.key});
+  const MapPageView({super.key, required this.lastLocation});
+
+  final LatLng lastLocation;
 
   @override
   State<MapPageView> createState() => _MapPageViewState();
@@ -59,16 +64,16 @@ class _MapPageViewState extends State<MapPageView> {
 
   @override
   void initState() {
-    double lat = context.read<MeCubit>().me.lat ?? 0;
-    double lng = context.read<MeCubit>().me.lng ?? 0;
-    _lastLocation = LatLng(lat, lng);
+    _lastLocation = widget.lastLocation;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+        lat: _lastLocation.latitude,
+        lng: _lastLocation.longitude,
+        range: range,
+      );
+      context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+    });
 
-    ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
-      lat: lat,
-      lng: lng,
-      range: range,
-    );
-    context.read<GetPinsCubit>().getPins(modelRequestGetPin);
     super.initState();
   }
 
@@ -83,15 +88,15 @@ class _MapPageViewState extends State<MapPageView> {
   }
 
   Widget _floatingActionButton() {
-    double? lat = context.read<MeCubit>().me.lat;
-    double? lng = context.read<MeCubit>().me.lng;
-    LatLng myLocation = LatLng(lat ?? 0, lng ?? 0);
     return Padding(
       padding: const EdgeInsets.only(top: 100.0),
       child: FloatingActionButton(
         mini: true,
         child: const Icon(Icons.my_location_outlined),
         onPressed: () {
+          double? lat = context.read<MeCubit>().me.lat;
+          double? lng = context.read<MeCubit>().me.lng;
+          LatLng myLocation = LatLng(lat ?? 0, lng ?? 0);
           moveCameraToMyLocation(myLocation);
         },
       ),
