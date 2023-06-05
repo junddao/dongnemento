@@ -39,6 +39,22 @@ playstore_internal
 
 
 
+### android before_send_slack_message
+
+```sh
+[bundle exec] fastlane android before_send_slack_message
+```
+
+
+
+### android after_send_slack_message
+
+```sh
+[bundle exec] fastlane android after_send_slack_message
+```
+
+
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
