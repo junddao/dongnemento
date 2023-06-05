@@ -55,7 +55,7 @@ class SimpleLogger extends LogPrinter {
   final bool printTime;
 
   String _topBorder = '';
-  String _middleBorder = '';
+  final String _middleBorder = '';
   String _bottomBorder = '';
 
   SimpleLogger({
@@ -183,7 +183,7 @@ class SimpleLogger extends LogPrinter {
 
   String stringifyMessage(dynamic message) {
     if (message is Map || message is Iterable) {
-      var encoder = JsonEncoder.withIndent('  ');
+      var encoder = const JsonEncoder.withIndent('  ');
       return encoder.convert(message);
     } else {
       return message.toString();

@@ -26,7 +26,7 @@ class _EventWidgetState extends State<EventWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('이벤트', style: DUTextStyle.size20B),
+        const Text('이벤트', style: DUTextStyle.size20B),
         const SizedBox(height: 22),
         SizedBox(
           width: SizeConfig.screenWidth,

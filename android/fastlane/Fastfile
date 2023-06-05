@@ -35,6 +35,9 @@ platform :android do
   desc "playstore_internal"
   lane :prod do
 
+    # Send slack message
+    before_send_slack_message(msg: "💫 Android TestFlight 배포를 시작합니다.")
+
     # Build app
     flutter_build_android
 
@@ -51,6 +54,9 @@ platform :android do
       aab: "../build/app/outputs/bundle/release/app-release.aab", 
       track: "internal"
     )
+
+    # Send slack message
+    after_send_slack_message(msg: "🚀 Successfully distributed a new beta build ✨")
   end
 
   # Flutter build Android
@@ -64,6 +70,44 @@ platform :android do
     puts "Flutter build Android"
 
     sh("flutter", "build", "appbundle", "-t", 'lib/main_prod.dart')
+  end
+
+
+ # Before Send slack message
+ lane :before_send_slack_message do |options|
+  yaml_file_path = "../../pubspec.yaml"
+  data = YAML.load_file(yaml_file_path)
+  version = data["version"].split("+")[0]
+  build_number = data["version"].split("+")[1]
+  slack(
+    message: options[:msg],
+    payload: {
+      "Version" => version,
+      "Build" => build_number,
+      "Environment" => "#{ENV['ENV_EMOJI']} #{ENV['ENV']}"
+    },
+  )
+end
+
+   # After Send slack message
+   lane :after_send_slack_message do |options|
+    version = get_properties_value(
+      key: "flutter.versionName",
+      path: "local.properties"
+    )
+    build = get_properties_value(
+      key: "flutter.versionCode",
+      path: "local.properties"
+    )
+    slack(
+      message: options[:msg],
+      # channel: "#channel",
+      payload: {
+        "Version" => version,
+        "Build" => build,
+        "Environment" => "#{ENV['ENV_EMOJI']} #{ENV['ENV']}"
+      },
+    )
   end
 end
 

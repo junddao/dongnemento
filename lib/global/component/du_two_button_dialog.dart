@@ -16,7 +16,7 @@ class DUDialog {
         return Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)), //this right here
 
-          child: Container(
+          child: SizedBox(
             width: 270,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -45,7 +45,7 @@ class DUDialog {
                 ),
                 const SizedBox(height: 20),
                 const Divider(height: 0),
-                Container(
+                SizedBox(
                   height: 43.5,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -98,7 +98,7 @@ class DUDialog {
         return Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)), //this right here
 
-          child: Container(
+          child: SizedBox(
             width: 270,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -127,7 +127,7 @@ class DUDialog {
                 ),
                 const SizedBox(height: 20),
                 const Divider(height: 0),
-                Container(
+                SizedBox(
                   height: 43.5,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,

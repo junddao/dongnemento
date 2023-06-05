@@ -14,8 +14,8 @@ class HomeIntroWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 80),
-        Text('3분이면', style: DUTextStyle.size24B),
-        Text('컨설팅 요청 끝!', style: DUTextStyle.size24B),
+        const Text('3분이면', style: DUTextStyle.size24B),
+        const Text('컨설팅 요청 끝!', style: DUTextStyle.size24B),
         const SizedBox(height: 10),
         InkWell(
           onTap: () {

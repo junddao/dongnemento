@@ -209,10 +209,10 @@ class ApiService {
     try {
       _multiPartHeaders['Authorization'] = 'Bearer $token';
 
-      final List<MultipartFile> _files = files.map((img) => MultipartFile.fromFileSync(img.path)).toList();
+      final List<MultipartFile> files0 = files.map((img) => MultipartFile.fromFileSync(img.path)).toList();
 
       FormData formData = FormData.fromMap({
-        'file': _files,
+        'file': files0,
         'folder': dest,
       });
 
@@ -373,6 +373,7 @@ class CustomException implements Exception {
 
   CustomException([this._message, this._prefix]);
 
+  @override
   String toString() {
     return "$_prefix$_message";
   }

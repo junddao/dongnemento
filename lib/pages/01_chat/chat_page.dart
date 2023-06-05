@@ -11,7 +11,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
-    return ChatPageView();
+    return const ChatPageView();
   }
 }
 
@@ -50,7 +50,7 @@ class _ChatPageViewState extends State<ChatPageView> {
             '/chat/details/aaaa',
           );
         },
-        child: Text('채팅채팅'),
+        child: const Text('채팅채팅'),
       ),
     );
   }

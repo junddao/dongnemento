@@ -23,14 +23,14 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Push a new beta build to TestFlight"
-  lane :release do
+  desc "testflight 배포"
+  lane :prod do
     begin
       # Send slack message
       before_send_slack_message(msg: "💫 IOS TestFlight 배포를 시작합니다.")
       
       # Flutter build iOS (code sign 없이 build 만 진행)
-      flutter_build_ios
+      # flutter_build_ios
 
       # Add badge to app icon (only dev)
       # add_badge_to_icon

@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:intl/intl.dart';
 
@@ -41,11 +40,11 @@ class DataConvert {
     int gapHours = now.difference(dt).inHours;
     int gapDays = now.difference(dt).inDays;
     if (gapMinutes < 60) {
-      return (gapMinutes.toString() + '분 전');
+      return ('$gapMinutes분 전');
     } else if (gapHours < 24) {
-      return (gapHours.toString() + '시간 전');
+      return ('$gapHours시간 전');
     } else {
-      return (gapDays.toString() + '일 전');
+      return ('$gapDays일 전');
     }
   }
 

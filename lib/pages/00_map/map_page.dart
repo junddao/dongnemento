@@ -294,7 +294,7 @@ class _MapPageViewState extends State<MapPageView> {
       ..addPolygon(points, false)
       ..close();
 
-    bubblePath.addPath(tailPath, Offset(0, 0));
+    bubblePath.addPath(tailPath, const Offset(0, 0));
 
     canvas.drawPath(bubblePath, tagPaint);
 

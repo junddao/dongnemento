@@ -15,13 +15,37 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
-### ios release
+### ios prod
 
 ```sh
-[bundle exec] fastlane ios release
+[bundle exec] fastlane ios prod
 ```
 
-Push a new beta build to TestFlight
+testflight 배포
+
+### ios before_send_slack_message
+
+```sh
+[bundle exec] fastlane ios before_send_slack_message
+```
+
+
+
+### ios after_send_slack_message
+
+```sh
+[bundle exec] fastlane ios after_send_slack_message
+```
+
+
+
+### ios flutter_build_ios
+
+```sh
+[bundle exec] fastlane ios flutter_build_ios
+```
+
+
 
 ----
 

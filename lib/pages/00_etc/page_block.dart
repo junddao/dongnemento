@@ -11,10 +11,10 @@ class PageBlock extends StatelessWidget {
   }
 
   Widget _body() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Text('다수의 신고로 차단된 상태입니다.'),
           SizedBox(height: 10),
           Text('사용을 원하시면 아래 메일로 문의 바랍니다.'),
