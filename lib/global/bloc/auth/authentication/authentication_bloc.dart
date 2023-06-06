@@ -37,30 +37,34 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     AuthenticationStatusChanged event,
     Emitter<AuthenticationState> emit,
   ) async {
-    switch (event.status) {
-      case AuthenticationStatusType.unauthenticated:
-        add(AuthenticationSignOut());
+    try {
+      switch (event.status) {
+        case AuthenticationStatusType.unauthenticated:
+          add(AuthenticationSignOut());
 
-        emit(const AuthenticationUnAuthenticated());
-        break;
-      case AuthenticationStatusType.authenticated:
-        final dio = Dio(); // Provide a dio instance
-        dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-        DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: endPoint).getMe();
+          emit(const AuthenticationUnAuthenticated());
+          break;
+        case AuthenticationStatusType.authenticated:
+          final dio = Dio(); // Provide a dio instance
+          dio.interceptors.add(TokenInterceptor(RestClient(dio)));
+          DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: endPoint).getMe();
 
-        if (responseModelUser.success == false) {
-          emit(
-            AuthenticationError(errorMessage: responseModelUser.error ?? 'get me error'),
-          );
-        } else {
-          ModelUser me = responseModelUser.data.first;
+          if (responseModelUser.success == false) {
+            emit(
+              AuthenticationError(errorMessage: responseModelUser.error ?? 'get me error'),
+            );
+          } else {
+            ModelUser me = responseModelUser.data.first;
 
-          emit(AuthenticationAuthenticated(me: me));
-        }
+            emit(AuthenticationAuthenticated(me: me));
+          }
 
-        break;
-      default:
-        emit(const AuthenticationUnknown());
+          break;
+        default:
+          emit(const AuthenticationUnknown());
+      }
+    } catch (e) {
+      emit(const AuthenticationUnknown());
     }
   }
 

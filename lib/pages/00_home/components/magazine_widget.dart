@@ -17,7 +17,7 @@ class _MagazineWidgetState extends State<MagazineWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('매거진', style: DUTextStyle.size20B),
+        const Text('매거진', style: DUTextStyle.size20B),
         const SizedBox(height: 22),
         SizedBox(
           height: SizeConfig.screenWidth * 0.5,

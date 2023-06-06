@@ -233,16 +233,16 @@ ThemeData darkTheme() {
     ),
     // 텍스트 테마
     textTheme: TextTheme(
-      headline4: DUTextStyle.size30.copyWith(color: DUColors.grey0),
-      headline5: DUTextStyle.size24.copyWith(color: DUColors.grey0),
-      headline6: DUTextStyle.size20M.copyWith(color: DUColors.grey0), // appBar
-      subtitle1: DUTextStyle.size16M.copyWith(color: DUColors.grey0),
-      subtitle2: DUTextStyle.size14M.copyWith(color: DUColors.grey0),
-      bodyText1: DUTextStyle.size16.copyWith(color: DUColors.grey0),
-      bodyText2: DUTextStyle.size14.copyWith(color: DUColors.grey0),
-      caption: DUTextStyle.size12.copyWith(color: DUColors.grey0),
-      button: DUTextStyle.size14M.copyWith(color: DUColors.grey0),
-      overline: DUTextStyle.size10.copyWith(color: DUColors.grey0),
+      headlineMedium: DUTextStyle.size30.copyWith(color: DUColors.grey0),
+      headlineSmall: DUTextStyle.size24.copyWith(color: DUColors.grey0),
+      titleLarge: DUTextStyle.size20M.copyWith(color: DUColors.grey0), // appBar
+      titleMedium: DUTextStyle.size16M.copyWith(color: DUColors.grey0),
+      titleSmall: DUTextStyle.size14M.copyWith(color: DUColors.grey0),
+      bodyLarge: DUTextStyle.size16.copyWith(color: DUColors.grey0),
+      bodyMedium: DUTextStyle.size14.copyWith(color: DUColors.grey0),
+      bodySmall: DUTextStyle.size12.copyWith(color: DUColors.grey0),
+      labelLarge: DUTextStyle.size14M.copyWith(color: DUColors.grey0),
+      labelSmall: DUTextStyle.size10.copyWith(color: DUColors.grey0),
     ),
 
     //* text button theme

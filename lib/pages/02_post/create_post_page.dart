@@ -225,7 +225,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
               ),
             ),
             validator: (text) {
-              return text == null ? '제목을 입력해주세요.' : null;
+              return text.isNullEmpty ? '제목을 입력해주세요.' : null;
             },
           ),
         ),
@@ -254,7 +254,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
               ),
             ),
             validator: (text) {
-              return text == null ? '제목을 입력해주세요.' : null;
+              return text.isNullEmpty ? '내용을 입력해주세요.' : null;
             },
           ),
         ),

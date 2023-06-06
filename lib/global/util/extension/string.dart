@@ -29,7 +29,7 @@ extension StringExtension2 on String? {
     if (this == null) {
       return '';
     } else {
-      int data = this.toString().replaceAll(',', '').toInt();
+      int data = toString().replaceAll(',', '').toInt();
       return NumberFormat('###,###,###,###').format(data).replaceAll(' ', '');
     }
   }

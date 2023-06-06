@@ -110,7 +110,7 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 30),
-                            Text(
+                            const Text(
                               "회원가입.",
                               style: DUTextStyle.size18,
                             ),

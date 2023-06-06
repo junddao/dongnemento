@@ -433,11 +433,11 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
   }
 
   Widget emptyReview() {
-    return SizedBox(
+    return const SizedBox(
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text('첫 리뷰를 남겨보세요. 😃'),
         ],
       ),

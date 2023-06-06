@@ -17,7 +17,7 @@ class FileCubit extends Cubit<FileState> {
     try {
       emit(FileLoading());
 
-      final response = await ApiService().postMultiPart('${endPoint}/upload/file', images, FileType.image, dest);
+      final response = await ApiService().postMultiPart('$endPoint/upload/file', images, FileType.image, dest);
 
       ModelFileResponse productImageResponse = ModelFileResponse.fromMap(response);
 

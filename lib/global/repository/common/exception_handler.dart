@@ -23,7 +23,7 @@ class DUExceptionHandler {
   }
 
   Failure handleException(OperationException? exception) {
-    if (exception?.graphqlErrors != null && exception!.graphqlErrors.length > 0) {
+    if (exception?.graphqlErrors != null && exception!.graphqlErrors.isNotEmpty) {
       var errMsg = exception.graphqlErrors.elementAt(0).message;
       var failure = failureInstanceFromErrorCode(errMsg);
 

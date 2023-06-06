@@ -1,6 +1,5 @@
 import 'package:base_project/global/style/constants.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
 
 // ignore: must_be_immutable
@@ -54,8 +53,6 @@ class DUTextFormField extends StatefulWidget {
 class DUTextFormFieldState extends State<DUTextFormField> {
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return TextFormField(
       focusNode: widget.focusNode,
       controller: widget.controller,
@@ -69,9 +66,7 @@ class DUTextFormFieldState extends State<DUTextFormField> {
           widget.onChanged!(text);
         }
       },
-      validator: widget.warningMessage == null || widget.validator != null
-          ? widget.validator
-          : _validateText,
+      validator: widget.warningMessage == null || widget.validator != null ? widget.validator : _validateText,
       onEditingComplete: widget.onEditingComplete,
       onFieldSubmitted: widget.onFieldSubmitted,
       textInputAction: widget.textInputAction,
@@ -84,9 +79,7 @@ class DUTextFormFieldState extends State<DUTextFormField> {
         labelText: widget.title,
         hintText: widget.hintText,
         fillColor: Colors.blue,
-        icon: widget.icon == null
-            ? null
-            : Icon(widget.icon, color: kPrimaryColor),
+        icon: widget.icon == null ? null : Icon(widget.icon, color: kPrimaryColor),
         suffixIcon: suffixIcon(),
       ),
     );

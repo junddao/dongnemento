@@ -21,13 +21,13 @@ class DataOrFailure<E> extends Either<E?, Failure> {
   DataOrFailure.withData(E e) : super.fromA(e);
   DataOrFailure.withFailure(Failure fail) : super.fromB(fail);
 
-  bool get isSuccess => this.isA;
-  bool get isFailed => this.isB;
+  bool get isSuccess => isA;
+  bool get isFailed => isB;
 
-  E? get data => this.a;
-  Failure get failure => this.b!;
-  set data(E? newData) => this.a = newData;
-  set failure(Failure newFailure) => this.b = newFailure;
+  E? get data => a;
+  Failure get failure => b!;
+  set data(E? newData) => a = newData;
+  set failure(Failure newFailure) => b = newFailure;
 }
 
 class Either<A, B> {

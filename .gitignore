@@ -70,3 +70,4 @@ lib/firebase_options_dev.dart
 #fastlane
 /android/validate_play_store_json_key.json
 /ios/fastlane/
+/android/fastlane/

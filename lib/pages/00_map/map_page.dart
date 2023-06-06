@@ -138,6 +138,7 @@ class _MapPageViewState extends State<MapPageView> {
                         myLocationEnabled: false,
                         myLocationButtonEnabled: false,
                         zoomControlsEnabled: false,
+                        minMaxZoomPreference: MinMaxZoomPreference(11, 20),
                         onCameraMove: _onCameraMove,
                         onCameraIdle: _onCameraIdle,
                         onTap: (point) {
@@ -294,7 +295,7 @@ class _MapPageViewState extends State<MapPageView> {
       ..addPolygon(points, false)
       ..close();
 
-    bubblePath.addPath(tailPath, Offset(0, 0));
+    bubblePath.addPath(tailPath, const Offset(0, 0));
 
     canvas.drawPath(bubblePath, tagPaint);
 

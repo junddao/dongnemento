@@ -8,14 +8,14 @@ Future<BuildContext> showLoadingIndicator(BuildContext context) {
     context: context,
     builder: (_) {
       if (!dialogContext.isCompleted) dialogContext.complete(_);
-      return Dialog(
+      return const Dialog(
         elevation: 0,
         backgroundColor: Colors.transparent,
         child: Center(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               CircularProgressIndicator(color: Colors.white),
             ],
           ),

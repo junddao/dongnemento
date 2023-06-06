@@ -1,2 +1,0 @@
-json_key_file("/Users/junyoungpark/personal/flutter/dongnemento/android/validate_play_store_json_key.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
-package_name("com.jj.dongnesosik") # e.g. com.krausefx.app

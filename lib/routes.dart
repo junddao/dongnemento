@@ -71,6 +71,7 @@ class AppRouter extends Bloc {
       prevAuthState = authBloc.state;
       if (authBloc.state is AuthenticationInitial) {
         var result = await SecureStorage.instance.readToken();
+        logger.d(result);
 
         if (result != null) {
           authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));

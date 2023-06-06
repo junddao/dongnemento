@@ -308,9 +308,9 @@ class _MorePageViewState extends State<MorePageView> {
                       color: DUColors.white,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(width: 1, color: DUColors.grey_06)),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(
                         Icons.camera_alt,
                         color: DUColors.grey_06,
