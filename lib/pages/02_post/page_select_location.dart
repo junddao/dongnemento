@@ -108,7 +108,7 @@ class _PageSelectLocationState extends State<PageSelectLocation> {
         return buildBottomSheet(context, point);
       },
     ).then((value) {
-      context.pop();
+      if (value) context.pop();
     });
   }
 
@@ -136,7 +136,7 @@ class _PageSelectLocationState extends State<PageSelectLocation> {
                   press: () {
                     context.read<LocationCubit>().setPostLocation(point);
 
-                    context.pop();
+                    context.pop(true);
 
                     // Navigator.of(context).popUntil(ModalRoute.withName('PagePostCreate'));
                   },
