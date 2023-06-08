@@ -55,9 +55,10 @@ Map<String, dynamic> _$ModelResponsePinToJson(ModelResponsePin instance) =>
 
 const _$CategoryTypeEnumMap = {
   CategoryType.daily: 'DAILY',
-  CategoryType.meetup: 'MEETUP',
-  CategoryType.drink: 'DRINK',
-  CategoryType.eat: 'EAT',
-  CategoryType.trade: 'TRADE',
-  CategoryType.information: 'INFORMATION',
+  CategoryType.mart: 'MART',
+  CategoryType.hairShop: 'HAIR_SHOP',
+  CategoryType.restaurant: 'RESTAURANT',
+  CategoryType.cafe: 'CAFE',
+  CategoryType.hotel: 'HOTEL',
+  CategoryType.pension: 'PENSION',
 };

@@ -13,6 +13,7 @@ import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
 import 'package:base_project/pages/common/error_page.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +21,7 @@ import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../global/bloc/auth/get_me/me_cubit.dart';
 import '../../routes.dart';
@@ -58,6 +60,11 @@ class PagePostCreateView extends StatefulWidget {
 class _PagePostCreateViewState extends State<PagePostCreateView> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController(text: DateFormat.yMEd().format(DateTime.now()));
+
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+
   final _formKey = GlobalKey<FormState>();
 
   final category = ValueNotifier<CategoryType>(CategoryType.daily);
@@ -77,6 +84,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
 
   @override
   void dispose() {
+    _dateController.dispose();
     _titleController.dispose();
     _bodyController.dispose();
     super.dispose();
@@ -182,18 +190,19 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
                       children: [
                         // 1. 제목
                         postTitle(),
-                        const Divider(thickness: 1),
+
                         // 2. 내용
                         postContents(),
 
-                        const Divider(thickness: 1),
-                        // 3. 위치지정
                         postCategory(),
-                        const Divider(thickness: 1),
 
-                        postLocation(),
+                        // 3. 위치지정
+                        // postLocation(),
+                        // const Divider(thickness: 1),
 
-                        const Divider(thickness: 1),
+                        // 3. 시작일 / 종료일 선택
+                        postStartDate(),
+
                         // 4. 이미지
                         postImages(),
                       ],
@@ -209,56 +218,54 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   }
 
   postTitle() {
-    return Column(
-      children: [
-        Container(
-          height: 54,
-          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 4),
-          child: TextFormField(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('🪧 지도에 표시되는 제목입니다.'),
+          const SizedBox(height: 16),
+          TextFormField(
             controller: _titleController,
             decoration: InputDecoration(
               hintText: "제목을 입력해주세요.",
               hintStyle: DUTextStyle.size16.grey2,
               labelStyle: const TextStyle(color: Colors.transparent),
-              border: const UnderlineInputBorder(
-                borderSide: BorderSide.none,
-              ),
+              border: const OutlineInputBorder(),
             ),
             validator: (text) {
               return text.isNullEmpty ? '제목을 입력해주세요.' : null;
             },
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   postContents() {
-    return Column(
-      children: [
-        Container(
-          height: 150,
-          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 4),
-          // decoration: BoxDecoration(
-          //     borderRadius: const BorderRadius.all(Radius.circular(8)),
-          //     border: Border.all(color: DUColors.pinkish_grey, width: 1)),
-          child: TextFormField(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('😃 쓰고싶은 내용을 입력하세요. '),
+          const SizedBox(height: 16),
+          TextFormField(
+            minLines: 3,
             maxLines: null,
             controller: _bodyController,
             decoration: InputDecoration(
               hintText: "내용을 입력해주세요.",
               hintStyle: DUTextStyle.size16.grey2,
               labelStyle: const TextStyle(color: Colors.transparent),
-              border: const UnderlineInputBorder(
-                borderSide: BorderSide.none,
-              ),
+              border: const OutlineInputBorder(),
             ),
             validator: (text) {
               return text.isNullEmpty ? '내용을 입력해주세요.' : null;
             },
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -270,15 +277,9 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             alignment: Alignment.centerLeft,
-            child: Row(
-              children: [
-                const Icon(Icons.category, color: DUColors.pinkish_grey),
-                const SizedBox(width: 4),
-                Text(
-                  '카테고리',
-                  style: DUTextStyle.size14.pinkish_grey,
-                ),
-              ],
+            child: Text(
+              '🤖 카테고리',
+              style: DUTextStyle.size14.black,
             ),
           ),
           ChipsChoice<CategoryType>.single(
@@ -375,6 +376,48 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
           ]),
         );
       },
+    );
+  }
+
+  postStartDate() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('📅 글을 게시할 기간을 선택하세요.', style: DUTextStyle.size14.black),
+          const SizedBox(height: 8),
+          TextFormField(
+              readOnly: true,
+              controller: _dateController,
+              decoration: InputDecoration(
+                hintText: "시작일 - 종료일",
+                hintStyle: DUTextStyle.size12.grey2,
+                labelStyle: DUTextStyle.size12.black,
+              ),
+              onTap: () async {
+                var results = await showCalendarDatePicker2Dialog(
+                  context: context,
+                  config: CalendarDatePicker2WithActionButtonsConfig(
+                    calendarType: CalendarDatePicker2Type.range,
+                  ),
+                  dialogSize: const Size(325, 400),
+                  value: [DateTime.now()],
+                  borderRadius: BorderRadius.circular(15),
+                );
+
+                if (results == null) {
+                  return;
+                }
+                startDate = results.first!;
+                endDate = results.last!;
+
+                setState(() {
+                  _dateController.text = '${startDate.month}월 ${startDate.day}일 - ${endDate.month}월 ${endDate.day}일';
+                });
+              }),
+        ],
+      ),
     );
   }
 

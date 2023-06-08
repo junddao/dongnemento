@@ -41,17 +41,17 @@ extension Utility on BuildContext {
 }
 
 Color setPinColor(ModelResponsePins pin) {
-  if (pin.category == CategoryType.drink) {
+  if (pin.category == CategoryType.mart) {
     return DUColors.tomato;
   }
-  if (pin.category == CategoryType.eat) {
+  if (pin.category == CategoryType.daily) {
     return DUColors.azul;
   }
-  if (pin.category == CategoryType.meetup) {
+  if (pin.category == CategoryType.cafe || pin.category == CategoryType.restaurant) {
     return DUColors.facebook_blue;
   }
 
-  if (pin.category == CategoryType.trade) {
+  if (pin.category == CategoryType.hairShop) {
     return DUColors.violet;
   } else {
     return DUColors.brownish_grey;

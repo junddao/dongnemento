@@ -12,6 +12,8 @@ class ModelRequestCreatePin {
   String? body;
   CategoryType category;
   int categoryScore;
+  DateTime startDate;
+  DateTime endDate;
   List<String>? images;
   ModelRequestCreatePin({
     required this.lat,
@@ -20,6 +22,8 @@ class ModelRequestCreatePin {
     this.body,
     required this.category,
     required this.categoryScore,
+    required this.startDate,
+    required this.endDate,
     this.images,
   });
 

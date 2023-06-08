@@ -33,8 +33,8 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
-    double lat = context.watch<MeCubit>().me.lat ?? 0;
-    double lng = context.watch<MeCubit>().me.lng ?? 0;
+    double lat = context.watch<MeCubit>().me.lat ?? 37.39477;
+    double lng = context.watch<MeCubit>().me.lng ?? 127.11116;
 
     return MapPageView(lastLocation: LatLng(lat, lng));
   }
@@ -138,7 +138,7 @@ class _MapPageViewState extends State<MapPageView> {
                         myLocationEnabled: false,
                         myLocationButtonEnabled: false,
                         zoomControlsEnabled: false,
-                        minMaxZoomPreference: MinMaxZoomPreference(11, 20),
+                        minMaxZoomPreference: const MinMaxZoomPreference(8, 20),
                         onCameraMove: _onCameraMove,
                         onCameraIdle: _onCameraIdle,
                         onTap: (point) {

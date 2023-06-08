@@ -58,7 +58,7 @@ class DUDialog {
                           },
                           child: Text(
                             btn1Text ?? '다시입력',
-                            style: DUTextStyle.size14,
+                            style: DUTextStyle.size14.grey1,
                           ),
                         ),
                       ),
@@ -70,7 +70,7 @@ class DUDialog {
                           },
                           child: Text(
                             btn2Text ?? '등록취소',
-                            style: DUTextStyle.size16M.warning,
+                            style: DUTextStyle.size14.warning,
                           ),
                         ),
                       ),
