@@ -590,6 +590,8 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
       body: _bodyController.text,
       category: category.value,
       categoryScore: categoryScore.toInt(),
+      startDate: startDate,
+      endDate: endDate,
       images: imagePaths,
     );
 
