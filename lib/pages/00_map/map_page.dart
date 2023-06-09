@@ -33,6 +33,7 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
+    /// 기본 위치는 판교역으로 설정
     double lat = context.watch<MeCubit>().me.lat ?? 37.39477;
     double lng = context.watch<MeCubit>().me.lng ?? 127.11116;
 

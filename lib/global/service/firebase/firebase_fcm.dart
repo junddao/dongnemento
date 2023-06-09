@@ -108,6 +108,7 @@ class FCMWrapper {
       if (token == null) {
         throw Exception("can not get fcm token");
       }
+      logger.d('fcm: $token');
       return token;
     }
     return Future.value("this_is_desktop_firebase_token");

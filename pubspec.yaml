@@ -132,9 +132,9 @@ flutter_icons:
 # flutter pub run flutter_native_splash:create
 flutter_native_splash:
   image: assets/images/splash.png
-  color: "#87ABD6"
+  color: "#FFFFFF"
   # background_image: assets/images/splash/background.png
   android_12:
     image: assets/images/android12splash.png
-    icon_background_color: "#87ABD6"
+    icon_background_color: "#FFFFFF"
   ios_content_mode: center
