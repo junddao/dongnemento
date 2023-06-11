@@ -138,7 +138,7 @@ class _MapPageViewState extends State<MapPageView> {
                         myLocationEnabled: false,
                         myLocationButtonEnabled: false,
                         zoomControlsEnabled: false,
-                        minMaxZoomPreference: const MinMaxZoomPreference(8, 20),
+                        minMaxZoomPreference: MinMaxZoomPreference(8, 20),
                         onCameraMove: _onCameraMove,
                         onCameraIdle: _onCameraIdle,
                         onTap: (point) {

@@ -1,13 +1,14 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'model_request_get_pin.g.dart';
 
 @JsonSerializable()
-class ModelRequestGetPin {
-  double? lat;
-  double? lng;
-  int? range;
-  ModelRequestGetPin({
+class ModelRequestGetPin extends Equatable {
+  final double? lat;
+  final double? lng;
+  final int? range;
+  const ModelRequestGetPin({
     this.lat,
     this.lng,
     this.range = 2000,
@@ -17,12 +18,9 @@ class ModelRequestGetPin {
   Map<String, dynamic> toJson() => _$ModelRequestGetPinToJson(this);
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is ModelRequestGetPin && other.lat == lat && other.lng == lng && other.range == range;
-  }
-
-  @override
-  int get hashCode => lat.hashCode ^ lng.hashCode ^ range.hashCode;
+  List<Object?> get props => [
+        lat,
+        lng,
+        range,
+      ];
 }

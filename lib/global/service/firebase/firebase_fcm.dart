@@ -108,6 +108,7 @@ class FCMWrapper {
       if (token == null) {
         throw Exception("can not get fcm token");
       }
+      logger.d('fcm : $token');
       return token;
     }
     return Future.value("this_is_desktop_firebase_token");
@@ -156,7 +157,7 @@ List<String> newsDetailRoomIds = [];
 
 // FCM 수신시 데이터 처리
 Future<void> firebaseMessagingHandler(RemoteMessage message) async {
-  logger.d(message.data.toString());
+  logger.d(message.notification?.title ?? '');
 
   FirebaseModel fcmModel = FirebaseModel.fromJson(message.data);
 

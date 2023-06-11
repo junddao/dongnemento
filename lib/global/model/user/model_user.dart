@@ -20,6 +20,7 @@ class ModelUser {
   List<String>? blockedUserIds;
   String? createdAt;
   String? updatedAt;
+  String? firebaseToken;
   //  String smsEnabled
   //  String agreeTerms
   //  String phoneNumber
@@ -40,6 +41,7 @@ class ModelUser {
     this.blockedUserIds,
     this.createdAt,
     this.updatedAt,
+    this.firebaseToken,
   });
 
   factory ModelUser.fromJson(Map<String, dynamic> json) => _$ModelUserFromJson(json);
@@ -61,6 +63,7 @@ class ModelUser {
     List<String>? blockedUserIds,
     String? createdAt,
     String? updatedAt,
+    String? firebaseToken,
   }) {
     return ModelUser(
       id: id ?? this.id,
@@ -78,6 +81,7 @@ class ModelUser {
       blockedUserIds: blockedUserIds ?? this.blockedUserIds,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      firebaseToken: firebaseToken ?? this.firebaseToken,
     );
   }
 }
