@@ -157,7 +157,7 @@ List<String> newsDetailRoomIds = [];
 
 // FCM 수신시 데이터 처리
 Future<void> firebaseMessagingHandler(RemoteMessage message) async {
-  logger.d(message.data.toString());
+  logger.d(message.notification?.title ?? '');
 
   FirebaseModel fcmModel = FirebaseModel.fromJson(message.data);
 

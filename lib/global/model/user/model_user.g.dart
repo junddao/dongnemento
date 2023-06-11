@@ -24,6 +24,7 @@ ModelUser _$ModelUserFromJson(Map<String, dynamic> json) => ModelUser(
           .toList(),
       createdAt: json['createdAt'] as String?,
       updatedAt: json['updatedAt'] as String?,
+      firebaseToken: json['firebaseToken'] as String?,
     );
 
 Map<String, dynamic> _$ModelUserToJson(ModelUser instance) => <String, dynamic>{
@@ -42,4 +43,5 @@ Map<String, dynamic> _$ModelUserToJson(ModelUser instance) => <String, dynamic>{
       'blockedUserIds': instance.blockedUserIds,
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
+      'firebaseToken': instance.firebaseToken,
     };
