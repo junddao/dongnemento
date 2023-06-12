@@ -7,12 +7,15 @@ class FirebaseModel {
   String? title;
   String? body;
   String? imageUrl;
-  String? badge;
+  String? authorId;
+  String? targetId;
+
   FirebaseModel({
     this.title,
     this.body,
     this.imageUrl,
-    this.badge,
+    this.authorId,
+    this.targetId,
   });
 
   factory FirebaseModel.fromJson(Map<String, dynamic> json) => _$FirebaseModelFromJson(json);

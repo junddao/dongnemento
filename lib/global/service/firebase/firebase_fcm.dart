@@ -162,15 +162,15 @@ Future<void> firebaseMessagingHandler(RemoteMessage message) async {
   FirebaseModel fcmModel = FirebaseModel.fromJson(message.data);
 
   // add badge
-  FCMWrapper.instance.badgeCount(int.parse(fcmModel.badge ?? '0'));
+  // FCMWrapper.instance.badgeCount(int.parse(fcmModel.badge ?? '0'));
   showNotification(fcmModel);
 }
 
 // FLN Push 알림
 Future<void> showNotification(FirebaseModel fcmModel) async {
   AndroidNotificationDetails androidPlatformChannelSpecifics = const AndroidNotificationDetails(
-    'gongmap_fcm_channel_id',
-    'gongmap_fcm_channel_name',
+    'channel_id',
+    'channel_name',
     importance: Importance.max,
     priority: Priority.high,
   );

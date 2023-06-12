@@ -11,7 +11,8 @@ FirebaseModel _$FirebaseModelFromJson(Map<String, dynamic> json) =>
       title: json['title'] as String?,
       body: json['body'] as String?,
       imageUrl: json['imageUrl'] as String?,
-      badge: json['badge'] as String?,
+      authorId: json['authorId'] as String?,
+      targetId: json['targetId'] as String?,
     );
 
 Map<String, dynamic> _$FirebaseModelToJson(FirebaseModel instance) =>
@@ -19,5 +20,6 @@ Map<String, dynamic> _$FirebaseModelToJson(FirebaseModel instance) =>
       'title': instance.title,
       'body': instance.body,
       'imageUrl': instance.imageUrl,
-      'badge': instance.badge,
+      'authorId': instance.authorId,
+      'targetId': instance.targetId,
     };

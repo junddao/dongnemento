@@ -62,6 +62,7 @@ class AppRouter extends Bloc {
   AppRouter(this.authBloc) : super(null);
 
   AuthenticationState? prevAuthState;
+  late final fcmToken;
 
   late final _goRouter = GoRouter(
     redirect: (context, state) async {
@@ -75,6 +76,7 @@ class AppRouter extends Bloc {
         logger.d(result);
 
         if (result != null) {
+          fcmToken = await FCMWrapper.instance.getToken();
           authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
         }
         return null;
@@ -85,13 +87,22 @@ class AppRouter extends Bloc {
         }
 
         // 로그인할때 무조건 토큰 재설정
-        authBloc.state.me!.firebaseToken = await FCMWrapper.instance.getToken();
+
+        // ModelUser updatedMe = authBloc.state.me!;
+        // if (authBloc.state.me?.firebaseToken == null) {
+        //   updatedMe = updatedMe.copyWith(
+        //     firebaseToken: await FCMWrapper.instance.getToken(),
+        //   );
+        // }
+
+        final updatedMe = authBloc.state.me!.copyWith(
+          firebaseToken: fcmToken,
+        );
 
         logger.d('Authenticated');
-        await context.read<MeCubit>().setMe(authBloc.state.me!);
+        await context.read<MeCubit>().setMe(updatedMe);
         return Routes.map;
       } else if (authBloc.state is AuthenticationUnAuthenticated) {
-        // context.read<SingletonMeCubit>().updateSingletonMe(ModelUser());
         logger.d('UnAuthenticated');
         return Routes.login;
       } else if (authBloc.state is AuthenticationUnknown) {
