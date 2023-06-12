@@ -194,14 +194,14 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
                         // 2. 내용
                         postContents(),
 
+                        // 3. 시작일 / 종료일 선택
+                        postStartDate(),
+
                         postCategory(),
 
                         // 3. 위치지정
                         // postLocation(),
                         // const Divider(thickness: 1),
-
-                        // 3. 시작일 / 종료일 선택
-                        postStartDate(),
 
                         // 4. 이미지
                         postImages(),
@@ -394,6 +394,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
                 hintText: "시작일 - 종료일",
                 hintStyle: DUTextStyle.size12.grey2,
                 labelStyle: DUTextStyle.size12.black,
+                border: const OutlineInputBorder(),
               ),
               onTap: () async {
                 var results = await showCalendarDatePicker2Dialog(
@@ -413,7 +414,8 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
                 endDate = results.last!;
 
                 setState(() {
-                  _dateController.text = '${startDate.month}월 ${startDate.day}일 - ${endDate.month}월 ${endDate.day}일';
+                  _dateController.text = '${DateFormat.MEd().format(startDate)} ~ ${DateFormat.MEd().format(endDate)}';
+                  // _dateController.text =  '${startDate.month}/${startDate.day} ~ ${endDate.month}/${endDate.day}';
                 });
               }),
         ],
