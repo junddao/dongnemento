@@ -72,11 +72,11 @@ class AppRouter extends Bloc {
       }
       prevAuthState = authBloc.state;
       if (authBloc.state is AuthenticationInitial) {
+        fcmToken = await FCMWrapper.instance.getToken();
         var result = await SecureStorage.instance.readToken();
         logger.d(result);
 
         if (result != null) {
-          fcmToken = await FCMWrapper.instance.getToken();
           authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
         }
         return null;
