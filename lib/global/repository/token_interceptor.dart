@@ -2,6 +2,7 @@ import 'package:base_project/global/repository/rest_client.dart';
 import 'package:dio/dio.dart';
 
 import '../service/secure_storage/secure_storage.dart';
+import '../util/util.dart';
 
 class RestApiManager {
   static final RestApiManager instance = RestApiManager._internal();
@@ -9,7 +10,7 @@ class RestApiManager {
   RestApiManager._internal();
 
   final Dio _dio = Dio();
-  final RestClient _restClient = RestClient(Dio());
+  final RestClient _restClient = RestClient(Dio(), baseUrl: endPoint);
 
   Future<void> init() async {
     _dio.interceptors.add(TokenInterceptor(_restClient));

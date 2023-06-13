@@ -106,7 +106,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       //get me
 
       DataResponse<ModelUser> responseModelUser = await RestApiManager.instance.restClient.getMe();
-      // DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: endPoint).getMe();
 
       if (responseModelUser.success == false) {
         emit(
@@ -144,17 +143,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Future<DataResponse<ModelGetToken>> kakaoLogin(Map<String, dynamic> input) async {
-    final dio = Dio(); // Provide a dio instance
-    dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: endPoint).kakaoSignIn(input);
+    DataResponse<ModelGetToken> response = await RestApiManager.instance.restClient.kakaoSignIn(input);
 
     return response;
   }
 
   Future<DataResponse<ModelGetToken>> appleLogin(Map<String, dynamic> input) async {
-    final dio = Dio(); // Provide a dio instance
-    dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: endPoint).appleSignIn(input);
+    DataResponse<ModelGetToken> response = await RestApiManager.instance.restClient.appleSignIn(input);
 
     return response;
   }
