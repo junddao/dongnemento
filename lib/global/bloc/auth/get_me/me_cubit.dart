@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../model/model.dart';
 import '../../../repository/rest_client.dart';
 import '../../../repository/token_interceptor.dart';
-import '../../../service/secure_storage/secure_storage.dart';
 import '../../../util/util.dart';
 
 part 'me_state.dart';
@@ -47,7 +46,6 @@ class MeCubit extends Cubit<MeState> {
     }
 
     me = response.data.first;
-    await SecureStorage.instance.writeMe(me);
 
     emit(MeLoaded(me: response.data.first));
   }

@@ -3,6 +3,21 @@ import 'package:dio/dio.dart';
 
 import '../service/secure_storage/secure_storage.dart';
 
+class RestApiManager {
+  static final RestApiManager instance = RestApiManager._internal();
+  factory RestApiManager() => instance;
+  RestApiManager._internal();
+
+  final Dio _dio = Dio();
+  final RestClient _restClient = RestClient(Dio());
+
+  Future<void> init() async {
+    _dio.interceptors.add(TokenInterceptor(_restClient));
+  }
+
+  RestClient get restClient => _restClient;
+}
+
 class TokenInterceptor extends Interceptor {
   final RestClient restClient;
 

@@ -97,20 +97,22 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         emit(
           AuthenticationError(errorMessage: responseModelSignIn.error ?? 'sign in error'),
         );
-      } else {
-        ModelGetToken modelGetToken = responseModelSignIn.data.first;
-        await SecureStorage.instance.writeToken(modelGetToken.accessToken);
+        return;
       }
 
+      ModelGetToken modelGetToken = responseModelSignIn.data.first;
+      await SecureStorage.instance.writeToken(modelGetToken.accessToken);
+
       //get me
-      final dio = Dio(); // Provide a dio instance
-      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-      DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: endPoint).getMe();
+
+      DataResponse<ModelUser> responseModelUser = await RestApiManager.instance.restClient.getMe();
+      // DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: endPoint).getMe();
 
       if (responseModelUser.success == false) {
         emit(
           AuthenticationError(errorMessage: responseModelUser.error ?? 'get me error'),
         );
+        return;
       }
       ModelUser? me = responseModelUser.data.first;
       // SecureStorage.instance.writeMe(me);
@@ -137,10 +139,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Future<DataResponse<ModelGetToken>> emailLogin(Map<String, dynamic> input) async {
-    final dio = Dio(); // Provide a dio instance
-    dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-    DataResponse<ModelGetToken> response = await RestClient(dio, baseUrl: endPoint).signIn(input);
-
+    DataResponse<ModelGetToken> response = await RestApiManager.instance.restClient.signIn(input);
     return response;
   }
 
