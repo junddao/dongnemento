@@ -112,7 +112,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       // SecureStorage.instance.writeMe(me);
       emit(AuthenticationAuthenticated(me: me));
     } catch (e) {
-      AuthenticationError(errorMessage: e.toString());
+      emit(AuthenticationError(errorMessage: e.toString()));
     }
   }
 
@@ -133,8 +133,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Future<DataResponse<ModelGetToken>> emailLogin(Map<String, dynamic> input) async {
-    DataResponse<ModelGetToken> response = await RestApiManager.instance.getRestClient().signIn(input);
-    return response;
+    try {
+      DataResponse<ModelGetToken> response = await RestApiManager.instance.getRestClient().signIn(input);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<DataResponse<ModelGetToken>> kakaoLogin(Map<String, dynamic> input) async {
