@@ -1,15 +1,12 @@
 import 'package:base_project/global/enum/authentication_status_type.dart';
 import 'package:base_project/global/enum/social_type.dart';
 import 'package:base_project/global/service/secure_storage/secure_storage.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../model/model.dart';
-import '../../../repository/rest_client.dart';
-import '../../../repository/token_interceptor.dart';
-import '../../../util/util.dart';
+import '../../../repository/rest_api_manager.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -45,9 +42,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           emit(const AuthenticationUnAuthenticated());
           break;
         case AuthenticationStatusType.authenticated:
-          final dio = Dio(); // Provide a dio instance
-          dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-          DataResponse<ModelUser> responseModelUser = await RestClient(dio, baseUrl: endPoint).getMe();
+          DataResponse<ModelUser> responseModelUser = await RestApiManager.instance.getRestClient().getMe();
 
           if (responseModelUser.success == false) {
             emit(
@@ -105,7 +100,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
       //get me
 
-      DataResponse<ModelUser> responseModelUser = await RestApiManager.instance.restClient.getMe();
+      DataResponse<ModelUser> responseModelUser = await RestApiManager.instance.getRestClient().getMe();
 
       if (responseModelUser.success == false) {
         emit(
@@ -138,18 +133,18 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Future<DataResponse<ModelGetToken>> emailLogin(Map<String, dynamic> input) async {
-    DataResponse<ModelGetToken> response = await RestApiManager.instance.restClient.signIn(input);
+    DataResponse<ModelGetToken> response = await RestApiManager.instance.getRestClient().signIn(input);
     return response;
   }
 
   Future<DataResponse<ModelGetToken>> kakaoLogin(Map<String, dynamic> input) async {
-    DataResponse<ModelGetToken> response = await RestApiManager.instance.restClient.kakaoSignIn(input);
+    DataResponse<ModelGetToken> response = await RestApiManager.instance.getRestClient().kakaoSignIn(input);
 
     return response;
   }
 
   Future<DataResponse<ModelGetToken>> appleLogin(Map<String, dynamic> input) async {
-    DataResponse<ModelGetToken> response = await RestApiManager.instance.restClient.appleSignIn(input);
+    DataResponse<ModelGetToken> response = await RestApiManager.instance.getRestClient().appleSignIn(input);
 
     return response;
   }

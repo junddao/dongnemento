@@ -1,11 +1,8 @@
-import 'package:dio/dio.dart';
+import 'package:base_project/global/repository/rest_api_manager.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../model/model.dart';
-import '../../../repository/rest_client.dart';
-import '../../../repository/token_interceptor.dart';
-import '../../../util/util.dart';
 
 part 'create_report_state.dart';
 
@@ -16,9 +13,7 @@ class CreateReportCubit extends Cubit<CreateReportState> {
     try {
       emit(CreateReportLoading());
 
-      final dio = Dio();
-      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-      DataResponse<bool> response = await RestClient(dio, baseUrl: endPoint).createReport(modelRequestReport);
+      DataResponse<bool> response = await RestApiManager.instance.getRestClient().createReport(modelRequestReport);
 
       if (response.success == true) {
         emit(CreateReportLoaded(result: response.data.first));

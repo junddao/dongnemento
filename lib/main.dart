@@ -13,7 +13,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import 'firebase_options.dart' as firebase_option;
-import 'global/repository/token_interceptor.dart';
 import 'global/service/dynamic_link.dart';
 import 'global/service/firebase/firebase_fcm.dart';
 
@@ -56,9 +55,6 @@ Future<void> platformSetup() async {
 
   // firebase 초기화
   await FCMWrapper.instance.initialize();
-
-  // rest api manager init
-  await RestApiManager().init();
 
   // 가로모드 제어
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);

@@ -2,22 +2,7 @@ import 'package:base_project/global/repository/rest_client.dart';
 import 'package:dio/dio.dart';
 
 import '../service/secure_storage/secure_storage.dart';
-import '../util/util.dart';
-
-class RestApiManager {
-  static final RestApiManager instance = RestApiManager._internal();
-  factory RestApiManager() => instance;
-  RestApiManager._internal();
-
-  final Dio _dio = Dio();
-  final RestClient _restClient = RestClient(Dio(), baseUrl: endPoint);
-
-  Future<void> init() async {
-    _dio.interceptors.add(TokenInterceptor(_restClient));
-  }
-
-  RestClient get restClient => _restClient;
-}
+import '../util/simple_logger.dart';
 
 class TokenInterceptor extends Interceptor {
   final RestClient restClient;
@@ -31,6 +16,7 @@ class TokenInterceptor extends Interceptor {
   ) async {
     try {
       final token = await getAccessTokenFromStorage();
+      logger.d('token$token');
       options.headers['Authorization'] = 'Bearer $token';
       handler.next(options);
       // super.onRequest(options, handler);
