@@ -20,6 +20,7 @@ class MeCubit extends Cubit<MeState> {
       emit(
         MeError(errorMessage: response.error ?? 'sign Up error'),
       );
+      return;
     }
 
     me = response.data.first;
@@ -36,6 +37,7 @@ class MeCubit extends Cubit<MeState> {
       emit(
         MeError(errorMessage: response.error ?? 'update user error'),
       );
+      return;
     }
 
     me = response.data.first;

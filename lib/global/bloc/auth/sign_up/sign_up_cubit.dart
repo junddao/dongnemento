@@ -21,6 +21,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         emit(
           SignUpError(errorMessage: response.error ?? 'sign Up error'),
         );
+        return;
       }
 
       // firebase 유저 가져와서 서버에 로그인 합니다.
@@ -35,6 +36,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         emit(
           SignUpError(errorMessage: responseSignIn.error ?? 'sign Up error'),
         );
+        return;
       } else {
         ModelGetToken modelGetToken = responseSignIn.data.first;
         await SecureStorage.instance.writeToken(modelGetToken.accessToken);
@@ -44,6 +46,7 @@ class SignUpCubit extends Cubit<SignUpState> {
 
       if (responseUserModel.success == false) {
         emit(SignUpError(errorMessage: responseUserModel.error ?? 'get me error'));
+        return;
       }
 
       // 로그인까지 끝나면 true
