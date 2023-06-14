@@ -71,7 +71,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  AuthenticationBloc authBloc = AuthenticationBloc();
+  final AuthenticationBloc authBloc = AuthenticationBloc();
   // SingletonMeCubit singletonMeCubit = SingletonMeCubit();
 
   @override

@@ -21,7 +21,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:path/path.dart' as path;
 
 import '../../global/model/model.dart';
-import '../../global/util/util.dart';
+import '../../global/util/utility.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});

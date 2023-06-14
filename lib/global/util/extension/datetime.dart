@@ -328,4 +328,19 @@ extension DUDateTime on DateTime {
       return DateFormat('yMMMM').format(toLocal());
     }
   }
+
+  String toRemainDate() {
+    final now = DateTime.now().toLocal();
+    int differenceInDays(DateTime date) {
+      return DateTime(date.year, date.month, date.day).difference(DateTime(now.year, now.month, now.day)).inDays;
+    }
+
+    if (isSameDate(now)) {
+      return DateFormat('jm').format(toLocal());
+    } else if (differenceInDays(toLocal()) == 1) {
+      return "내일";
+    } else {
+      return "${differenceInDays(toLocal())}일 후";
+    }
+  }
 }

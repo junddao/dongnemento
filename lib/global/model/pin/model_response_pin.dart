@@ -1,6 +1,5 @@
+import 'package:base_project/global/enum/category_type.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import '../../enum/category_type.dart';
 
 part 'model_response_pin.g.dart';
 
@@ -23,8 +22,10 @@ class ModelResponsePin {
   bool? isLiked;
   int? hateCount;
   bool? isHated;
-  String? createdAt;
-  String? updatedAt;
+  DateTime? startDate;
+  DateTime? endDate;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   ModelResponsePin({
     required this.id,
@@ -44,6 +45,8 @@ class ModelResponsePin {
     this.isLiked,
     this.hateCount,
     this.isHated,
+    this.startDate,
+    this.endDate,
     this.createdAt,
     this.updatedAt,
   });
@@ -70,8 +73,10 @@ class ModelResponsePin {
     bool? isLiked,
     int? hateCount,
     bool? isHated,
-    String? createdAt,
-    String? updatedAt,
+    DateTime? startDate,
+    DateTime? endDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return ModelResponsePin(
       id: id ?? this.id,
@@ -91,6 +96,8 @@ class ModelResponsePin {
       isLiked: isLiked ?? this.isLiked,
       hateCount: hateCount ?? this.hateCount,
       isHated: isHated ?? this.isHated,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

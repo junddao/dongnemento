@@ -26,8 +26,18 @@ ModelResponsePin _$ModelResponsePinFromJson(Map<String, dynamic> json) =>
       isLiked: json['isLiked'] as bool?,
       hateCount: json['hateCount'] as int?,
       isHated: json['isHated'] as bool?,
-      createdAt: json['createdAt'] as String?,
-      updatedAt: json['updatedAt'] as String?,
+      startDate: json['startDate'] == null
+          ? null
+          : DateTime.parse(json['startDate'] as String),
+      endDate: json['endDate'] == null
+          ? null
+          : DateTime.parse(json['endDate'] as String),
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
     );
 
 Map<String, dynamic> _$ModelResponsePinToJson(ModelResponsePin instance) =>
@@ -49,8 +59,10 @@ Map<String, dynamic> _$ModelResponsePinToJson(ModelResponsePin instance) =>
       'isLiked': instance.isLiked,
       'hateCount': instance.hateCount,
       'isHated': instance.isHated,
-      'createdAt': instance.createdAt,
-      'updatedAt': instance.updatedAt,
+      'startDate': instance.startDate?.toIso8601String(),
+      'endDate': instance.endDate?.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'updatedAt': instance.updatedAt?.toIso8601String(),
     };
 
 const _$CategoryTypeEnumMap = {

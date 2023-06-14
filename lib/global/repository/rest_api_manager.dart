@@ -2,7 +2,7 @@ import 'package:base_project/global/repository/rest_client.dart';
 import 'package:base_project/global/repository/token_interceptor.dart';
 import 'package:dio/dio.dart';
 
-import '../util/util.dart';
+import '../util/utility.dart';
 
 class RestApiManager {
   static final RestApiManager instance = RestApiManager._internal();

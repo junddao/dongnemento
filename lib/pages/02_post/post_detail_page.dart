@@ -29,6 +29,7 @@ import '../../global/model/report/model_request_report.dart';
 import '../../global/model/user/model_request_block.dart';
 import '../../global/style/du_button.dart';
 import '../../global/style/du_colors.dart';
+import '../../global/util/util.dart';
 import '../../routes.dart';
 
 class PagePostDetail extends StatefulWidget {
@@ -274,6 +275,17 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                   children: [
                                                     _buildUserProfile(pin),
                                                     const Divider(height: 8),
+                                                    RichText(
+                                                        text: TextSpan(
+                                                      children: [
+                                                        TextSpan(text: '이 글은 유효기간은 ', style: DUTextStyle.size12.grey2),
+                                                        TextSpan(
+                                                            text: '${pin.endDate!.toRemainDate()} ',
+                                                            style: DUTextStyle.size14B.tomato),
+                                                        TextSpan(text: '까지 입니다. 😉', style: DUTextStyle.size12.grey2),
+                                                      ],
+                                                    )),
+                                                    const SizedBox(height: 16),
                                                     Text(pin.title!, style: DUTextStyle.size18B),
                                                     const SizedBox(height: 16),
                                                     Text(pin.body ?? '글이 없어요.'),
@@ -388,7 +400,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
         // width: 30,
       ),
       title: Text(pin.userName ?? 'No name'),
-      subtitle: Text(pin.updatedAt.toDateWithSeconds(), style: DUTextStyle.size10.grey2),
+      subtitle: Text(pin.updatedAt!.toFullDateTimeString6(), style: DUTextStyle.size10.grey2),
     );
   }
 

@@ -6,7 +6,7 @@ import 'package:base_project/global/repository/api_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../util/util.dart';
+import '../../util/utility.dart';
 
 part 'file_state.dart';
 

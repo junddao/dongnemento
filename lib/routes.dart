@@ -78,22 +78,14 @@ class AppRouter extends Bloc {
 
         if (result != null) {
           authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
+          return null;
         }
-        return null;
+        return Routes.login;
       } else if (authBloc.state is AuthenticationAuthenticated) {
         // 최초 가입시 좌표값이 없어 주소 입력창으로 이동
         if (authBloc.state.me!.lat == null || authBloc.state.me!.lng == null) {
           return Routes.introAddress;
         }
-
-        // 로그인할때 무조건 토큰 재설정
-
-        // ModelUser updatedMe = authBloc.state.me!;
-        // if (authBloc.state.me?.firebaseToken == null) {
-        //   updatedMe = updatedMe.copyWith(
-        //     firebaseToken: await FCMWrapper.instance.getToken(),
-        //   );
-        // }
 
         final updatedMe = authBloc.state.me!.copyWith(
           firebaseToken: fcmToken,
