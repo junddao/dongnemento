@@ -133,12 +133,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Future<DataResponse<ModelGetToken>> emailLogin(Map<String, dynamic> input) async {
-    try {
-      DataResponse<ModelGetToken> response = await RestApiManager.instance.getRestClient().signIn(input);
-      return response;
-    } catch (e) {
-      rethrow;
-    }
+    DataResponse<ModelGetToken> response = await RestApiManager.instance.getRestClient().signIn(input);
+    return response;
   }
 
   Future<DataResponse<ModelGetToken>> kakaoLogin(Map<String, dynamic> input) async {
@@ -149,7 +145,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   Future<DataResponse<ModelGetToken>> appleLogin(Map<String, dynamic> input) async {
     DataResponse<ModelGetToken> response = await RestApiManager.instance.getRestClient().appleSignIn(input);
-
     return response;
   }
 }
