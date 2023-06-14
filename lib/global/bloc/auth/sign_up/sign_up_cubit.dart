@@ -1,13 +1,10 @@
+import 'package:base_project/global/repository/rest_api_manager.dart';
 import 'package:base_project/global/util/simple_logger.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../model/model.dart';
-import '../../../repository/rest_client.dart';
-import '../../../repository/token_interceptor.dart';
 import '../../../service/secure_storage/secure_storage.dart';
-import '../../../util/util.dart';
 
 part 'sign_up_state.dart';
 
@@ -18,9 +15,7 @@ class SignUpCubit extends Cubit<SignUpState> {
     try {
       emit(SignUpLoading());
 
-      final dio = Dio(); // Provide a dio instance
-      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-      DataResponse<bool> response = await RestClient(dio, baseUrl: endPoint).signUp(modelRequestSignUp);
+      DataResponse<bool> response = await RestApiManager.instance.getRestClient().signUp(modelRequestSignUp);
 
       if (response.success == false) {
         emit(
@@ -34,7 +29,7 @@ class SignUpCubit extends Cubit<SignUpState> {
           ModelRequestSignIn(email: user.email, password: user.password, firebaseToken: user.firebaseToken);
 
       DataResponse<ModelGetToken> responseSignIn =
-          await RestClient(dio, baseUrl: endPoint).signIn(modelRequestSignIn.toJson());
+          await RestApiManager.instance.getRestClient().signIn(modelRequestSignIn.toJson());
 
       if (responseSignIn.success == false) {
         emit(
@@ -45,7 +40,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         await SecureStorage.instance.writeToken(modelGetToken.accessToken);
       }
 
-      DataResponse<ModelUser> responseUserModel = await RestClient(dio, baseUrl: endPoint).getMe();
+      DataResponse<ModelUser> responseUserModel = await RestApiManager.instance.getRestClient().getMe();
 
       if (responseUserModel.success == false) {
         emit(SignUpError(errorMessage: responseUserModel.error ?? 'get me error'));

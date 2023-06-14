@@ -1,12 +1,9 @@
-import 'package:dio/dio.dart';
+import 'package:base_project/global/repository/rest_api_manager.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../model/model.dart';
-import '../../../repository/rest_client.dart';
-import '../../../repository/token_interceptor.dart';
-import '../../../util/util.dart';
 
 part 'get_pins_state.dart';
 
@@ -17,10 +14,8 @@ class GetPinsCubit extends Cubit<GetPinsState> {
     try {
       emit(GetPinsLoading());
 
-      final dio = Dio(); // Provide a dio instance
-      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
       DataResponse<ModelResponsePins> response =
-          await RestClient(dio, baseUrl: endPoint).getPins(modelRequestGetPin.toJson());
+          await RestApiManager.instance.getRestClient().getPins(modelRequestGetPin.toJson());
 
       // ApiResponse<ModelResponseGetPin> response = await PinRepository.instance.getPins(modelRequestGetPin);
 

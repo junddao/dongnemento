@@ -1,7 +1,4 @@
-import 'dart:convert';
-
-import 'package:base_project/global/model/user/model_user.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SecureStorage {
   static final SecureStorage instance = SecureStorage._internal();
@@ -9,16 +6,14 @@ class SecureStorage {
   static const String _tokenKey = 'token';
   static const String _meKey = 'me';
 
-  late FlutterSecureStorage _storage;
   factory SecureStorage() {
     return instance;
   }
-  SecureStorage._internal() {
-    _storage = const FlutterSecureStorage();
-  }
+  SecureStorage._internal();
 
   Future<String?> readToken() async {
-    String? token = await _storage.read(key: _tokenKey);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString(_tokenKey);
     if (token == null) {
       return null;
     }
@@ -26,29 +21,17 @@ class SecureStorage {
   }
 
   Future<void> writeToken(String token) async {
-    await _storage.write(key: _tokenKey, value: token);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_tokenKey, token);
   }
 
   Future<void> removeToken() async {
-    await _storage.delete(key: _tokenKey);
-  }
-
-  Future<ModelUser> readMe() async {
-    String? meInfo = await _storage.read(key: _meKey);
-
-    return ModelUser.fromJson(jsonDecode(meInfo!));
-  }
-
-  Future<void> writeMe(ModelUser me) async {
-    String meInfo = jsonEncode(me.toJson());
-    await _storage.write(key: _meKey, value: meInfo);
-  }
-
-  Future<void> removeMe() async {
-    await _storage.delete(key: _meKey);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_tokenKey);
   }
 
   Future<void> removeAll() async {
-    await _storage.deleteAll();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 }

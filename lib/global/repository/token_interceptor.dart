@@ -2,6 +2,7 @@ import 'package:base_project/global/repository/rest_client.dart';
 import 'package:dio/dio.dart';
 
 import '../service/secure_storage/secure_storage.dart';
+import '../util/simple_logger.dart';
 
 class TokenInterceptor extends Interceptor {
   final RestClient restClient;
@@ -15,6 +16,7 @@ class TokenInterceptor extends Interceptor {
   ) async {
     try {
       final token = await getAccessTokenFromStorage();
+      logger.d('token$token');
       options.headers['Authorization'] = 'Bearer $token';
       handler.next(options);
       // super.onRequest(options, handler);

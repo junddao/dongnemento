@@ -1,11 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../model/model.dart';
-import '../../../repository/rest_client.dart';
-import '../../../repository/token_interceptor.dart';
-import '../../../util/util.dart';
+import '../../../repository/rest_api_manager.dart';
 
 part 'block_user_state.dart';
 
@@ -15,9 +12,8 @@ class BlockUserCubit extends Cubit<BlockUserState> {
   Future<void> blockUser(ModelRequestBlock modelRequestBlock) async {
     try {
       emit(BlockUserLoading());
-      final dio = Dio(); // Provide a dio instance
-      dio.interceptors.add(TokenInterceptor(RestClient(dio)));
-      DataResponse<ModelUser> response = await RestClient(dio, baseUrl: endPoint).blockUser(modelRequestBlock);
+
+      DataResponse<ModelUser> response = await RestApiManager.instance.getRestClient().blockUser(modelRequestBlock);
 
       if (response.success == false) {
         emit(BlockUserError(errorMessage: response.error ?? 'report error'));
