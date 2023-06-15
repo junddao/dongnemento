@@ -11,8 +11,6 @@ class DynamicLink {
     return _instance;
   }
 
-  late GoRouter _goRouter;
-
   static DynamicLink get instance => _instance;
   DynamicLink._internal() {
     //do something
@@ -26,11 +24,10 @@ class DynamicLink {
       path = id.isEmpty ? page : '$page/$id';
     }
 
-    _goRouter.go(path);
+    rootNavigatorKey.currentContext!.go(path);
   }
 
-  Future<bool> setup(GoRouter router) async {
-    _goRouter = router;
+  Future<bool> setup() async {
     bool isExistDynamicLink = await _getInitialDynamicLink();
     _addListener();
 

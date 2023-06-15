@@ -71,7 +71,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final AuthenticationBloc authBloc = AuthenticationBloc();
+  AuthenticationBloc authBloc = AuthenticationBloc();
   // SingletonMeCubit singletonMeCubit = SingletonMeCubit();
 
   @override
@@ -106,7 +106,7 @@ class _MyAppState extends State<MyApp> {
         builder: (context) {
           GoRouter router = context.read<AppRouter>().router;
           // init dynamic link
-          DynamicLink.instance.setup(router);
+          DynamicLink.instance.setup();
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
             routerConfig: router,
