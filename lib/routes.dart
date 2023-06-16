@@ -72,14 +72,19 @@ class AppRouter extends Bloc {
       }
       prevAuthState = authBloc.state;
       if (authBloc.state is AuthenticationInitial) {
-        fcmToken = await FCMWrapper.instance.getToken();
-        var result = await SecureStorage.instance.readToken();
-        logger.d(result);
+        try {
+          fcmToken = await FCMWrapper.instance.getToken();
+          var result = await SecureStorage.instance.readToken();
+          logger.d(result);
 
-        if (result != null) {
-          authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
-          return null;
+          if (result != null) {
+            authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
+            return null;
+          }
+        } catch (e) {
+          return Routes.login;
         }
+
         return Routes.login;
       } else if (authBloc.state is AuthenticationAuthenticated) {
         // 최초 가입시 좌표값이 없어 주소 입력창으로 이동

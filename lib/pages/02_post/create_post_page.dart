@@ -60,10 +60,12 @@ class PagePostCreateView extends StatefulWidget {
 class _PagePostCreateViewState extends State<PagePostCreateView> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController(text: DateFormat.yMEd().format(DateTime.now()));
+  final TextEditingController _dateController = TextEditingController(
+      text:
+          '${DateFormat.MEd().format(DateTime.now())} ~ ${DateFormat.MEd().format(DateTime.now().add(const Duration(days: 7)))}');
 
   DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
+  DateTime endDate = DateTime.now().add(const Duration(days: 7));
 
   final _formKey = GlobalKey<FormState>();
 
@@ -403,7 +405,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
                     calendarType: CalendarDatePicker2Type.range,
                   ),
                   dialogSize: const Size(325, 400),
-                  value: [DateTime.now()],
+                  value: [startDate, endDate],
                   borderRadius: BorderRadius.circular(15),
                 );
 

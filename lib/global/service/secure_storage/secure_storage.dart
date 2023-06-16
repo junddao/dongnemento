@@ -12,12 +12,16 @@ class SecureStorage {
   SecureStorage._internal();
 
   Future<String?> readToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString(_tokenKey);
-    if (token == null) {
-      return null;
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString(_tokenKey);
+      if (token == null) {
+        return null;
+      }
+      return token;
+    } catch (e) {
+      rethrow;
     }
-    return token;
   }
 
   Future<void> writeToken(String token) async {

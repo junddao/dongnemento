@@ -17,7 +17,7 @@ class _RootPageState extends State<RootPage> {
   @override
   void initState() {
     super.initState();
-    _isLogin();
+    // _isLogin();
   }
 
   _isLogin() {

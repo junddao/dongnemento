@@ -102,16 +102,20 @@ class FCMWrapper {
 
   // PUSH를 보내기위해 식별할 수 있는 토큰 추출 (JWT 인증 토큰 아님)
   Future<String> getToken() async {
-    if (Platform.isAndroid || Platform.isIOS) {
-      var token = await _firebaseMessaging.getToken();
+    try {
+      if (Platform.isAndroid || Platform.isIOS) {
+        var token = await _firebaseMessaging.getToken();
 
-      if (token == null) {
-        throw Exception("can not get fcm token");
+        if (token == null) {
+          throw Exception("can not get fcm token");
+        }
+        logger.d('fcm: $token');
+        return token;
       }
-      logger.d('fcm: $token');
-      return token;
+      return Future.value("this_is_desktop_firebase_token");
+    } catch (e) {
+      rethrow;
     }
-    return Future.value("this_is_desktop_firebase_token");
   }
 
   void subscribe() {

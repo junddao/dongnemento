@@ -94,11 +94,17 @@ class _MapPageViewState extends State<MapPageView> {
       child: FloatingActionButton(
         mini: true,
         child: const Icon(Icons.my_location_outlined),
-        onPressed: () {
+        onPressed: () async {
           double? lat = context.read<MeCubit>().me.lat;
           double? lng = context.read<MeCubit>().me.lng;
           LatLng myLocation = LatLng(lat ?? 0, lng ?? 0);
           moveCameraToMyLocation(myLocation);
+          ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+            lat: _lastLocation.latitude,
+            lng: _lastLocation.longitude,
+            range: range,
+          );
+          context.read<GetPinsCubit>().getPins(modelRequestGetPin);
         },
       ),
     );
