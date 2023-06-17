@@ -13,15 +13,13 @@ abstract class AuthenticationState extends Equatable {
 }
 
 class AuthenticationInitial extends AuthenticationState {
-  const AuthenticationInitial()
-      : super(status: AuthenticationStatusType.unknown);
+  const AuthenticationInitial() : super(status: AuthenticationStatusType.unknown);
   @override
   List<Object> get props => [];
 }
 
 class AuthenticationLoading extends AuthenticationState {
-  const AuthenticationLoading()
-      : super(status: AuthenticationStatusType.unknown);
+  const AuthenticationLoading() : super(status: AuthenticationStatusType.unknown);
   @override
   List<Object> get props => [];
 }
@@ -36,15 +34,13 @@ class AuthenticationAuthenticated extends AuthenticationState {
 }
 
 class AuthenticationUnAuthenticated extends AuthenticationState {
-  const AuthenticationUnAuthenticated()
-      : super(status: AuthenticationStatusType.unauthenticated);
+  const AuthenticationUnAuthenticated() : super(status: AuthenticationStatusType.unauthenticated);
   @override
   List<Object> get props => [];
 }
 
 class AuthenticationUnknown extends AuthenticationState {
-  const AuthenticationUnknown()
-      : super(status: AuthenticationStatusType.unknown);
+  const AuthenticationUnknown() : super(status: AuthenticationStatusType.unknown);
   @override
   List<Object> get props => [];
 }

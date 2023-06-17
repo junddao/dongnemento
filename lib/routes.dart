@@ -74,18 +74,19 @@ class AppRouter extends Bloc {
       if (authBloc.state is AuthenticationInitial) {
         try {
           fcmToken = await FCMWrapper.instance.getToken();
+          logger.d('fcmToken: $fcmToken');
           var result = await SecureStorage.instance.readToken();
           logger.d(result);
 
           if (result != null) {
             authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
-            return null;
+          } else {
+            authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.unauthenticated));
           }
+          return null;
         } catch (e) {
           return Routes.login;
         }
-
-        return Routes.login;
       } else if (authBloc.state is AuthenticationAuthenticated) {
         // 최초 가입시 좌표값이 없어 주소 입력창으로 이동
         if (authBloc.state.me!.lat == null || authBloc.state.me!.lng == null) {
@@ -162,8 +163,8 @@ class AppRouter extends Bloc {
                 parentNavigatorKey: rootNavigatorKey,
                 path: '${Routes.post}/:id/:userId',
                 builder: (context, state) {
-                  String id = state.params['id']!;
-                  String userId = state.params['userId']!;
+                  String id = state.pathParameters['id']!;
+                  String userId = state.pathParameters['userId']!;
                   return PagePostDetail(
                     id: id,
                     userId: userId,
