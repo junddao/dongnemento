@@ -22,6 +22,7 @@ import 'package:path/path.dart' as path;
 
 import '../../global/model/model.dart';
 import '../../global/util/utility.dart';
+import 'custom_search_delegate.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -63,8 +64,11 @@ class _MapPageViewState extends State<MapPageView> {
 
   BitmapDescriptor? customIcon;
 
+  late final TextEditingController _textEditingController;
+
   @override
   void initState() {
+    _textEditingController = TextEditingController();
     _lastLocation = widget.lastLocation;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
@@ -76,6 +80,12 @@ class _MapPageViewState extends State<MapPageView> {
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -91,21 +101,48 @@ class _MapPageViewState extends State<MapPageView> {
   Widget _floatingActionButton() {
     return Padding(
       padding: const EdgeInsets.only(top: 100.0),
-      child: FloatingActionButton(
-        mini: true,
-        child: const Icon(Icons.my_location_outlined),
-        onPressed: () async {
-          double? lat = context.read<MeCubit>().me.lat;
-          double? lng = context.read<MeCubit>().me.lng;
-          LatLng myLocation = LatLng(lat ?? 0, lng ?? 0);
-          moveCameraToMyLocation(myLocation);
-          ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
-            lat: _lastLocation.latitude,
-            lng: _lastLocation.longitude,
-            range: range,
-          );
-          context.read<GetPinsCubit>().getPins(modelRequestGetPin);
-        },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            mini: true,
+            child: const Icon(Icons.search),
+            onPressed: () async {
+              (double, double) result =
+                  await showSearch(context: rootNavigatorKey.currentContext!, delegate: CustomSearchDelegate());
+              double lng = result.$1;
+              double lat = result.$2;
+              LatLng myLocation = LatLng(lat, lng);
+              ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+                lat: lat,
+                lng: lng,
+                range: range,
+              );
+              if (mounted) {
+                await context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+              }
+              await moveCameraToMyLocation(myLocation, zoom: 18);
+            },
+          ),
+          FloatingActionButton(
+            mini: true,
+            child: const Icon(Icons.my_location_outlined),
+            onPressed: () async {
+              double? lat = context.read<MeCubit>().me.lat;
+              double? lng = context.read<MeCubit>().me.lng;
+              LatLng myLocation = LatLng(lat ?? 0, lng ?? 0);
+              ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+                lat: lat,
+                lng: lng,
+                range: range,
+              );
+              if (mounted) {
+                await context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+              }
+              await moveCameraToMyLocation(myLocation);
+            },
+          ),
+        ],
       ),
     );
   }
@@ -121,40 +158,39 @@ class _MapPageViewState extends State<MapPageView> {
           builder: (context, getPinsState) {
             if (getPinsState is GetPinsLoaded) {
               pins = getPinsState.result;
-              // _pinMarkers = getPinsState.markers;
-              // _drawPin(pins);
             }
             return FutureBuilder(
-                future: _drawPin(pins),
-                builder: (context, snapshot) {
-                  return Stack(
-                    children: [
-                      GoogleMap(
-                        onMapCreated: (controller) async {
-                          await _onMapCreated(controller, _lastLocation);
-                        },
-                        initialCameraPosition: CameraPosition(
-                          target: _lastLocation,
-                          zoom: 15,
-                        ),
-                        mapToolbarEnabled: false,
-                        // liteModeEnabled: true,
-                        mapType: MapType.terrain,
-                        markers: <Marker>{..._pinMarkers, ..._temporaryMaker},
-                        rotateGesturesEnabled: false,
-                        myLocationEnabled: false,
-                        myLocationButtonEnabled: false,
-                        zoomControlsEnabled: false,
-                        minMaxZoomPreference: MinMaxZoomPreference(8, 20),
-                        onCameraMove: _onCameraMove,
-                        onCameraIdle: _onCameraIdle,
-                        onTap: (point) {
-                          _handleTap(point);
-                        },
+              future: _drawPin(pins),
+              builder: (context, snapshot) {
+                return Stack(
+                  children: [
+                    GoogleMap(
+                      onMapCreated: (controller) async {
+                        await _onMapCreated(controller, _lastLocation);
+                      },
+                      initialCameraPosition: CameraPosition(
+                        target: _lastLocation,
+                        zoom: 15,
                       ),
-                    ],
-                  );
-                });
+                      mapToolbarEnabled: false,
+                      // liteModeEnabled: true,
+                      mapType: MapType.terrain,
+                      markers: <Marker>{..._pinMarkers, ..._temporaryMaker},
+                      rotateGesturesEnabled: false,
+                      myLocationEnabled: false,
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: false,
+                      minMaxZoomPreference: MinMaxZoomPreference(8, 20),
+                      onCameraMove: _onCameraMove,
+                      onCameraIdle: _onCameraIdle,
+                      onTap: (point) {
+                        _handleTap(point);
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
           },
         );
       },
@@ -166,16 +202,16 @@ class _MapPageViewState extends State<MapPageView> {
     _controller.complete(controller);
   }
 
-  void moveCameraToMyLocation(LatLng? myLocation) {
-    _controller.future.then((value) {
-      value.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(
-          bearing: 0,
-          target: LatLng(myLocation?.latitude ?? 0, myLocation?.longitude ?? 0),
-          zoom: 15,
-        ),
-      ));
-    });
+  Future<void> moveCameraToMyLocation(LatLng? myLocation, {double? zoom}) async {
+    var result = await _controller.future;
+
+    await result.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        bearing: 0,
+        target: LatLng(myLocation?.latitude ?? 0, myLocation?.longitude ?? 0),
+        zoom: zoom ?? 15,
+      ),
+    ));
   }
 
   void _onCameraMove(CameraPosition position) {
@@ -385,7 +421,7 @@ class _MapPageViewState extends State<MapPageView> {
 
   // BitmapDescriptor? customIcon;
 
-  _drawPin(List<ModelResponsePins> pins) async {
+  Future<void> _drawPin(List<ModelResponsePins> pins) async {
     List<Marker> markers = [];
     for (var pin in pins) {
       Color pinColor = DUColors.tomato;
