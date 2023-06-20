@@ -33,7 +33,7 @@ class DUDialog {
                       fontStyle: FontStyle.normal,
                       fontSize: 17.0),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 8),
                 Text(
                   subTitle ?? '등록을 취소하시겠습니까?',
                   style: const TextStyle(

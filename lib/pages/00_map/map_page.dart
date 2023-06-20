@@ -382,7 +382,7 @@ class _MapPageViewState extends State<MapPageView> {
                     // context.pop();
                     context.read<LocationCubit>().setPostLocation(location).then((value) {
                       Navigator.pop(context, true);
-                      context.go(path.join(Routes.map, Routes.post));
+                      context.go(path.join(Routes.map, Routes.createPost));
                     });
                   },
                 ),
@@ -418,7 +418,7 @@ class _MapPageViewState extends State<MapPageView> {
 
   void onTapMarker(String pinId, String userId) {
     // 상세 핀 페이지로 이동
-    context.go(path.join(Routes.map, Routes.post, pinId, userId));
+    context.go(path.join(Routes.map, Routes.createPost, pinId, userId));
   }
 
   // BitmapDescriptor? customIcon;

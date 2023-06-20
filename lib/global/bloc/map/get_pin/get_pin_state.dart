@@ -19,12 +19,12 @@ class GetPinUpdated extends GetPinState {
   List<Object> get props => [result];
 }
 
-class GetPinLoaded extends GetPinState {
-  final ModelResponsePin result;
+class GetPinLoaded<T> extends GetPinState {
+  final T result;
 
   const GetPinLoaded({required this.result});
   @override
-  List<Object> get props => [result];
+  List<Object> get props => [result!];
 }
 
 class GetPinError extends GetPinState {

@@ -28,6 +28,7 @@ import 'global/enum/authentication_status_type.dart';
 import 'global/service/firebase/firebase_fcm.dart';
 import 'pages/02_post/my_post_page.dart';
 import 'pages/02_post/page_select_location.dart';
+import 'pages/02_post/update_post_page.dart';
 
 class Routes {
   // 1 depth
@@ -48,7 +49,8 @@ class Routes {
 
   // 2 depth
   static const signUp = 'sign_up';
-  static const post = 'post';
+  static const createPost = 'create_post';
+  static const updatePost = 'update_post';
 }
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -154,14 +156,14 @@ class AppRouter extends Bloc {
             routes: [
               GoRoute(
                 parentNavigatorKey: rootNavigatorKey,
-                path: Routes.post,
+                path: Routes.createPost,
                 builder: (context, state) {
                   return const CreatePostPage();
                 },
               ),
               GoRoute(
                 parentNavigatorKey: rootNavigatorKey,
-                path: '${Routes.post}/:id/:userId',
+                path: '${Routes.createPost}/:id/:userId',
                 builder: (context, state) {
                   String id = state.pathParameters['id']!;
                   String userId = state.pathParameters['userId']!;
@@ -170,7 +172,15 @@ class AppRouter extends Bloc {
                     userId: userId,
                   );
                 },
-              )
+              ),
+              GoRoute(
+                parentNavigatorKey: rootNavigatorKey,
+                path: '${Routes.updatePost}/:pinId',
+                builder: (context, state) {
+                  String pinId = state.pathParameters['pinId']!;
+                  return UpdatePostPage(pinId: pinId);
+                },
+              ),
             ],
           ),
           GoRoute(

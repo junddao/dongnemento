@@ -2,12 +2,11 @@ import 'dart:io';
 
 import 'package:base_project/global/bloc/file/file_cubit.dart';
 import 'package:base_project/global/bloc/map/create_pin/create_pin_cubit.dart';
-import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
-import 'package:base_project/global/bloc/map/location/location_cubit.dart';
+import 'package:base_project/global/bloc/map/get_pin/get_pin_cubit.dart';
+import 'package:base_project/global/bloc/map/update_pin/update_pin_cubit.dart';
 import 'package:base_project/global/component/du_two_button_dialog.dart';
 import 'package:base_project/global/enum/category_type.dart';
-import 'package:base_project/global/model/pin/model_request_create_pin.dart';
-import 'package:base_project/global/model/pin/model_request_get_pin.dart';
+import 'package:base_project/global/model/pin/model_request_update_pin.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
@@ -24,21 +23,28 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-import '../../global/bloc/auth/get_me/me_cubit.dart';
-import '../../routes.dart';
+import '../../global/model/pin/model_response_pin.dart';
 
-class CreatePostPage extends StatefulWidget {
-  const CreatePostPage({Key? key}) : super(key: key);
+class UpdatePostPage extends StatefulWidget {
+  const UpdatePostPage({Key? key, required this.pinId}) : super(key: key);
+
+  final String pinId;
 
   @override
-  State<CreatePostPage> createState() => _CreatePostPageState();
+  State<UpdatePostPage> createState() => _UpdatePostPageState();
 }
 
-class _CreatePostPageState extends State<CreatePostPage> {
+class _UpdatePostPageState extends State<UpdatePostPage> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (context) => GetPinCubit()..getPin(widget.pinId),
+        ),
+        BlocProvider(
+          create: (context) => UpdatePinCubit(),
+        ),
         BlocProvider(
           create: (context) => FileCubit(),
         ),
@@ -46,31 +52,49 @@ class _CreatePostPageState extends State<CreatePostPage> {
           create: (context) => CreatePinCubit(),
         ),
       ],
-      child: const PagePostCreateView(),
+      child: BlocBuilder<GetPinCubit, GetPinState>(
+        builder: (context, state) {
+          if (state is GetPinLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (state is GetPinError) {
+            return ErrorPage(exception: state.errorMessage);
+          }
+          if (state is GetPinLoaded) {
+            return PagePostCreateView(pin: state.result);
+          }
+          return Container();
+        },
+      ),
     );
   }
 }
 
 class PagePostCreateView extends StatefulWidget {
-  const PagePostCreateView({super.key});
+  const PagePostCreateView({super.key, required this.pin});
+
+  final ModelResponsePin pin;
 
   @override
   State<PagePostCreateView> createState() => _PagePostCreateViewState();
 }
 
 class _PagePostCreateViewState extends State<PagePostCreateView> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _bodyController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController(
-      text:
-          '${DateFormat.MEd().format(DateTime.now())} ~ ${DateFormat.MEd().format(DateTime.now().add(const Duration(days: 7)))}');
+  late final TextEditingController _titleController;
+  late final TextEditingController _bodyController;
+  late final TextEditingController _dateController;
 
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now().add(const Duration(days: 7));
+  late DateTime startDate;
+  late DateTime endDate;
+
+  late double lat;
+  late double lng;
 
   final _formKey = GlobalKey<FormState>();
 
-  final category = ValueNotifier<CategoryType>(CategoryType.daily);
+  late final ValueNotifier<CategoryType> category;
   double categoryScore = 40;
 
   // List<String> imagePaths = [];
@@ -78,10 +102,22 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   LatLng? location;
 
   final ImagePicker _picker = ImagePicker();
-  final imagePaths = ValueNotifier(List<String>.empty());
+  late final ValueNotifier<List<String>> imagePaths;
 
   @override
   void initState() {
+    _titleController = TextEditingController(text: widget.pin.title);
+    _bodyController = TextEditingController(text: widget.pin.body);
+    _dateController = TextEditingController(
+        text: '${DateFormat.MEd().format(widget.pin.startDate!)} ~ ${DateFormat.MEd().format(widget.pin.endDate!)}');
+
+    startDate = widget.pin.startDate!;
+    endDate = widget.pin.endDate!;
+    category = ValueNotifier(widget.pin.category);
+    imagePaths = ValueNotifier(widget.pin.images ?? []);
+
+    lat = widget.pin.lat!;
+    lng = widget.pin.lng!;
     super.initState();
   }
 
@@ -104,11 +140,11 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   AppBar _appBar() {
     return AppBar(
       automaticallyImplyLeading: false,
-      title: const Text('글쓰기'),
+      title: const Text('글 수정하기'),
       centerTitle: true,
       leading: IconButton(
         onPressed: () {
-          DUDialog.showTwoButtonDialog(context: context).then((value) {
+          DUDialog.showTwoButtonDialog(context: context, subTitle: '수정을 취소하시겠습니까?').then((value) {
             setState(() {
               if (value == true) {
                 context.go('/map');
@@ -122,11 +158,11 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
       ),
       actions: [
         TextButton(
-          onPressed: () {
-            onSave();
+          onPressed: () async {
+            await onSave();
           },
           child: Text(
-            '등록',
+            '수정하기',
             style: DUTextStyle.size16M.tomato,
           ),
         ),
@@ -135,25 +171,18 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   }
 
   Widget _body() {
-    return BlocConsumer<CreatePinCubit, CreatePinState>(
+    return BlocConsumer<UpdatePinCubit, UpdatePinState>(
       listener: (context, state) {
-        if (state is CreatePinLoaded) {
-          double lat = context.read<MeCubit>().me.lat ?? 0;
-          double lng = context.read<MeCubit>().me.lng ?? 0;
-
-          ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
-            lat: lat,
-            lng: lng,
-          );
-          context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+        if (state is UpdatePinLoaded) {
+          context.read<GetPinCubit>().getPin(widget.pin.id);
           context.pop();
         }
-        if (state is CreatePinError) {
-          DUDialog.showOneButtonDialog(context: context, title: '에러', subTitle: '핀 생성에 실패했어요');
+        if (state is UpdatePinError) {
+          DUDialog.showOneButtonDialog(context: context, title: '에러', subTitle: '핀 수정에 실패했어요');
         }
       },
       builder: (context, state) {
-        if (state is CreatePinLoading) {
+        if (state is UpdatePinLoading) {
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -288,81 +317,48 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
             ),
           ),
           const SizedBox(height: 8),
-          // Container(
-          //   padding: const EdgeInsets.symmetric(horizontal: 12),
-          //   alignment: Alignment.centerLeft,
-          //   child: Row(
-          //     children: [
-          //       const Icon(Icons.numbers, color: DUColors.pinkish_grey),
-          //       const SizedBox(width: 4),
-          //       Text(
-          //         '관심점수',
-          //         style: DUTextStyle.size14.pinkish_grey,
-          //       ),
-          //       const SizedBox(width: 4),
-          //       Text('${categoryScore.round()}', style: DUTextStyle.size20B.tomato),
-          //     ],
-          //   ),
-          // ),
-          // SliderTheme(
-          //   data: const SliderThemeData(
-          //     showValueIndicator: ShowValueIndicator.always,
-          //     valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-          //   ),
-          //   child: Slider(
-          //     value: categoryScore,
-          //     label: categoryScore.round().toString(),
-          //     onChanged: (value) {
-          //       setState(() {
-          //         categoryScore = value;
-          //       });
-          //     },
-          //     min: 0,
-          //     max: 100,
-          //   ),
-          // ),
         ],
       ),
     );
   }
 
-  postLocation() {
-    return BlocBuilder<LocationCubit, LocationState>(
-      builder: (context, state) {
-        String? address;
-        if (state is LocationError) {
-          return ErrorPage(exception: state.errorMessage);
-        }
-        if (state is LocationLoaded) {
-          address = state.postLocation!.address;
-        }
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
-          child: Column(children: [
-            InkWell(
-              onTap: () {
-                LatLng location = LatLng(state.postLocation!.lat!, state.postLocation!.lng!);
-                context.push(Routes.selectLocation, extra: {'location': location});
-              },
-              child: Row(
-                children: [
-                  const Icon(Icons.location_pin, color: DUColors.pinkish_grey),
-                  const SizedBox(width: 4),
-                  Expanded(
-                      child: Text(
-                    address ?? '위치 선택',
-                    maxLines: 2,
-                    style: DUTextStyle.size14B.tomato,
-                    overflow: TextOverflow.ellipsis,
-                  )),
-                ],
-              ),
-            ),
-          ]),
-        );
-      },
-    );
-  }
+  // postLocation() {
+  //   return BlocBuilder<LocationCubit, LocationState>(
+  //     builder: (context, state) {
+  //       String? address;
+  //       if (state is LocationError) {
+  //         return ErrorPage(exception: state.errorMessage);
+  //       }
+  //       if (state is LocationLoaded) {
+  //         address = state.postLocation!.address;
+  //       }
+  //       return Padding(
+  //         padding: const EdgeInsets.symmetric(horizontal: kDefaultHorizontalPadding, vertical: kDefaultVerticalPadding),
+  //         child: Column(children: [
+  //           InkWell(
+  //             onTap: () {
+  //               LatLng location = LatLng(state.postLocation!.lat!, state.postLocation!.lng!);
+  //               context.push(Routes.selectLocation, extra: {'location': location});
+  //             },
+  //             child: Row(
+  //               children: [
+  //                 const Icon(Icons.location_pin, color: DUColors.pinkish_grey),
+  //                 const SizedBox(width: 4),
+  //                 Expanded(
+  //                     child: Text(
+  //                   address ?? '위치 선택',
+  //                   maxLines: 2,
+  //                   style: DUTextStyle.size14B.tomato,
+  //                   overflow: TextOverflow.ellipsis,
+  //                 )),
+  //               ],
+  //             ),
+  //           ),
+  //         ]),
+  //       );
+  //     },
+  //   );
+  // }
 
   postStartDate() {
     return Padding(
@@ -516,8 +512,6 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
         try {
           final List<XFile?> pickedFiles = await _picker.pickMultiImage(
             imageQuality: 30,
-            // maxHeight: 1080,
-            // maxWidth: 1920,
           );
           if (pickedFiles.isNotEmpty) {
             List<File> files = pickedFiles.map((e) => File(e!.path)).toList();
@@ -575,14 +569,9 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   }
 
   void _createPin() {
-    double lat = context.read<LocationCubit>().state.postLocation!.lat!;
-    double lng = context.read<LocationCubit>().state.postLocation!.lng!;
-
-    location = LatLng(lat, lng);
-
-    ModelRequestCreatePin requestCreatePin = ModelRequestCreatePin(
-      lat: location!.latitude,
-      lng: location!.longitude,
+    ModelRequestUpdatePin requestUpdatePin = ModelRequestUpdatePin(
+      lat: lat,
+      lng: lng,
       title: _titleController.text,
       body: _bodyController.text,
       category: category.value,
@@ -592,6 +581,6 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
       images: imagePaths.value,
     );
 
-    context.read<CreatePinCubit>().createPin(requestCreatePin);
+    context.read<UpdatePinCubit>().updatePin(requestUpdatePin, widget.pin.id);
   }
 }

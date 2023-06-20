@@ -112,7 +112,7 @@ class _ProductPageViewState extends State<ProductPageView> {
   }
 
   void onProduct(String pinId, String userId) async {
-    final result = await context.push<bool>(path.join(Routes.map, Routes.post, pinId, userId));
+    final result = await context.push<bool>(path.join(Routes.map, Routes.createPost, pinId, userId));
 
     double lat = context.read<MeCubit>().me.lat ?? 0;
     double lng = context.read<MeCubit>().me.lng ?? 0;

@@ -1,3 +1,4 @@
+import 'package:base_project/global/model/pin/model_request_update_pin.dart';
 import 'package:dio/dio.dart' hide Headers;
 import 'package:retrofit/retrofit.dart';
 
@@ -44,6 +45,9 @@ abstract class RestClient {
 
   @GET('/pin/get/{id}')
   Future<DataResponse<ModelResponsePin>> getPin(@Path("id") String id);
+
+  @PATCH('/pin/update/{id}')
+  Future<DataResponse<bool>> updatePin(@Body() ModelRequestUpdatePin modelRequestCreatePin, @Path('id') String id);
 
   @GET('/pin/get/pins')
   Future<DataResponse<ModelResponsePins>> getPins(@Queries() Map<String, dynamic> queries);

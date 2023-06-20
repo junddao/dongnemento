@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:like_button/like_button.dart';
+import 'package:path/path.dart' as path;
 
 import '../../global/bloc/auth/get_me/me_cubit.dart';
 import '../../global/component/du_photo_view.dart';
@@ -111,12 +112,80 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
     return AppBar(
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios),
-        color: Colors.black,
+        color: Colors.white,
         onPressed: () {
           context.pop(isChanged);
         },
       ),
       backgroundColor: Colors.transparent,
+      actions: [
+        BlocBuilder<GetPinCubit, GetPinState>(
+          builder: (context, state) {
+            if (state is GetPinLoaded) {
+              ModelResponsePin pin = state.result;
+              return IconButton(
+                onPressed: () {
+                  context.read<MeCubit>().me.id == pin.userId
+                      ? showCupertinoModalPopup<void>(
+                          context: context,
+                          builder: (BuildContext _) => CupertinoActionSheet(
+                              // title: const Text('신고 / 차단'),
+                              // message: const Text('신고, 차단한 글은\n 지도상에 표시되지 않습니다.'),
+                              actions: <CupertinoActionSheetAction>[
+                                CupertinoActionSheetAction(
+                                  child: const Text('수정하기'),
+                                  onPressed: () async {
+                                    context.push(path.join(Routes.map, Routes.updatePost, pin.id));
+                                    context.pop();
+                                  },
+                                ),
+                                CupertinoActionSheetAction(
+                                  child: const Text('삭제하기'),
+                                  onPressed: () async {
+                                    context.read<DeletePinCubit>().deletePin(pin.id);
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                              cancelButton: CupertinoActionSheetAction(
+                                child: const Text('취소'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )),
+                        )
+                      : showCupertinoModalPopup<void>(
+                          context: context,
+                          builder: (BuildContext context) => CupertinoActionSheet(
+                              // title: const Text('신고 / 차단'),
+                              // message: const Text('신고, 차단한 글은\n 지도상에 표시되지 않습니다.'),
+                              actions: <CupertinoActionSheetAction>[
+                                CupertinoActionSheetAction(
+                                  child: const Text('신고하기'),
+                                  onPressed: () async {
+                                    _showModalForReport(pin);
+                                  },
+                                ),
+                              ],
+                              cancelButton: CupertinoActionSheetAction(
+                                child: const Text('취소'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )),
+                        );
+                },
+                icon: const Icon(
+                  Icons.more_vert,
+                  color: Colors.white,
+                ),
+              );
+            } else {
+              return Container();
+            }
+          },
+        ),
+      ],
     );
   }
 
@@ -317,19 +386,19 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                           }),
                                                         ),
                                                         const Spacer(),
-                                                        context.read<MeCubit>().me.id == pin.userId
-                                                            ? TextButton(
-                                                                onPressed: () {
-                                                                  context.read<DeletePinCubit>().deletePin(pin.id);
-                                                                },
-                                                                child: Text('삭제하기', style: DUTextStyle.size12B.tomato),
-                                                              )
-                                                            : TextButton(
-                                                                onPressed: () async {
-                                                                  _showModalForReport(pin);
-                                                                },
-                                                                child: Text('신고하기', style: DUTextStyle.size12B.tomato),
-                                                              ),
+                                                        // context.read<MeCubit>().me.id == pin.userId
+                                                        //     ? TextButton(
+                                                        //         onPressed: () {
+                                                        //           context.read<DeletePinCubit>().deletePin(pin.id);
+                                                        //         },
+                                                        //         child: Text('삭제하기', style: DUTextStyle.size12B.tomato),
+                                                        //       )
+                                                        //     : TextButton(
+                                                        //         onPressed: () async {
+                                                        //           _showModalForReport(pin);
+                                                        //         },
+                                                        //         child: Text('신고하기', style: DUTextStyle.size12B.tomato),
+                                                        //       ),
                                                       ],
                                                     ),
                                                     const SizedBox(height: 16),

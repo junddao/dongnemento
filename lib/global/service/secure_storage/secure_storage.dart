@@ -4,7 +4,6 @@ class SecureStorage {
   static final SecureStorage instance = SecureStorage._internal();
 
   static const String _tokenKey = 'token';
-  static const String _meKey = 'me';
 
   factory SecureStorage() {
     return instance;
