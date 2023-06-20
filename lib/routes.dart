@@ -25,6 +25,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'global/bloc/auth/get_me/me_cubit.dart';
 import 'global/component/du_photo_viewer.dart';
 import 'global/enum/authentication_status_type.dart';
+import 'global/model/model.dart';
 import 'global/service/firebase/firebase_fcm.dart';
 import 'pages/02_post/my_post_page.dart';
 import 'pages/02_post/page_select_location.dart';
@@ -50,6 +51,7 @@ class Routes {
   // 2 depth
   static const signUp = 'sign_up';
   static const createPost = 'create_post';
+  static const detailPost = 'detail_post';
   static const updatePost = 'update_post';
 }
 
@@ -163,7 +165,7 @@ class AppRouter extends Bloc {
               ),
               GoRoute(
                 parentNavigatorKey: rootNavigatorKey,
-                path: '${Routes.createPost}/:id/:userId',
+                path: '${Routes.detailPost}/:id/:userId',
                 builder: (context, state) {
                   String id = state.pathParameters['id']!;
                   String userId = state.pathParameters['userId']!;
@@ -175,10 +177,10 @@ class AppRouter extends Bloc {
               ),
               GoRoute(
                 parentNavigatorKey: rootNavigatorKey,
-                path: '${Routes.updatePost}/:pinId',
+                path: Routes.updatePost,
                 builder: (context, state) {
-                  String pinId = state.pathParameters['pinId']!;
-                  return UpdatePostPage(pinId: pinId);
+                  final extra = state.extra! as Map<String, dynamic>;
+                  return UpdatePostPage(pin: extra['pin'] as ModelResponsePin);
                 },
               ),
             ],

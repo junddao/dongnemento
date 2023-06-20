@@ -1,7 +1,6 @@
 import 'package:base_project/global/bloc/auth/block_user/block_user_cubit.dart';
 import 'package:base_project/global/bloc/auth/get_user/cubit/get_user_cubit.dart';
 import 'package:base_project/global/bloc/map/delete_pin/cubit/delete_pin_cubit.dart';
-import 'package:base_project/global/bloc/map/get_pin/get_pin_cubit.dart';
 import 'package:base_project/global/bloc/map/get_pins/get_pins_cubit.dart';
 import 'package:base_project/global/bloc/reply/create_pin_reply/create_pin_reply_cubit.dart';
 import 'package:base_project/global/bloc/reply/get_pin_replies/get_pin_replies_cubit.dart';
@@ -21,6 +20,7 @@ import 'package:like_button/like_button.dart';
 import 'package:path/path.dart' as path;
 
 import '../../global/bloc/auth/get_me/me_cubit.dart';
+import '../../global/bloc/map/pin/pin_cubit.dart';
 import '../../global/component/du_photo_view.dart';
 import '../../global/component/du_profile.dart';
 import '../../global/model/like/model_request_set_pin_like.dart';
@@ -52,7 +52,7 @@ class _PagePostDetailState extends State<PagePostDetail> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => GetPinCubit()..getPin(widget.id),
+          create: (context) => PinCubit()..getPin(widget.id),
         ),
         BlocProvider(
           create: (context) => CreatePinReplyCubit(),
@@ -119,9 +119,9 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
       ),
       backgroundColor: Colors.transparent,
       actions: [
-        BlocBuilder<GetPinCubit, GetPinState>(
+        BlocBuilder<PinCubit, PinState>(
           builder: (context, state) {
-            if (state is GetPinLoaded) {
+            if (state is PinLoaded) {
               ModelResponsePin pin = state.result;
               return IconButton(
                 onPressed: () {
@@ -135,7 +135,10 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                 CupertinoActionSheetAction(
                                   child: const Text('수정하기'),
                                   onPressed: () async {
-                                    context.push(path.join(Routes.map, Routes.updatePost, pin.id));
+                                    context.push(path.join(Routes.map, Routes.updatePost), extra: {'pin': pin}).then(
+                                        (value) {
+                                      context.read<PinCubit>().getPin(pin.id);
+                                    });
                                     context.pop();
                                   },
                                 ),
@@ -267,17 +270,17 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
 
                       isChanged = true;
                     }
-                    return BlocBuilder<GetPinCubit, GetPinState>(
+                    return BlocBuilder<PinCubit, PinState>(
                       builder: (context, state) {
-                        if (state is GetPinLoading) {
+                        if (state is PinLoading) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
                         }
-                        if (state is GetPinError) {
+                        if (state is PinError) {
                           return ErrorPage(exception: state.errorMessage);
                         }
-                        if (state is GetPinLoaded) {
+                        if (state is PinLoaded) {
                           ModelResponsePin pin = state.result;
                           isChanged = true;
 
@@ -380,7 +383,7 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
                                                             ModelRequestSetPinLike modelRequestSetPinLike =
                                                                 ModelRequestSetPinLike(pinId: pin.id);
                                                             context
-                                                                .read<GetPinCubit>()
+                                                                .read<PinCubit>()
                                                                 .setPinLike(modelRequestSetPinLike, !isLiked);
                                                             return !isLiked;
                                                           }),

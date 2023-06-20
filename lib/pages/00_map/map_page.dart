@@ -418,7 +418,14 @@ class _MapPageViewState extends State<MapPageView> {
 
   void onTapMarker(String pinId, String userId) {
     // 상세 핀 페이지로 이동
-    context.go(path.join(Routes.map, Routes.createPost, pinId, userId));
+    context.push(path.join(Routes.map, Routes.detailPost, pinId, userId)).then((value) {
+      ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+        lat: _lastLocation.latitude,
+        lng: _lastLocation.longitude,
+        range: range,
+      );
+      context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+    });
   }
 
   // BitmapDescriptor? customIcon;

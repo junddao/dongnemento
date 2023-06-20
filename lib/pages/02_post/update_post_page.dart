@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:base_project/global/bloc/file/file_cubit.dart';
 import 'package:base_project/global/bloc/map/create_pin/create_pin_cubit.dart';
-import 'package:base_project/global/bloc/map/get_pin/get_pin_cubit.dart';
-import 'package:base_project/global/bloc/map/update_pin/update_pin_cubit.dart';
 import 'package:base_project/global/component/du_two_button_dialog.dart';
 import 'package:base_project/global/enum/category_type.dart';
 import 'package:base_project/global/model/pin/model_request_update_pin.dart';
@@ -11,7 +9,6 @@ import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/style/du_colors.dart';
 import 'package:base_project/global/style/du_text_styles.dart';
 import 'package:base_project/global/util/extension/extension.dart';
-import 'package:base_project/pages/common/error_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:chips_choice/chips_choice.dart';
@@ -23,12 +20,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
+import '../../global/bloc/map/pin/pin_cubit.dart';
 import '../../global/model/pin/model_response_pin.dart';
 
 class UpdatePostPage extends StatefulWidget {
-  const UpdatePostPage({Key? key, required this.pinId}) : super(key: key);
+  const UpdatePostPage({Key? key, required this.pin}) : super(key: key);
 
-  final String pinId;
+  final ModelResponsePin pin;
 
   @override
   State<UpdatePostPage> createState() => _UpdatePostPageState();
@@ -40,10 +38,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => GetPinCubit()..getPin(widget.pinId),
-        ),
-        BlocProvider(
-          create: (context) => UpdatePinCubit(),
+          create: (context) => PinCubit(),
         ),
         BlocProvider(
           create: (context) => FileCubit(),
@@ -52,22 +47,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
           create: (context) => CreatePinCubit(),
         ),
       ],
-      child: BlocBuilder<GetPinCubit, GetPinState>(
-        builder: (context, state) {
-          if (state is GetPinLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (state is GetPinError) {
-            return ErrorPage(exception: state.errorMessage);
-          }
-          if (state is GetPinLoaded) {
-            return PagePostCreateView(pin: state.result);
-          }
-          return Container();
-        },
-      ),
+      child: PagePostCreateView(pin: widget.pin),
     );
   }
 }
@@ -171,18 +151,18 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
   }
 
   Widget _body() {
-    return BlocConsumer<UpdatePinCubit, UpdatePinState>(
+    return BlocConsumer<PinCubit, PinState>(
       listener: (context, state) {
-        if (state is UpdatePinLoaded) {
-          context.read<GetPinCubit>().getPin(widget.pin.id);
+        if (state is PinUpdated) {
           context.pop();
         }
-        if (state is UpdatePinError) {
+
+        if (state is PinError) {
           DUDialog.showOneButtonDialog(context: context, title: '에러', subTitle: '핀 수정에 실패했어요');
         }
       },
       builder: (context, state) {
-        if (state is UpdatePinLoading) {
+        if (state is PinLoading) {
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -581,6 +561,6 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
       images: imagePaths.value,
     );
 
-    context.read<UpdatePinCubit>().updatePin(requestUpdatePin, widget.pin.id);
+    context.read<PinCubit>().updatePin(requestUpdatePin, widget.pin.id);
   }
 }

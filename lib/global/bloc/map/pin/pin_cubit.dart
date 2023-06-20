@@ -1,28 +1,49 @@
+import 'package:base_project/global/model/pin/model_request_update_pin.dart';
 import 'package:base_project/global/repository/rest_api_manager.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../model/model.dart';
 
-part 'get_pin_state.dart';
+part 'pin_state.dart';
 
-class GetPinCubit extends Cubit<GetPinState> {
-  GetPinCubit() : super(GetPinInitial());
+class PinCubit extends Cubit<PinState> {
+  PinCubit() : super(PinInitial());
 
   Future<void> getPin(String pinId) async {
     try {
-      emit(GetPinLoading());
+      emit(PinLoading());
 
       DataResponse<ModelResponsePin> response = await RestApiManager.instance.getRestClient().getPin(pinId);
 
       if (response.success == true) {
-        emit(GetPinLoaded(result: response.data.first));
+        emit(PinLoaded(result: response.data.first));
       } else {
-        emit(GetPinError(errorMessage: response.error ?? 'get pin error'));
+        emit(PinError(errorMessage: response.error ?? 'get pin error'));
       }
     } catch (e) {
       emit(
-        GetPinError(
+        PinError(
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> updatePin(ModelRequestUpdatePin input, String id) async {
+    try {
+      emit(PinLoading());
+
+      DataResponse<bool> response = await RestApiManager.instance.getRestClient().updatePin(input, id);
+
+      if (response.success == true) {
+        emit(PinUpdated(result: response.data.first));
+      } else {
+        emit(PinError(errorMessage: response.error ?? 'get pin error'));
+      }
+    } catch (e) {
+      emit(
+        PinError(
           errorMessage: e.toString(),
         ),
       );
@@ -36,8 +57,8 @@ class GetPinCubit extends Cubit<GetPinState> {
       DataResponse<bool> response = await RestApiManager.instance.getRestClient().setPinLike(modelRequestSetPinLike);
 
       if (response.success == true) {
-        if (state is GetPinLoaded) {
-          ModelResponsePin prevResult = (state as GetPinLoaded).result;
+        if (state is PinLoaded) {
+          ModelResponsePin prevResult = (state as PinLoaded).result;
           late ModelResponsePin newPin;
           if (isLiked) {
             newPin = prevResult.copyWith(
@@ -51,16 +72,16 @@ class GetPinCubit extends Cubit<GetPinState> {
             );
           }
 
-          emit(GetPinLoaded(result: newPin));
+          emit(PinLoaded(result: newPin));
         }
       } else {
         emit(
-          GetPinError(errorMessage: response.error ?? 'create pin like error'),
+          PinError(errorMessage: response.error ?? 'create pin like error'),
         );
       }
     } catch (e) {
       emit(
-        GetPinError(
+        PinError(
           errorMessage: e.toString(),
         ),
       );
@@ -72,8 +93,8 @@ class GetPinCubit extends Cubit<GetPinState> {
       DataResponse<bool> response = await RestApiManager.instance.getRestClient().setPinHate(modelRequestSetPinHate);
 
       if (response.success == true) {
-        if (state is GetPinLoaded) {
-          ModelResponsePin prevResult = (state as GetPinLoaded).result;
+        if (state is PinLoaded) {
+          ModelResponsePin prevResult = (state as PinLoaded).result;
           late ModelResponsePin newPin;
           if (isHated) {
             newPin = prevResult.copyWith(
@@ -87,16 +108,16 @@ class GetPinCubit extends Cubit<GetPinState> {
             );
           }
 
-          emit(GetPinLoaded(result: newPin));
+          emit(PinLoaded(result: newPin));
         }
       } else {
         emit(
-          GetPinError(errorMessage: response.error ?? 'create pin hate error'),
+          PinError(errorMessage: response.error ?? 'create pin hate error'),
         );
       }
     } catch (e) {
       emit(
-        GetPinError(
+        PinError(
           errorMessage: e.toString(),
         ),
       );
