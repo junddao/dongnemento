@@ -267,10 +267,14 @@ class AppRouter extends Bloc {
         parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) {
           final queryParams = state.extra as Map<String, dynamic>;
-          String filePath = queryParams['filePath'] as String;
+          List<String> filePaths = queryParams['filePaths'] as List<String>;
+          int index = queryParams['index'] as int;
 
           return MaterialPage(
-            child: DUPhotoViewer(filePath: filePath),
+            child: DUPhotoViewer(
+              filePaths: filePaths,
+              index: index,
+            ),
           );
         },
       ),

@@ -105,6 +105,7 @@ class _MapPageViewState extends State<MapPageView> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag: 'search',
             mini: true,
             child: const Icon(Icons.search),
             onPressed: () async {
@@ -125,6 +126,7 @@ class _MapPageViewState extends State<MapPageView> {
             },
           ),
           FloatingActionButton(
+            heroTag: 'myLocation',
             mini: true,
             child: const Icon(Icons.my_location_outlined),
             onPressed: () async {

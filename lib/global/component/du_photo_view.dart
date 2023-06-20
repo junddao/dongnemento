@@ -49,7 +49,7 @@ class _DUPhotoViewState extends State<DUPhotoView> {
                       String filePath = widget.imageUrls[index];
                       return InkWell(
                         onTap: () {
-                          context.push(Routes.photoView, extra: {'filePath': filePath});
+                          context.push(Routes.photoView, extra: {'filePaths': widget.imageUrls, 'index': index});
                         },
                         child: CachedNetworkImage(
                           imageUrl: filePath,

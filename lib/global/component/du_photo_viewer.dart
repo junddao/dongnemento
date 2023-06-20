@@ -4,17 +4,30 @@ import 'package:go_router/go_router.dart';
 import 'package:photo_view/photo_view.dart';
 
 class DUPhotoViewer extends StatefulWidget {
-  const DUPhotoViewer({Key? key, String? filePath})
-      : _filePath = filePath,
-        super(key: key);
+  const DUPhotoViewer({Key? key, required this.filePaths, required this.index}) : super(key: key);
 
-  final String? _filePath;
+  final List<String> filePaths;
+  final int index;
 
   @override
-  _DUPhotoViewerState createState() => _DUPhotoViewerState();
+  State<DUPhotoViewer> createState() => _DUPhotoViewerState();
 }
 
 class _DUPhotoViewerState extends State<DUPhotoViewer> {
+  late PageController pageController;
+
+  @override
+  void initState() {
+    pageController = PageController(initialPage: widget.index);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,8 +43,15 @@ class _DUPhotoViewerState extends State<DUPhotoViewer> {
         ),
       ),
       body: Container(
-        child: PhotoView(
-          imageProvider: CachedNetworkImageProvider(widget._filePath!),
+        child: PageView.builder(
+          controller: pageController,
+          itemBuilder: (context, index) {
+            String filePath = widget.filePaths[index];
+            return PhotoView(
+              imageProvider: CachedNetworkImageProvider(filePath),
+            );
+          },
+          itemCount: widget.filePaths.length,
         ),
       ),
     );
