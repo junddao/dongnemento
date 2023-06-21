@@ -34,7 +34,7 @@ class CellPostItem extends StatelessWidget {
         child: Row(
           children: [
             CachedNetworkImage(
-              imageUrl: pin.images?.first ?? "",
+              imageUrl: pin.images.isNullEmpty ? '' : pin.images!.first,
               fit: BoxFit.cover,
               placeholder: (context, url) => const Center(
                 child: CircularProgressIndicator(),

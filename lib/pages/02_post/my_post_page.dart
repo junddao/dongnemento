@@ -109,8 +109,8 @@ class _MyPostViewState extends State<MyPostView> {
   }
 
   void onProduct(String pinId, String userId) async {
-    final result = await context.push<bool>(path.join(Routes.map, Routes.createPost, pinId, userId));
-
-    context.read<GetMyPinsCubit>().getMyPins();
+    await context.push<bool>(path.join(Routes.map, Routes.detailPost, pinId, userId)).then((value) {
+      context.read<GetMyPinsCubit>().getMyPins();
+    });
   }
 }

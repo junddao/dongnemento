@@ -112,16 +112,16 @@ class _ProductPageViewState extends State<ProductPageView> {
   }
 
   void onProduct(String pinId, String userId) async {
-    final result = await context.push<bool>(path.join(Routes.map, Routes.createPost, pinId, userId));
+    context.push<bool>(path.join(Routes.map, Routes.detailPost, pinId, userId)).then((value) {
+      double lat = context.read<MeCubit>().me.lat ?? 0;
+      double lng = context.read<MeCubit>().me.lng ?? 0;
 
-    double lat = context.read<MeCubit>().me.lat ?? 0;
-    double lng = context.read<MeCubit>().me.lng ?? 0;
-
-    ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
-      lat: lat,
-      lng: lng,
-      range: 3000,
-    );
-    context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+      ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+        lat: lat,
+        lng: lng,
+        range: 3000,
+      );
+      context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+    });
   }
 }
