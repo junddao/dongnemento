@@ -215,6 +215,11 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
       return;
     }
 
+    if (context.read<MeCubit>().me.address == null || context.read<MeCubit>().me.address!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('주소를 입력해주세요')));
+      return;
+    }
+
     ModelRequestSignUp modelRequestSignUp = ModelRequestSignUp(
       social: SocialType.email.value,
       email: _tecEmail.text,

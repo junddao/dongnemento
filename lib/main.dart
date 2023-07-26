@@ -18,34 +18,6 @@ import 'global/service/dynamic_link.dart';
 import 'global/service/firebase/firebase_fcm.dart';
 import 'global/style/du_colors.dart';
 
-// void main() async {
-//   KakaoSdk.init(nativeAppKey: '8548a68be13838496d1f23538f9f8ce7');
-
-//   const isLiveMode = bool.fromEnvironment("flavor", defaultValue: false);
-
-//   if (isLiveMode) {
-//     FlavorConfig(
-//       name: "prod",
-//       variables: {
-//         "EndPoint": "http://43.200.119.214/prod",
-//       },
-//     );
-//   } else {
-//     FlavorConfig(
-//       name: "dev",
-//       variables: {
-//         "EndPoint": "http://43.200.119.214/dev",
-//       },
-//     );
-//   }
-
-//   //앱 세팅
-//   await platformSetup();
-
-//   //앱 실행
-//   runApp(const MyApp());
-// }
-
 Future<void> platformSetup() async {
   // Flutter 엔진과 위젯의 바인딩 작업
   WidgetsFlutterBinding.ensureInitialized();

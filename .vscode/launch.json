@@ -10,13 +10,13 @@
       "type": "dart"
     },
     {
-      "name": "PROD-Flavor",
+      "name": "prod",
       "program": "lib/main_prod.dart",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "DEV-Flavor",
+      "name": "dev",
       "program": "lib/main_dev.dart",
       "request": "launch",
       "type": "dart"

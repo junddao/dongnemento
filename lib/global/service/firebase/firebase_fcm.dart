@@ -4,16 +4,31 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../routes.dart';
 import '../../model/firebase/firebase_model.dart';
 import '../../util/simple_logger.dart';
 
+/// 3-3.앱이 켜져있는 상태에서 알림 클릭 시 이벤트(localNotification o)
 @pragma('vm:entry-point')
-void notificationTapBackground(NotificationResponse notificationResponse) {
-  // handle action
-  logger.d('onDidReceiveBackgroundNotificationResponse');
-  // GoRouter.of(rootNavigatorKey.currentContext!).go(notificationResponse.payload ?? Routes.home);
+void _onDidReceiveNotificationResponse(NotificationResponse notificationResponse) {}
+
+/// 3-4.앱이 꺼져있는 상태에서 알림 클릭 시 이벤트(localNotification o)
+@pragma('vm:entry-point')
+void _onDidReceiveBackgroundNotificationResponse(NotificationResponse notificationResponse) {
+  if (notificationResponse.payload == null) {
+    return;
+  }
+  GoRouter.of(rootNavigatorKey.currentContext!).go(notificationResponse.payload!);
 }
+
+// @pragma('vm:entry-point')
+// void notificationTapBackground(NotificationResponse notificationResponse) {
+//   // handle action
+//   logger.d('onDidReceiveBackgroundNotificationResponse');
+//   // GoRouter.of(rootNavigatorKey.currentContext!).go(notificationResponse.payload ?? Routes.home);
+// }
 
 /// 포그라운드 상태에서 수신
 Future<void> _foregroundFCMHandler(RemoteMessage message) async {
@@ -89,14 +104,8 @@ class FCMWrapper {
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationsSettings,
-
-      /// click push message event
-      onDidReceiveNotificationResponse: (details) async {
-        // GoRouter.of(rootNavigatorKey.currentContext!).go(details.payload ?? Routes.home);
-      },
-
-      /// 이건 언제 타는거지..
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+      onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
+      onDidReceiveBackgroundNotificationResponse: _onDidReceiveBackgroundNotificationResponse,
     );
   }
 
@@ -179,7 +188,7 @@ Future<void> showNotification(FirebaseModel fcmModel) async {
     priority: Priority.high,
   );
 
-  String? payload;
+  String? payload = fcmModel.targetId;
 
   NotificationDetails platformChannelSpecifics = NotificationDetails(
     android: androidPlatformChannelSpecifics,

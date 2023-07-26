@@ -114,7 +114,10 @@ class _PagePostDetailViewState extends State<PagePostDetailView> {
         icon: const Icon(Icons.arrow_back_ios),
         color: Colors.white,
         onPressed: () {
-          context.pop(isChanged);
+          if (context.canPop()) {
+            context.pop(isChanged);
+          }
+          context.go(Routes.map);
         },
       ),
       backgroundColor: Colors.transparent,

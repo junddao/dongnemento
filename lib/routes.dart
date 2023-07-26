@@ -22,7 +22,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'global/bloc/auth/get_me/me_cubit.dart';
 import 'global/component/du_photo_viewer.dart';
 import 'global/enum/authentication_status_type.dart';
 import 'global/model/model.dart';
@@ -93,16 +92,16 @@ class AppRouter extends Bloc {
         }
       } else if (authBloc.state is AuthenticationAuthenticated) {
         // 최초 가입시 좌표값이 없어 주소 입력창으로 이동
-        if (authBloc.state.me!.lat == null || authBloc.state.me!.lng == null) {
+        if (authBloc.state.me!.address == null) {
           return Routes.introAddress;
         }
 
-        final updatedMe = authBloc.state.me!.copyWith(
-          firebaseToken: fcmToken,
-        );
+        // final updatedMe = authBloc.state.me!.copyWith(
+        //   firebaseToken: fcmToken,
+        // );
 
-        logger.d('Authenticated');
-        await context.read<MeCubit>().setMe(updatedMe);
+        // logger.d('Authenticated');
+        // await context.read<MeCubit>().setMe(updatedMe);
         return Routes.map;
       } else if (authBloc.state is AuthenticationUnAuthenticated) {
         logger.d('UnAuthenticated');
