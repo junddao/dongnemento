@@ -74,16 +74,18 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
               .read<AuthenticationBloc>()
               .add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
         }
+        if (state is SignUpError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage ?? '회원가입에 실패했습니다.'),
+            ),
+          );
+        }
       },
       builder: (context, state) {
         if (state is SignUpLoading) {
           return const Center(
             child: CircularProgressIndicator(),
-          );
-        } else if (state is SignUpError) {
-          return Center(
-            child: Text(state.errorMessage),
-            // error page로 보내고 login으로 보내게 하는게 좋을듯
           );
         }
         return BlocBuilder<AuthenticationBloc, AuthenticationState>(

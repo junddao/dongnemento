@@ -53,14 +53,11 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => authBloc,
+          create: (context) => authBloc..add(const AuthenticationStatusInit()),
         ),
         BlocProvider(
           create: (context) => AppRouter(authBloc),
         ),
-        // BlocProvider<SingletonMeCubit>(
-        //   create: (context) => singletonMeCubit,
-        // ),
         BlocProvider(
           create: (context) => LocationCubit(),
         ),

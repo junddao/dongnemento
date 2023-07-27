@@ -53,7 +53,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       emit(SignUpLoaded());
     } catch (e) {
       logger.d('error');
-      throw Exception();
+      emit(SignUpError(errorMessage: e.toString()));
     }
   }
 }
