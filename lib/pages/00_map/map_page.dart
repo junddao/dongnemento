@@ -152,46 +152,46 @@ class _MapPageViewState extends State<MapPageView> {
   Widget _body() {
     return BlocBuilder<LocationCubit, LocationState>(
       builder: (context, locationState) {
-        if (locationState is LocationLoaded) {
-          print('state loaded');
-        }
+        return BlocConsumer<GetPinsCubit, GetPinsState>(
+          listener: (context, state) {
+            if (state is GetPinsLoaded) {
+              pins = state.result;
 
-        return BlocBuilder<GetPinsCubit, GetPinsState>(
-          builder: (context, getPinsState) {
-            if (getPinsState is GetPinsLoaded) {
-              pins = getPinsState.result;
+              _drawPin(pins).then((value) {
+                print('aa');
+                setState(() {});
+              });
             }
-            return FutureBuilder(
-              future: _drawPin(pins),
-              builder: (context, snapshot) {
-                return Stack(
-                  children: [
-                    GoogleMap(
-                      onMapCreated: (controller) async {
-                        await _onMapCreated(controller, _lastLocation);
-                      },
-                      initialCameraPosition: CameraPosition(
-                        target: _lastLocation,
-                        zoom: 15,
-                      ),
-                      mapToolbarEnabled: false,
-                      // liteModeEnabled: true,
-                      mapType: MapType.terrain,
-                      markers: <Marker>{..._pinMarkers, ..._temporaryMaker},
-                      rotateGesturesEnabled: false,
-                      myLocationEnabled: false,
-                      myLocationButtonEnabled: false,
-                      zoomControlsEnabled: false,
-                      minMaxZoomPreference: MinMaxZoomPreference(8, 20),
-                      onCameraMove: _onCameraMove,
-                      onCameraIdle: _onCameraIdle,
-                      onTap: (point) {
-                        _handleTap(point);
-                      },
-                    ),
-                  ],
-                );
-              },
+          },
+          builder: (context, getPinsState) {
+            print('bb');
+            print(_pinMarkers);
+            return Stack(
+              children: [
+                GoogleMap(
+                  onMapCreated: (controller) async {
+                    await _onMapCreated(controller, _lastLocation);
+                  },
+                  initialCameraPosition: CameraPosition(
+                    target: _lastLocation,
+                    zoom: 15,
+                  ),
+                  mapToolbarEnabled: false,
+                  // liteModeEnabled: true,
+                  mapType: MapType.terrain,
+                  markers: <Marker>{..._pinMarkers, ..._temporaryMaker},
+                  rotateGesturesEnabled: false,
+                  myLocationEnabled: false,
+                  myLocationButtonEnabled: false,
+                  zoomControlsEnabled: false,
+                  minMaxZoomPreference: MinMaxZoomPreference(8, 20),
+                  onCameraMove: _onCameraMove,
+                  onCameraIdle: _onCameraIdle,
+                  onTap: (point) {
+                    _handleTap(point);
+                  },
+                ),
+              ],
             );
           },
         );
@@ -381,8 +381,15 @@ class _MapPageViewState extends State<MapPageView> {
                   press: () {
                     // context.pop();
                     context.read<LocationCubit>().setPostLocation(location).then((value) {
-                      Navigator.pop(context, true);
-                      context.go(path.join(Routes.map, Routes.createPost));
+                      context.push(path.join(Routes.map, Routes.createPost)).then((value) {
+                        ModelRequestGetPin modelRequestGetPin = ModelRequestGetPin(
+                          lat: _lastLocation.latitude,
+                          lng: _lastLocation.longitude,
+                          range: range,
+                        );
+                        context.read<GetPinsCubit>().getPins(modelRequestGetPin);
+                        Navigator.pop(context, true);
+                      });
                     });
                   },
                 ),

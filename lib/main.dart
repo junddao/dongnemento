@@ -45,7 +45,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  AuthenticationBloc authBloc = AuthenticationBloc();
+  late AuthenticationBloc authBloc = AuthenticationBloc()..add(const AuthenticationStatusInit());
   // SingletonMeCubit singletonMeCubit = SingletonMeCubit();
 
   @override
@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => authBloc..add(const AuthenticationStatusInit()),
+          create: (context) => authBloc,
         ),
         BlocProvider(
           create: (context) => AppRouter(authBloc),
