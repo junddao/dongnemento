@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path/path.dart' as path;
 
 import '../../../routes.dart';
 import '../../model/firebase/firebase_model.dart';
@@ -12,7 +13,13 @@ import '../../util/simple_logger.dart';
 
 /// 3-3.앱이 켜져있는 상태에서 알림 클릭 시 이벤트(localNotification o)
 @pragma('vm:entry-point')
-void _onDidReceiveNotificationResponse(NotificationResponse notificationResponse) {}
+void _onDidReceiveNotificationResponse(NotificationResponse notificationResponse) {
+  if (notificationResponse.payload == null) {
+    return;
+  }
+  GoRouter.of(rootNavigatorKey.currentContext!)
+      .go(path.join(Routes.map, Routes.detailPost, notificationResponse.payload!));
+}
 
 /// 3-4.앱이 꺼져있는 상태에서 알림 클릭 시 이벤트(localNotification o)
 @pragma('vm:entry-point')
@@ -20,7 +27,8 @@ void _onDidReceiveBackgroundNotificationResponse(NotificationResponse notificati
   if (notificationResponse.payload == null) {
     return;
   }
-  GoRouter.of(rootNavigatorKey.currentContext!).go(notificationResponse.payload!);
+  GoRouter.of(rootNavigatorKey.currentContext!)
+      .go(path.join(Routes.map, Routes.detailPost, notificationResponse.payload!));
 }
 
 // @pragma('vm:entry-point')
@@ -188,7 +196,7 @@ Future<void> showNotification(FirebaseModel fcmModel) async {
     priority: Priority.high,
   );
 
-  String? payload = fcmModel.targetId;
+  String? payload = path.join(fcmModel.targetId!, fcmModel.authorId);
 
   NotificationDetails platformChannelSpecifics = NotificationDetails(
     android: androidPlatformChannelSpecifics,

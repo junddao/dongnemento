@@ -16,6 +16,9 @@ const kDefaultPadding = 24.0;
 const kDefaultVerticalPadding = 10.0;
 const kDefaultHorizontalPadding = 16.0;
 
+const defaultLatitude = 37.39477;
+const defaultLongitude = 127.11116;
+
 // default shadow
 const kDefaultShadow = BoxShadow(
   offset: Offset(0, 15),
