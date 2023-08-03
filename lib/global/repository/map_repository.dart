@@ -11,10 +11,10 @@ class MapRepository {
 
   MapRepository._();
 
-  Future<KakaoLocalResponseData> getKakaoAddressByKeyword(String keyword, {int? page = 15}) async {
+  Future<KakaoLocalResponseData> getKakaoAddressByKeyword(String keyword, {int? page = 30}) async {
     late KakaoLocalResponseData kakaoLocalResponseData;
     try {
-      String path = 'https://dapi.kakao.com/v2/local/search/keyword.json?query=$keyword&page=$page';
+      String path = 'https://dapi.kakao.com/v2/local/search/address.json?query=$keyword&page=$page';
       Map<String, dynamic> response = await ApiService().getKakaoApi(path);
       kakaoLocalResponseData = KakaoLocalResponseData.fromMap(response);
       return kakaoLocalResponseData;

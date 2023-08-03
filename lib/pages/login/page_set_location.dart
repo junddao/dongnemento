@@ -75,8 +75,10 @@ class _PageSetLocationState extends State<PageSetLocation> {
                 DUButton(
                   press: () async {
                     context.push(Routes.address).then((value) async {
-                      if (mounted) {
-                        context.push(Routes.map);
+                      if (value == true) {
+                        if (mounted) {
+                          context.go(Routes.map);
+                        }
                       }
                     });
                   },

@@ -79,7 +79,7 @@ class CustomSearchDelegate extends SearchDelegate {
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(data.place_name, style: DUTextStyle.size14),
+                        Text(data.address_name, style: DUTextStyle.size14),
                         const SizedBox(height: 4),
                         Text(
                           data.address_name,
@@ -137,7 +137,7 @@ class CustomSearchDelegate extends SearchDelegate {
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(data.place_name, style: DUTextStyle.size14),
+                        Text(data.address_name, style: DUTextStyle.size14),
                         const SizedBox(height: 4),
                         Text(
                           data.address_name,

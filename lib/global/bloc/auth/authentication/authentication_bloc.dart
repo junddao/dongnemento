@@ -16,14 +16,18 @@ part 'authentication_state.dart';
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc() : super(const AuthenticationInitial()) {
     on<AuthenticationStatusInit>((event, emit) async {
-      String fcmToken = await FCMWrapper.instance.getToken();
-      logger.d('fcmToken: $fcmToken');
-      var result = await SecureStorage.instance.readToken();
-      logger.d(result);
+      try {
+        String fcmToken = await FCMWrapper.instance.getToken();
+        logger.d('fcmToken: $fcmToken');
+        var result = await SecureStorage.instance.readToken();
+        logger.d(result);
 
-      if (result != null) {
-        add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
-      } else {
+        if (result != null) {
+          add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
+        } else {
+          add(const AuthenticationStatusChanged(status: AuthenticationStatusType.unauthenticated));
+        }
+      } catch (e) {
         add(const AuthenticationStatusChanged(status: AuthenticationStatusType.unauthenticated));
       }
     });
@@ -53,7 +57,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         case AuthenticationStatusType.unauthenticated:
           add(AuthenticationSignOut());
 
-          emit(const AuthenticationUnAuthenticated());
           return;
         case AuthenticationStatusType.authenticated:
           DataResponse<ModelUser> responseModelUser = await RestApiManager.instance.getRestClient().getMe();
@@ -111,8 +114,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
       ModelGetToken modelGetToken = responseModelSignIn.data.first;
       await SecureStorage.instance.writeToken(modelGetToken.accessToken);
-
-      //get me
 
       DataResponse<ModelUser> responseModelUser = await RestApiManager.instance.getRestClient().getMe();
 

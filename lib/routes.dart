@@ -21,6 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'global/bloc/auth/get_me/me_cubit.dart';
 import 'global/component/du_photo_viewer.dart';
 import 'global/model/model.dart';
 import 'pages/02_post/my_post_page.dart';
@@ -73,23 +74,9 @@ class AppRouter extends Bloc {
       if (authBloc.state is AuthenticationInitial) {
         return null;
       }
-      //   try {
-      //     fcmToken = await FCMWrapper.instance.getToken();
-      //     logger.d('fcmToken: $fcmToken');
-      //     var result = await SecureStorage.instance.readToken();
-      //     logger.d(result);
 
-      //     if (result != null) {
-      //       authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
-      //     } else {
-      //       authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.unauthenticated));
-      //     }
-      //     return null;
-      //   } catch (e) {
-      //     return Routes.login;
-      //   }
-      // } else
       if (authBloc.state is AuthenticationAuthenticated) {
+        context.read<MeCubit>().me = authBloc.state.me!;
         // 최초 가입시 좌표값이 없어 주소 입력창으로 이동
         if (authBloc.state.me!.address == null) {
           return Routes.introAddress;
@@ -138,14 +125,6 @@ class AppRouter extends Bloc {
           );
         },
         routes: [
-          // GoRoute(
-          //   path: Routes.home,
-          //   pageBuilder: (context, state) {
-          //     return const MaterialPage(
-          //       child: HomePage(),
-          //     );
-          //   },
-          // ),
           GoRoute(
             path: Routes.map,
             pageBuilder: (context, state) {
@@ -248,6 +227,7 @@ class AppRouter extends Bloc {
       ),
       GoRoute(
         path: Routes.introAddress,
+        parentNavigatorKey: rootNavigatorKey,
         pageBuilder: (context, state) {
           return const MaterialPage(
             child: PageSetLocation(),

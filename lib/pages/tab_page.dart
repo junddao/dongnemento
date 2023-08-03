@@ -106,8 +106,8 @@ class _PageTabViewState extends State<PageTabView> with WidgetsBindingObserver {
   }
 
   int _calculateSelectedIndex(BuildContext context) {
-    final GoRouter route = GoRouter.of(context);
-    final String location = route.location;
+    final GoRouterState route = GoRouterState.of(context);
+    final String location = route.uri.toString();
     if (location == Routes.map) {
       _selectedPage = 0;
     }

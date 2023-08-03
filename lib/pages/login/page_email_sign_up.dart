@@ -66,9 +66,9 @@ class _PageEmailSignUpViewState extends State<PageEmailSignUpView> {
 
   Widget _body() {
     return BlocConsumer<SignUpCubit, SignUpState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is SignUpLoaded) {
-          context.read<MeCubit>().getMe();
+          await context.read<MeCubit>().getMe();
 
           context
               .read<AuthenticationBloc>()

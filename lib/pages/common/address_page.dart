@@ -85,6 +85,9 @@ class _AddressPageState extends State<AddressPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+          onPressed: () => context.pop(false),
+        ),
         title: const Text('주소 찾기'),
       ),
       body: _build(context),
@@ -160,7 +163,7 @@ class _AddressPageState extends State<AddressPage> {
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(item.place_name, style: DUTextStyle.size14),
+                              Text(item.address_name, style: DUTextStyle.size14),
                               const SizedBox(height: 4),
                               Text(
                                 item.address_name,
@@ -169,14 +172,16 @@ class _AddressPageState extends State<AddressPage> {
                             ],
                           ),
                           onTap: () async {
-                            context.read<MeCubit>().me.lng = double.parse(item.x);
-                            context.read<MeCubit>().me.lat = double.parse(item.y);
-                            context.read<MeCubit>().me.address = item.address_name;
+                            context.read<MeCubit>().me = context.read<MeCubit>().me.copyWith(
+                                  lng: double.parse(item.x),
+                                  lat: double.parse(item.y),
+                                  address: item.address_name,
+                                );
 
-                            context.read<MeCubit>().setMe(context.read<MeCubit>().me);
+                            await context.read<MeCubit>().setMe(context.read<MeCubit>().me);
 
                             if (mounted) {
-                              context.pop();
+                              context.pop(true);
                             }
                           },
                         );
