@@ -7,12 +7,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../model/model.dart';
 import '../../../repository/rest_api_manager.dart';
+import '../../../service/firebase/firebase_fcm.dart';
+import '../../../util/util.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc() : super(const AuthenticationInitial()) {
+    on<AuthenticationStatusInit>((event, emit) async {
+      String fcmToken = await FCMWrapper.instance.getToken();
+      logger.d('fcmToken: $fcmToken');
+      var result = await SecureStorage.instance.readToken();
+      logger.d(result);
+
+      if (result != null) {
+        add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
+      } else {
+        add(const AuthenticationStatusChanged(status: AuthenticationStatusType.unauthenticated));
+      }
+    });
     on<AuthenticationStatusChanged>(
       (event, emit) async {
         await _onAuthenticationStatusChanged(event, emit);
@@ -40,7 +54,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           add(AuthenticationSignOut());
 
           emit(const AuthenticationUnAuthenticated());
-          break;
+          return;
         case AuthenticationStatusType.authenticated:
           DataResponse<ModelUser> responseModelUser = await RestApiManager.instance.getRestClient().getMe();
 
@@ -54,7 +68,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
             emit(AuthenticationAuthenticated(me: me));
           }
 
-          break;
+          return;
         default:
           emit(const AuthenticationUnknown());
       }

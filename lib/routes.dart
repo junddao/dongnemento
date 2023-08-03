@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:base_project/global/bloc/auth/authentication/authentication_bloc.dart';
-import 'package:base_project/global/service/secure_storage/secure_storage.dart';
 import 'package:base_project/global/style/constants.dart';
 import 'package:base_project/global/util/simple_logger.dart';
 import 'package:base_project/pages/00_etc/page_confirm.dart';
@@ -23,9 +22,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'global/component/du_photo_viewer.dart';
-import 'global/enum/authentication_status_type.dart';
 import 'global/model/model.dart';
-import 'global/service/firebase/firebase_fcm.dart';
 import 'pages/02_post/my_post_page.dart';
 import 'pages/02_post/page_select_location.dart';
 import 'pages/02_post/update_post_page.dart';
@@ -65,7 +62,6 @@ class AppRouter extends Bloc {
   AppRouter(this.authBloc) : super(null);
 
   AuthenticationState? prevAuthState;
-  late final fcmToken;
 
   late final _goRouter = GoRouter(
     redirect: (context, state) async {
@@ -75,22 +71,25 @@ class AppRouter extends Bloc {
       }
       prevAuthState = authBloc.state;
       if (authBloc.state is AuthenticationInitial) {
-        try {
-          fcmToken = await FCMWrapper.instance.getToken();
-          logger.d('fcmToken: $fcmToken');
-          var result = await SecureStorage.instance.readToken();
-          logger.d(result);
+        return null;
+      }
+      //   try {
+      //     fcmToken = await FCMWrapper.instance.getToken();
+      //     logger.d('fcmToken: $fcmToken');
+      //     var result = await SecureStorage.instance.readToken();
+      //     logger.d(result);
 
-          if (result != null) {
-            authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
-          } else {
-            authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.unauthenticated));
-          }
-          return null;
-        } catch (e) {
-          return Routes.login;
-        }
-      } else if (authBloc.state is AuthenticationAuthenticated) {
+      //     if (result != null) {
+      //       authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.authenticated));
+      //     } else {
+      //       authBloc.add(const AuthenticationStatusChanged(status: AuthenticationStatusType.unauthenticated));
+      //     }
+      //     return null;
+      //   } catch (e) {
+      //     return Routes.login;
+      //   }
+      // } else
+      if (authBloc.state is AuthenticationAuthenticated) {
         // 최초 가입시 좌표값이 없어 주소 입력창으로 이동
         if (authBloc.state.me!.address == null) {
           return Routes.introAddress;
@@ -100,7 +99,7 @@ class AppRouter extends Bloc {
         //   firebaseToken: fcmToken,
         // );
 
-        // logger.d('Authenticated');
+        logger.d('Authenticated');
         // await context.read<MeCubit>().setMe(updatedMe);
         return Routes.map;
       } else if (authBloc.state is AuthenticationUnAuthenticated) {
