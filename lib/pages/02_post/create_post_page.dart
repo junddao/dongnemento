@@ -111,7 +111,7 @@ class _PagePostCreateViewState extends State<PagePostCreateView> {
           DUDialog.showTwoButtonDialog(context: context).then((value) {
             setState(() {
               if (value == true) {
-                context.go('/map');
+                context.pop('/map');
               }
             });
           });
